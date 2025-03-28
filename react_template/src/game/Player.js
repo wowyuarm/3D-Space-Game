@@ -157,21 +157,20 @@ export class Player {
     
     // 如果能量足够且不在跃迁中
     const jumpEnergyCost = 25;
-    const jumpSpeed = 120.0; // 增强跃迁推力
+    const jumpDistance = 500.0; // 一次跃迁可以移动的距离
     
     if (this.spaceship.energy > jumpEnergyCost && !this._isJumping) {
       try {
         // 获取当前方向
         const direction = this.spaceship.getDirection();
         
-        // 设置强大的瞬时速度
-        this.spaceship.velocity.addScaledVector(direction, jumpSpeed);
-        
-        // 消耗能量
-        this.spaceship.energy -= jumpEnergyCost;
-        
         // 设置跃迁标志
         this._isJumping = true;
+        
+        // 计算目标点位置
+        const targetPosition = this.spaceship.position.clone().add(
+          direction.clone().multiplyScalar(jumpDistance)
+        );
         
         // 创建跃迁视觉效果
         this.createJumpEffect();
@@ -179,10 +178,10 @@ export class Player {
         // 播放跃迁音效
         if (this.spaceship.gameEngine && this.spaceship.gameEngine.audioManager) {
           const audioManager = this.spaceship.gameEngine.audioManager;
-          const jumpSound = audioManager.audioFiles['jump'] || audioManager.audioFiles['boost'];
+          const jumpSound = audioManager.audioFiles['warp_drive'] || audioManager.audioFiles['jump'] || audioManager.audioFiles['boost'];
           
           if (jumpSound) {
-            audioManager.playSound(jumpSound, 0.8);
+            audioManager.playSound(jumpSound, 1.0);
           }
         }
         
@@ -197,14 +196,41 @@ export class Player {
         
         console.log('执行超空间跃迁!');
         
-        // 3秒后自动重置跃迁状态
+        // 创建扭曲效果
+        this.createWarpEffect();
+        
+        // 0.8秒后瞬间移动到目标位置
+        setTimeout(() => {
+          // 直接设置位置到目标点
+          this.spaceship.position.copy(targetPosition);
+          
+          // 重置速度
+          this.spaceship.velocity.set(0, 0, 0);
+          
+          // 消耗能量 (跃迁结束时才扣除能量)
+          this.spaceship.energy -= jumpEnergyCost;
+          
+          // 检查是否接近行星
+          if (this.currentStarSystem) {
+            this.checkPlanetProximity(targetPosition);
+          }
+          
+          // 播放退出跃迁音效
+          if (this.spaceship.gameEngine && this.spaceship.gameEngine.audioManager) {
+            const audioManager = this.spaceship.gameEngine.audioManager;
+            audioManager.playSound('alert', 0.5);
+          }
+        }, 800);
+        
+        // 1.5秒后重置跃迁状态
         setTimeout(() => {
           this._isJumping = false;
-        }, 3000);
+        }, 1500);
         
         return true;
       } catch (error) {
         console.error('跃迁执行失败:', error);
+        this._isJumping = false;
         return false;
       }
     } else if (this.spaceship.energy <= jumpEnergyCost) {
@@ -273,10 +299,10 @@ export class Player {
         
         // 缩放动画
         if (growing) {
-          scale += 0.08;
-          if (scale >= 1.5) growing = false;
+          scale += 0.15; // 更快的脉动效果
+          if (scale >= 2.0) growing = false;
         } else {
-          scale -= 0.05;
+          scale -= 0.1;
           if (scale <= 1.0) growing = true;
         }
         
@@ -286,12 +312,21 @@ export class Player {
         
         if (jumpGlow) {
           jumpGlow.scale.set(scale, scale, scale);
-          jumpGlow.material.opacity = 0.6 - Math.abs(scale - 1.25) * 0.3;
+          jumpGlow.material.opacity = 0.6 - Math.abs(scale - 1.5) * 0.2;
         }
         
         if (innerGlow) {
           innerGlow.scale.set(scale * 1.2, scale * 1.2, scale * 1.2);
-          innerGlow.material.opacity = 0.4 - Math.abs(scale - 1.25) * 0.2;
+          innerGlow.material.opacity = 0.4 - Math.abs(scale - 1.5) * 0.15;
+          
+          // 随机变换发光颜色，产生能量波动效果
+          if (Math.random() > 0.5) {
+            innerGlow.material.color.setHSL(
+              Math.random() * 0.1 + 0.5, // 蓝青色范围
+              0.8,
+              0.5
+            );
+          }
         }
         
         // 如果还在跃迁中，继续动画
@@ -343,7 +378,122 @@ export class Player {
         }
       }, 2500);
     } catch (error) {
-      console.error('创建跃迁效果时出错:', error);
+      console.error('创建跃迁效果失败:', error);
+    }
+  }
+  
+  // 创建扭曲效果
+  createWarpEffect() {
+    if (!this.spaceship || !this.spaceship.gameEngine || !this.spaceship.gameEngine.postProcessor) return;
+    
+    try {
+      // 获取后处理器
+      const postProcessor = this.spaceship.gameEngine.postProcessor;
+      
+      // 激活扭曲效果
+      if (typeof postProcessor.addTemporaryEffect === 'function') {
+        postProcessor.addTemporaryEffect('warpDistortion', 1.0, 1500);
+      }
+      
+      // 如果后处理器没有addTemporaryEffect方法，我们可以创建简单的视觉效果
+      // 在画面四周创建光线拉伸效果
+      const scene = this.spaceship.gameEngine.scene || this.spaceship.gameEngine.gameState?.currentScene;
+      if (!scene) return;
+      
+      // 创建星光拉伸效果
+      const starsCount = 50;
+      const starGroup = new THREE.Group();
+      starGroup.name = "warpStars";
+      
+      for (let i = 0; i < starsCount; i++) {
+        const length = 20 + Math.random() * 80; // 随机长度
+        const geometry = new THREE.BoxGeometry(0.2, 0.2, length);
+        
+        // 随机颜色: 蓝、白、青
+        const colorChoice = Math.random();
+        let color;
+        if (colorChoice < 0.33) {
+          color = 0x0088ff; // 蓝
+        } else if (colorChoice < 0.66) {
+          color = 0xffffff; // 白
+        } else {
+          color = 0x00ffff; // 青
+        }
+        
+        const material = new THREE.MeshBasicMaterial({
+          color: color,
+          transparent: true,
+          opacity: 0.7
+        });
+        
+        const star = new THREE.Mesh(geometry, material);
+        
+        // 随机位置，保持在相机前方
+        star.position.set(
+          (Math.random() - 0.5) * 100,
+          (Math.random() - 0.5) * 100,
+          this.spaceship.position.z - 50 - Math.random() * 200
+        );
+        
+        // 朝向飞船前进方向
+        star.lookAt(this.spaceship.position);
+        starGroup.add(star);
+      }
+      
+      scene.add(starGroup);
+      
+      // 1.5秒后移除效果
+      setTimeout(() => {
+        scene.remove(starGroup);
+        starGroup.children.forEach(star => {
+          star.geometry.dispose();
+          star.material.dispose();
+        });
+      }, 1500);
+    } catch (error) {
+      console.error('创建扭曲效果失败:', error);
+    }
+  }
+  
+  // 检查行星接近度
+  checkPlanetProximity(position) {
+    if (!this.currentStarSystem || !this.currentStarSystem.planets) return;
+    
+    // 寻找最近的行星
+    let nearestPlanet = null;
+    let nearestDistance = Infinity;
+    
+    for (const planet of this.currentStarSystem.planets) {
+      if (!planet.position) continue;
+      
+      const distance = position.distanceTo(planet.position);
+      
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestPlanet = planet;
+      }
+    }
+    
+    // 接近行星时提示
+    if (nearestPlanet && nearestDistance < 50) {
+      // 更新最近行星信息
+      this.nearestPlanet = nearestPlanet;
+      this.nearestPlanetDistance = nearestDistance;
+      
+      // 显示通知
+      if (this.spaceship.gameEngine && this.spaceship.gameEngine.uiManager) {
+        const uiManager = this.spaceship.gameEngine.uiManager;
+        uiManager.addNotification(
+          `超空间跃出点接近行星 ${nearestPlanet.name || '未知行星'}，距离: ${nearestDistance.toFixed(1)}光秒`,
+          'info',
+          5000
+        );
+        
+        // 可以在这里添加行星信息到HUD
+        if (typeof uiManager.showPlanetInfo === 'function') {
+          uiManager.showPlanetInfo(nearestPlanet);
+        }
+      }
     }
   }
   

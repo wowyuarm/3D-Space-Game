@@ -795,8 +795,30 @@ export class GameState {
     return true;
   }
   
-  travelToStarSystem(starSystem) {
+  travelToStarSystem(starSystem, instantTravel = false) {
     if (!this.player || !starSystem) return false;
+    
+    // 检查是否超出跃迁范围
+    if (!instantTravel && this.player.currentStarSystem) {
+      // 计算与当前星系的距离
+      const distance = new THREE.Vector3()
+        .copy(starSystem.position)
+        .sub(this.player.currentStarSystem.position)
+        .length();
+      
+      // 如果超出最大跃迁范围且不是立即传送，返回错误
+      const maxJumpDistance = this.player.spaceship ? this.player.spaceship.maxJumpDistance || 500 : 500;
+      if (distance > maxJumpDistance) {
+        if (this.gameEngine && this.gameEngine.uiManager) {
+          this.gameEngine.uiManager.addNotification(
+            `目标星系超出跃迁范围，距离：${distance.toFixed(1)}光年，最大范围：${maxJumpDistance.toFixed(1)}光年`,
+            'warning',
+            5000
+          );
+        }
+        return false;
+      }
+    }
     
     // Record travel distance for stats
     if (this.player.currentStarSystem) {
@@ -808,6 +830,44 @@ export class GameState {
       this.stats.distanceTraveled += distance;
     }
     
+    // 创建超空间跃迁效果，无论是否立即传送
+    if (this.player.spaceship && this.player.createJumpEffect) {
+      try {
+        this.player.createJumpEffect();
+        
+        // 创建扭曲效果
+        if (this.player.createWarpEffect) {
+          this.player.createWarpEffect();
+        }
+      } catch (error) {
+        console.error("创建跃迁效果失败:", error);
+      }
+    }
+    
+    if (instantTravel) {
+      // 立即执行传送，不需要等待动画
+      this._executeTravelToSystem(starSystem);
+      return true;
+    } else {
+      // 延迟800毫秒执行传送，等待动画效果
+      if (this.gameEngine && this.gameEngine.uiManager) {
+        this.gameEngine.uiManager.addNotification(
+          `正在准备超空间跃迁到 ${starSystem.name}...`,
+          'info',
+          3000
+        );
+      }
+      
+      setTimeout(() => {
+        this._executeTravelToSystem(starSystem);
+      }, 800);
+      
+      return true;
+    }
+  }
+  
+  // 内部方法：执行传送到新星系的逻辑
+  _executeTravelToSystem(starSystem) {
     // 从场景中移除当前星系的行星
     if (this.player.currentStarSystem && this.player.currentStarSystem.planets) {
       this.player.currentStarSystem.planets.forEach(planet => {
@@ -838,6 +898,20 @@ export class GameState {
         
         // Award experience for discovery
         this.player.gainExperience(50);
+        
+        // 播放发现音效
+        if (this.gameEngine && this.gameEngine.audioManager) {
+          this.gameEngine.audioManager.playSound('discovery');
+        }
+        
+        // 显示发现通知
+        if (this.gameEngine && this.gameEngine.uiManager) {
+          this.gameEngine.uiManager.addNotification(
+            `发现新星系：${starSystem.name}！`,
+            'discovery',
+            5000
+          );
+        }
       } else {
         // 如果星系已探索但行星未加载到场景中，则重新加载
         if (starSystem.planets && starSystem.planets.length > 0) {
@@ -852,6 +926,15 @@ export class GameState {
       // 切换背景音乐
       if (this.gameEngine && this.gameEngine.audioManager) {
         this.gameEngine.audioManager.playMusic('space_ambient', true, true);
+      }
+      
+      // 显示到达通知
+      if (this.gameEngine && this.gameEngine.uiManager) {
+        this.gameEngine.uiManager.addNotification(
+          `已抵达 ${starSystem.name} 星系`,
+          'success',
+          3000
+        );
       }
     }
     

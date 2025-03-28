@@ -1,6 +1,7 @@
 // src/ui/screens/StarMapScreen.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import './StarMapScreen.css'; // 添加样式引用
 
 const StarMapScreen = ({ gameEngine, onClose }) => {
   const [selectedSystem, setSelectedSystem] = useState(null);
@@ -410,7 +411,7 @@ const StarMapScreen = ({ gameEngine, onClose }) => {
   };
   
   // 处理旅行到星系
-  const handleTravelToSystem = () => {
+  const handleTravelToSystem = (instantTravel = false) => {
     if (!selectedSystem || !gameEngine || !gameEngine.gameState) return;
     
     // 检查是否是当前所在星系
@@ -422,15 +423,23 @@ const StarMapScreen = ({ gameEngine, onClose }) => {
       return;
     }
     
+    // 计算距离
+    const distance = calculateDistance(selectedSystem);
+    
     // 尝试旅行到选定星系
     if (gameEngine.gameState.travelToStarSystem) {
-      const success = gameEngine.gameState.travelToStarSystem(selectedSystem);
+      const success = gameEngine.gameState.travelToStarSystem(selectedSystem, instantTravel);
       
       if (success) {
         // 关闭星图界面返回游戏
         onClose();
       } else {
-        alert('无法前往该星系，可能超出航行范围');
+        // 如果失败但选择了立即传送，显示不同提示
+        if (instantTravel) {
+          alert('无法传送到该星系，请检查是否有足够的能量或传送装置');
+        } else {
+          alert('无法前往该星系，可能超出航行范围');
+        }
       }
     }
   };
@@ -445,6 +454,10 @@ const StarMapScreen = ({ gameEngine, onClose }) => {
         </div>
       );
     }
+    
+    // 计算距离
+    const distance = calculateDistance(selectedSystem);
+    const isLongDistance = distance > 100; // 假设超过100光年为长距离
     
     return (
       <div className="system-details">
@@ -465,14 +478,16 @@ const StarMapScreen = ({ gameEngine, onClose }) => {
         <div className="detail-row">
           <span className="detail-label">行星数量:</span>
           <span className="detail-value">
-            {selectedSystem.planets ? selectedSystem.planets.length : '未知'}
+            {selectedSystem.explored && selectedSystem.planets 
+              ? selectedSystem.planets.length 
+              : '未知'}
           </span>
         </div>
         
-        <div className="detail-row">
+        <div className="detail-row distance-row">
           <span className="detail-label">距离:</span>
-          <span className="detail-value">
-            {calculateDistance(selectedSystem)} 光年
+          <span className={`detail-value ${isLongDistance ? 'long-distance' : ''}`}>
+            {distance} 光年
           </span>
         </div>
         
@@ -508,13 +523,30 @@ const StarMapScreen = ({ gameEngine, onClose }) => {
         )}
         
         <div className="system-actions">
-          <button 
-            className="travel-button"
-            onClick={handleTravelToSystem}
-            disabled={isCurrentSystem(selectedSystem)}
-          >
-            {isCurrentSystem(selectedSystem) ? '当前位置' : '前往该星系'}
-          </button>
+          {isCurrentSystem(selectedSystem) ? (
+            <button 
+              className="current-location-button"
+              disabled={true}
+            >
+              当前位置
+            </button>
+          ) : (
+            <>
+              <button 
+                className="travel-button"
+                onClick={() => handleTravelToSystem(false)}
+              >
+                常规航行
+              </button>
+              <button 
+                className="warp-button"
+                onClick={() => handleTravelToSystem(true)}
+                title="直接跃迁到目标星系"
+              >
+                超空间跃迁
+              </button>
+            </>
+          )}
         </div>
       </div>
     );
@@ -586,56 +618,270 @@ const StarMapScreen = ({ gameEngine, onClose }) => {
     }
   };
   
+  // 添加CSS样式
+  const styles = {
+    starMapContainer: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'rgba(0, 0, 0, 0.9)',
+      zIndex: 1000,
+      display: 'flex',
+      flexDirection: 'column'
+    },
+    header: {
+      padding: '10px 20px',
+      borderBottom: '1px solid #2a4d6e',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      background: 'linear-gradient(to right, #0a2342, #123b70)'
+    },
+    title: {
+      color: '#00ccff',
+      margin: 0,
+      fontWeight: 'bold',
+      textShadow: '0 0 15px rgba(0, 204, 255, 0.7)'
+    },
+    closeButton: {
+      background: 'none',
+      border: '1px solid #00ccff',
+      color: '#00ccff',
+      padding: '5px 15px',
+      cursor: 'pointer',
+      borderRadius: '4px',
+      transition: 'all 0.3s ease'
+    },
+    content: {
+      display: 'flex',
+      flex: 1,
+      overflow: 'hidden'
+    },
+    systemsPanel: {
+      width: '250px',
+      backgroundColor: 'rgba(16, 24, 40, 0.9)',
+      borderRight: '1px solid #2a4d6e',
+      padding: '15px',
+      overflowY: 'auto'
+    },
+    systemsList: {
+      listStyle: 'none',
+      padding: 0,
+      margin: 0
+    },
+    systemItem: {
+      padding: '8px 12px',
+      borderBottom: '1px solid rgba(42, 77, 110, 0.5)',
+      cursor: 'pointer',
+      transition: 'all 0.2s ease',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between'
+    },
+    systemName: {
+      color: '#fff'
+    },
+    selected: {
+      backgroundColor: 'rgba(0, 128, 255, 0.3)',
+      borderLeft: '3px solid #00ccff'
+    },
+    systemStatus: {
+      display: 'inline-block',
+      width: '12px',
+      height: '12px',
+      borderRadius: '50%',
+      marginLeft: '8px'
+    },
+    visitedIndicator: {
+      backgroundColor: '#00cc66'
+    },
+    unvisitedIndicator: {
+      backgroundColor: '#ff9900'
+    },
+    mapView: {
+      flex: 1,
+      position: 'relative'
+    },
+    mapContainer: {
+      width: '100%',
+      height: '100%'
+    },
+    infoPanel: {
+      width: '300px',
+      backgroundColor: 'rgba(16, 24, 40, 0.9)',
+      borderLeft: '1px solid #2a4d6e',
+      padding: '15px',
+      overflowY: 'auto'
+    },
+    detailsHeading: {
+      color: '#00ccff',
+      borderBottom: '1px solid #2a4d6e',
+      paddingBottom: '10px',
+      marginTop: 0
+    },
+    detailRow: {
+      margin: '10px 0',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between'
+    },
+    detailLabel: {
+      color: '#88aace',
+      fontWeight: 'bold'
+    },
+    detailValue: {
+      color: '#ffffff'
+    },
+    longDistance: {
+      color: '#ff9900',
+      fontWeight: 'bold'
+    },
+    explored: {
+      color: '#00cc66'
+    },
+    unexplored: {
+      color: '#ff9900'
+    },
+    planetList: {
+      marginTop: '15px',
+      maxHeight: '200px',
+      overflowY: 'auto',
+      border: '1px solid #2a4d6e',
+      borderRadius: '4px',
+      padding: '8px'
+    },
+    planetItem: {
+      padding: '8px',
+      borderBottom: '1px solid rgba(42, 77, 110, 0.5)',
+      marginBottom: '8px'
+    },
+    planetName: {
+      color: '#ffffff',
+      fontWeight: 'bold',
+      marginBottom: '4px'
+    },
+    planetType: {
+      color: '#88aace',
+      fontSize: '0.9em',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between'
+    },
+    habitableBadge: {
+      backgroundColor: '#00aa44',
+      color: 'white',
+      padding: '2px 6px',
+      borderRadius: '4px',
+      fontSize: '0.8em'
+    },
+    planetResources: {
+      color: '#6699cc',
+      fontSize: '0.85em',
+      marginTop: '4px',
+      fontStyle: 'italic'
+    },
+    systemActions: {
+      marginTop: '20px',
+      display: 'flex',
+      gap: '10px',
+      flexDirection: 'column'
+    },
+    travelButton: {
+      backgroundColor: '#2a4d6e',
+      color: 'white',
+      border: 'none',
+      padding: '10px',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    warpButton: {
+      backgroundColor: '#704e93',
+      backgroundImage: 'linear-gradient(45deg, #704e93, #3a1c6e)',
+      color: 'white',
+      border: 'none',
+      padding: '10px',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontWeight: 'bold',
+      textShadow: '0 0 8px rgba(255, 255, 255, 0.5)',
+      boxShadow: '0 0 15px rgba(112, 78, 147, 0.5)'
+    },
+    currentLocationButton: {
+      backgroundColor: '#333',
+      color: '#999',
+      border: 'none',
+      padding: '10px',
+      borderRadius: '4px',
+      cursor: 'not-allowed'
+    },
+    loadingText: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      color: '#00ccff',
+      fontSize: '1.5em'
+    }
+  };
+
   return (
-    <div className="star-map-screen">
-      <div className="map-header">
-        <h2>星图导航</h2>
-        
-        <div className="location-info">
-          <span className="location-label">当前位置:</span>
-          <span className="location-value">
-            {gameEngine?.gameState?.player?.currentStarSystem?.name || '未知'}
-          </span>
-        </div>
-        
-        <button className="return-button" onClick={onClose}>
-          返回游戏
-        </button>
+    <div style={styles.starMapContainer}>
+      <div style={styles.header}>
+        <h2 style={styles.title}>星际导航系统</h2>
+        <button style={styles.closeButton} onClick={onClose}>关闭</button>
       </div>
       
-      <div className="systems-list">
-        <div className="search-box">
-          <input
-            type="text"
-            placeholder="搜索星系..."
-            onChange={(e) => {/* 实现搜索功能 */}}
-          />
+      <div style={styles.content}>
+        <div style={styles.systemsPanel}>
+          <h3 style={styles.detailsHeading}>星系列表</h3>
+          {loading ? (
+            <p>加载星系数据...</p>
+          ) : (
+            <ul style={styles.systemsList}>
+              {systems.map((system) => (
+                <li
+                  key={system.id}
+                  style={{
+                    ...styles.systemItem,
+                    ...(selectedSystem && selectedSystem.id === system.id ? styles.selected : {})
+                  }}
+                  onClick={() => handleSelectSystem(system)}
+                >
+                  <span style={styles.systemName}>{system.name}</span>
+                  <span
+                    style={{
+                      ...styles.systemStatus,
+                      ...(system.explored ? styles.visitedIndicator : styles.unvisitedIndicator)
+                    }}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         
-        <div className="systems-scroll">
-          {systems.map((system, index) => (
-            <div
-              key={index}
-              className={`system-list-item ${system.explored ? 'explored' : ''} ${selectedSystem && selectedSystem.id === system.id ? 'selected' : ''}`}
-              onClick={() => handleSelectSystem(system)}
-            >
-              <div 
-                className="system-color-dot"
-                style={{ backgroundColor: getSystemColor(system) }}
-              ></div>
-              <span className="system-list-name">{system.name}</span>
-              {isCurrentSystem(system) && <span className="current-location-badge">当前</span>}
-            </div>
-          ))}
+        <div style={styles.mapView}>
+          {loading ? (
+            <div style={styles.loadingText}>正在生成星图...</div>
+          ) : (
+            <div ref={mapContainerRef} style={styles.mapContainer}></div>
+          )}
         </div>
-      </div>
-      
-      <div className="map-container" ref={mapContainerRef}>
-        {loading && <div className="loading-overlay">加载星图中...</div>}
-      </div>
-      
-      <div className="system-info-panel">
-        {renderSystemInfo()}
+        
+        <div style={styles.infoPanel}>
+          <h3 style={styles.detailsHeading}>星系详情</h3>
+          {renderSystemInfo()}
+        </div>
       </div>
     </div>
   );

@@ -7,6 +7,12 @@ import { PhysicsEngine } from './PhysicsEngine';
 import { GameState } from '../game/GameState';
 import { PostProcessor } from './PostProcessor';
 import { UIManager } from '../ui/UIManager.jsx';
+import { PhysicsSystem } from './PhysicsSystem';
+import { Universe } from '../universe/Universe';
+import { PlayerShip } from '../game/PlayerShip';
+import { CameraController } from './CameraController';
+import { ResourceManager } from './ResourceManager';
+import { MissionSystem } from './MissionSystem';
 
 export class GameEngine {
   constructor() {
@@ -30,6 +36,86 @@ export class GameEngine {
     // Engine status
     this.isInitialized = false;
     this.isRunning = false;
+  }
+  
+  async init() {
+    if (this.isInitialized) {
+      console.warn('GameEngine already initialized');
+      return false;
+    }
+    
+    console.log('Initializing GameEngine...');
+    
+    try {
+      // Initialize physics system
+      this.physicsSystem = new PhysicsSystem();
+      this.physicsSystem.init();
+      
+      // Initialize input system
+      this.inputManager = new InputManager(this.onKeyPressed.bind(this));
+      this.inputManager.init();
+      
+      // Initialize rendering system
+      const success = await this.initRenderer();
+      if (!success) {
+        console.error('Failed to initialize renderer');
+        return false;
+      }
+      
+      // Initialize audio system
+      const audioSuccess = this.initAudio();
+      if (!audioSuccess) {
+        console.warn('Audio system initialization failed, continuing without audio');
+      }
+      
+      // Initialize universe
+      this.universe = new Universe();
+      this.universe.init();
+      
+      // Set up player ship
+      this.player = new PlayerShip();
+      this.player.init(this.scene, new THREE.Vector3(0, 0, 10));
+      
+      // Set up camera to follow player
+      this.cameraController = new CameraController(this.camera);
+      this.cameraController.setTarget(this.player.getObject());
+      
+      // Set up resource management
+      this.resourceManager = new ResourceManager();
+      this.resourceManager.init();
+      
+      // Set up mission system
+      this.missionSystem = new MissionSystem(this);
+      this.missionSystem.init();
+      
+      // Initialize post-processing effects
+      this.initPostProcessing();
+      
+      // Set up event listeners
+      window.addEventListener('resize', this.onWindowResize.bind(this));
+      
+      // Mark as initialized
+      this.isInitialized = true;
+      this.lastUpdateTime = performance.now();
+      
+      // Play background music once initialized
+      if (this.audioManager) {
+        // Start background music with fade in
+        setTimeout(() => {
+          try {
+            this.audioManager.playMusic('space_ambient', 2000);
+          } catch (error) {
+            console.warn('Error starting background music', error);
+          }
+        }, 1000);
+      }
+      
+      console.log('GameEngine initialization complete');
+      return true;
+    } catch (error) {
+      console.error('Error during GameEngine initialization:', error);
+      return false;
+    }
   }
   
   initialize(canvas) {
@@ -184,5 +270,46 @@ export class GameEngine {
     this.isInitialized = false;
     
     return this;
+  }
+  
+  initAudio() {
+    // Initialize audio system if not already
+    if (!this.audioManager) {
+      try {
+        this.audioManager = new AudioManager();
+        this.audioManager.init();
+        
+        // 等待用户交互后加载音频
+        const unlockAudio = () => {
+          if (!this.audioInitialized) {
+            this.audioManager.resumeAudio();
+            
+            // 预加载主要音效
+            this.audioManager.preloadSounds([
+              'button_click', 
+              'alert', 
+              'resource_collected'
+            ]);
+            
+            this.audioInitialized = true;
+            console.log('Audio unlocked by user interaction');
+          }
+          
+          // 移除事件监听器
+          document.removeEventListener('click', unlockAudio);
+          document.removeEventListener('keydown', unlockAudio);
+        };
+        
+        // 添加事件监听器以解锁音频
+        document.addEventListener('click', unlockAudio);
+        document.addEventListener('keydown', unlockAudio);
+        
+        return true;
+      } catch (error) {
+        console.error('Failed to initialize audio system:', error);
+        return false;
+      }
+    }
+    return true;
   }
 }

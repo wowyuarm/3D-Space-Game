@@ -287,83 +287,92 @@ export class Planet {
   createPlanetMesh() {
     if (this.mesh) return this.mesh;
     
-    // Create planet geometry
-    const planetGeometry = new THREE.SphereGeometry(this.size, 32, 32);
-    
-    // Determine planet color and texture based on type
-    let planetColor;
-    switch (this.type) {
-      case 'rocky':
-      case 'barren':
-        planetColor = new THREE.Color(0x996644);
-        break;
-      case 'terrestrial':
-        planetColor = new THREE.Color(0x44aa55);
-        break;
-      case 'oceanic':
-        planetColor = new THREE.Color(0x4466cc);
-        break;
-      case 'gas giant':
-        planetColor = new THREE.Color(0xddbb66);
-        break;
-      case 'ice':
-        planetColor = new THREE.Color(0xaaddee);
-        break;
-      case 'desert':
-        planetColor = new THREE.Color(0xddcc66);
-        break;
-      case 'lava':
-        planetColor = new THREE.Color(0xdd4422);
-        break;
-      default:
-        planetColor = new THREE.Color(0xaaaaaa);
+    try {
+      // Create planet geometry
+      const planetGeometry = new THREE.SphereGeometry(this.size, 32, 32);
+      
+      // Determine planet color and texture based on type
+      let planetColor;
+      switch (this.type) {
+        case 'rocky':
+        case 'barren':
+          planetColor = new THREE.Color(0x996644);
+          break;
+        case 'terrestrial':
+          planetColor = new THREE.Color(0x44aa55);
+          break;
+        case 'oceanic':
+          planetColor = new THREE.Color(0x4466cc);
+          break;
+        case 'gas giant':
+          planetColor = new THREE.Color(0xddbb66);
+          break;
+        case 'ice':
+          planetColor = new THREE.Color(0xaaddee);
+          break;
+        case 'desert':
+          planetColor = new THREE.Color(0xddcc66);
+          break;
+        case 'lava':
+          planetColor = new THREE.Color(0xdd4422);
+          break;
+        default:
+          planetColor = new THREE.Color(0xaaaaaa);
+      }
+      
+      const planetMaterial = new THREE.MeshLambertMaterial({
+        color: planetColor
+      });
+      
+      const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
+      
+      // Set initial position
+      const x = Math.cos(this.orbitAngle) * this.orbitalDistance;
+      const z = Math.sin(this.orbitAngle) * this.orbitalDistance;
+      const y = Math.sin(this.orbitAngle) * Math.sin(this.orbitIncline) * this.orbitalDistance;
+      
+      planetMesh.position.set(x, y, z);
+      
+      // Create orbit line
+      const orbitGeometry = new THREE.BufferGeometry();
+      const orbitPoints = [];
+      
+      const orbitSegments = 64;
+      for (let i = 0; i <= orbitSegments; i++) {
+        const theta = (i / orbitSegments) * Math.PI * 2;
+        const xOrbit = Math.cos(theta) * this.orbitalDistance;
+        const zOrbit = Math.sin(theta) * this.orbitalDistance;
+        const yOrbit = Math.sin(theta) * Math.sin(this.orbitIncline) * this.orbitalDistance;
+        orbitPoints.push(xOrbit, yOrbit, zOrbit);
+      }
+      
+      orbitGeometry.setAttribute(
+        'position',
+        new THREE.Float32BufferAttribute(orbitPoints, 3)
+      );
+      
+      const orbitMaterial = new THREE.LineBasicMaterial({
+        color: 0x666666,
+        transparent: true,
+        opacity: 0.3
+      });
+      
+      const orbitLine = new THREE.Line(orbitGeometry, orbitMaterial);
+      
+      // Create planet group
+      this.mesh = new THREE.Group();
+      this.mesh.add(planetMesh);
+      this.mesh.add(orbitLine);
+      
+      // Store reference to the planet instance in userData
+      this.mesh.userData.planet = this;
+      
+      return this.mesh;
+    } catch (error) {
+      console.error(`Error creating planet mesh: ${error.message}`);
+      // Return an empty group as fallback
+      return new THREE.Group();
     }
-    
-    const planetMaterial = new THREE.MeshLambertMaterial({
-      color: planetColor
-    });
-    
-    const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
-    
-    // Set initial position
-    const x = Math.cos(this.orbitAngle) * this.orbitalDistance;
-    const z = Math.sin(this.orbitAngle) * this.orbitalDistance;
-    const y = Math.sin(this.orbitAngle) * Math.sin(this.orbitIncline) * this.orbitalDistance;
-    
-    planetMesh.position.set(x, y, z);
-    
-    // Create orbit line
-    const orbitGeometry = new THREE.BufferGeometry();
-    const orbitPoints = [];
-    
-    const orbitSegments = 64;
-    for (let i = 0; i <= orbitSegments; i++) {
-      const theta = (i / orbitSegments) * Math.PI * 2;
-      const xOrbit = Math.cos(theta) * this.orbitalDistance;
-      const zOrbit = Math.sin(theta) * this.orbitalDistance;
-      const yOrbit = Math.sin(theta) * Math.sin(this.orbitIncline) * this.orbitalDistance;
-      orbitPoints.push(xOrbit, yOrbit, zOrbit);
-    }
-    
-    orbitGeometry.setAttribute(
-      'position',
-      new THREE.Float32BufferAttribute(orbitPoints, 3)
-    );
-    
-    const orbitMaterial = new THREE.LineBasicMaterial({
-      color: 0x666666,
-      transparent: true,
-      opacity: 0.3
-    });
-    
-    const orbitLine = new THREE.Line(orbitGeometry, orbitMaterial);
-    
-    // Create planet group
-    this.mesh = new THREE.Group();
-    this.mesh.add(planetMesh);
-    this.mesh.add(orbitLine);
-    
-    return this.mesh;
   }
 
   markExplored() {

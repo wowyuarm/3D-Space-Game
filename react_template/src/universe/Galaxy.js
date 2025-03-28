@@ -191,7 +191,13 @@ export class Galaxy {
   update(deltaTime) {
     // Update all star systems
     this.starSystems.forEach(system => {
-      system.update(deltaTime);
+      try {
+        if (system && typeof system.update === 'function') {
+          system.update(deltaTime);
+        }
+      } catch (error) {
+        console.error(`Error updating star system: ${error.message}`);
+      }
     });
   }
 

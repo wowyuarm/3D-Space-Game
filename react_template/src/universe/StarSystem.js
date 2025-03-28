@@ -191,7 +191,13 @@ export class StarSystem {
   update(deltaTime) {
     // Update planet orbits and rotations
     this.planets.forEach(planet => {
-      planet.update(deltaTime);
+      try {
+        if (planet && typeof planet.update === 'function') {
+          planet.update(deltaTime);
+        }
+      } catch (error) {
+        console.error(`Error updating planet: ${error.message}`);
+      }
     });
   }
 
@@ -244,8 +250,18 @@ export class StarSystem {
     
     // Add planets to the visualization
     this.planets.forEach(planet => {
-      const planetMesh = planet.createPlanetMesh();
-      this.mesh.add(planetMesh);
+      try {
+        if (planet && planet.isInitialized) {
+          const planetMesh = planet.createPlanetMesh();
+          if (planetMesh && planetMesh instanceof THREE.Object3D) {
+            this.mesh.add(planetMesh);
+          } else {
+            console.warn(`Failed to add planet mesh for ${planet.name}: not a valid THREE.Object3D`);
+          }
+        }
+      } catch (error) {
+        console.error(`Error adding planet mesh: ${error.message}`);
+      }
     });
     
     // Position the system

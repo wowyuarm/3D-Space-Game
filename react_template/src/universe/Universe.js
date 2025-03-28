@@ -72,7 +72,13 @@ export class Universe {
   update(deltaTime) {
     // Update all galaxies
     this.galaxies.forEach(galaxy => {
-      galaxy.update(deltaTime);
+      try {
+        if (galaxy && typeof galaxy.update === 'function') {
+          galaxy.update(deltaTime);
+        }
+      } catch (error) {
+        console.error(`Error updating galaxy: ${error.message}`);
+      }
     });
   }
 

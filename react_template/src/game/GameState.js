@@ -508,98 +508,196 @@ export class GameState {
   }
   
   resetGame() {
-    // Create a new universe and player
-    this.gameSettings.seed = Math.floor(Math.random() * 10000);
-    
-    // Reset stats
-    this.stats = {
-      planetsVisited: 0,
-      starsExplored: 0,
-      distanceTraveled: 0,
-      resourcesCollected: 0,
-      creditsEarned: 0,
-      timePlayed: 0
-    };
-    
-    // 清理当前场景
-    if (this.currentScene) {
-      // 移除所有物体，除了灯光
-      const objectsToRemove = [];
-      this.currentScene.traverse(obj => {
-        if (obj.type !== 'Light' && obj !== this.currentScene) {
-          objectsToRemove.push(obj);
-        }
-      });
+    console.log('重置游戏状态...');
+    try {
+      // Create a new universe and player
+      this.gameSettings.seed = Math.floor(Math.random() * 10000);
       
-      objectsToRemove.forEach(obj => {
-        this.currentScene.remove(obj);
-      });
-    }
-    
-    // Re-initialize everything
-    if (this.player) {
-      this.player.dispose();
-    }
-    
-    if (this.universe) {
-      this.universe.dispose();
-    }
-    
-    if (this.resourceCollector) {
-      this.resourceCollector.dispose();
-    }
-    
-    // 创建新实例
-    this.player = new Player().initialize({ 
-      gameEngine: this.gameEngine,
-      gameState: this 
-    });
-    
-    this.universe = new Universe().initialize({
-      seed: this.gameSettings.seed,
-      numGalaxies: 1,
-      planetGenerator: this.planetGenerator
-    });
-    
-    this.resourceCollector = new ResourceCollector().initialize({
-      player: this.player
-    });
-    
-    // 重置相机位置
-    if (this.currentCamera) {
-      this.currentCamera.position.set(0, 10, 20);
-      this.currentCamera.lookAt(0, 0, 0);
-    }
-    
-    // Set starting location
-    if (this.universe.galaxies.length > 0) {
-      const startingGalaxy = this.universe.galaxies[0];
-      if (startingGalaxy.starSystems.length > 0) {
-        const startingSystem = startingGalaxy.starSystems[0];
-        this.player.enterStarSystem(startingSystem);
-        
-        // Position player's ship at the star system
-        if (this.player.spaceship) {
-          this.player.spaceship.position.copy(startingSystem.position);
+      // Reset stats
+      this.stats = {
+        planetsVisited: 0,
+        starsExplored: 0,
+        distanceTraveled: 0,
+        resourcesCollected: 0,
+        creditsEarned: 0,
+        timePlayed: 0
+      };
+      
+      // 清理当前场景
+      if (this.currentScene) {
+        console.log('清理当前场景对象...');
+        try {
+          // 移除所有物体，除了灯光
+          const objectsToRemove = [];
+          this.currentScene.traverse(obj => {
+            if (obj.type !== 'Light' && obj !== this.currentScene) {
+              objectsToRemove.push(obj);
+            }
+          });
           
-          // 将飞船添加到场景中
-          this.currentScene.add(this.player.spaceship);
+          objectsToRemove.forEach(obj => {
+            try {
+              this.currentScene.remove(obj);
+              // 安全处理dispose
+              if (obj && obj.geometry && typeof obj.geometry.dispose === 'function') {
+                obj.geometry.dispose();
+              }
+              
+              if (obj && obj.material) {
+                if (Array.isArray(obj.material)) {
+                  obj.material.forEach(mat => {
+                    if (mat && typeof mat.dispose === 'function') {
+                      mat.dispose();
+                    }
+                  });
+                } else if (typeof obj.material.dispose === 'function') {
+                  obj.material.dispose();
+                }
+              }
+              
+              // 处理子对象
+              if (obj.children && obj.children.length > 0) {
+                console.log(`释放对象 ${obj.name || 'unnamed'} 的子对象`);
+              }
+            } catch (e) {
+              console.warn(`移除场景对象 ${obj.name || 'unnamed'} 时出错:`, e);
+            }
+          });
+          console.log(`已清理 ${objectsToRemove.length} 个场景对象`);
+        } catch (e) {
+          console.warn('清理场景时出错:', e);
         }
-        
-        // 生成星系中的行星
-        this.generatePlanetsForSystem(startingSystem);
       }
+      
+      // 安全释放各组件资源
+      console.log('安全释放各组件资源...');
+      
+      // 释放玩家资源
+      if (this.player) {
+        try {
+          console.log('释放玩家资源...');
+          if (this.player && typeof this.player.dispose === 'function') {
+            this.player.dispose();
+          } else {
+            console.log('玩家对象不存在或没有dispose方法');
+          }
+        } catch (e) {
+          console.warn('释放玩家资源时出错:', e);
+        }
+      }
+      
+      // 释放宇宙资源
+      if (this.universe) {
+        try {
+          console.log('释放宇宙资源...');
+          if (this.universe && typeof this.universe.dispose === 'function') {
+            this.universe.dispose();
+          } else {
+            console.log('宇宙对象不存在或没有dispose方法');
+          }
+        } catch (e) {
+          console.warn('释放宇宙资源时出错:', e);
+        }
+      }
+      
+      // 释放资源收集器资源
+      if (this.resourceCollector) {
+        try {
+          console.log('释放资源收集器资源...');
+          if (this.resourceCollector && typeof this.resourceCollector.dispose === 'function') {
+            this.resourceCollector.dispose();
+          } else {
+            console.log('资源收集器对象不存在或没有dispose方法');
+          }
+        } catch (e) {
+          console.warn('释放资源收集器资源时出错:', e);
+        }
+      }
+      
+      // 创建新实例
+      console.log('创建新游戏实例...');
+      try {
+        this.player = new Player().initialize({ 
+          gameEngine: this.gameEngine,
+          gameState: this 
+        });
+        
+        this.universe = new Universe().initialize({
+          seed: this.gameSettings.seed,
+          numGalaxies: 1,
+          planetGenerator: this.planetGenerator
+        });
+        
+        this.resourceCollector = new ResourceCollector().initialize({
+          player: this.player
+        });
+      } catch (e) {
+        console.error('创建新游戏实例时出错:', e);
+      }
+      
+      // 重置相机位置
+      if (this.currentCamera) {
+        try {
+          this.currentCamera.position.set(0, 10, 20);
+          this.currentCamera.lookAt(0, 0, 0);
+        } catch (e) {
+          console.warn('重置相机位置时出错:', e);
+        }
+      }
+      
+      // 设置起始位置
+      try {
+        if (this.universe && this.universe.galaxies && this.universe.galaxies.length > 0) {
+          const startingGalaxy = this.universe.galaxies[0];
+          if (startingGalaxy.starSystems && startingGalaxy.starSystems.length > 0) {
+            const startingSystem = startingGalaxy.starSystems[0];
+            
+            if (this.player) {
+              this.player.enterStarSystem(startingSystem);
+              
+              // 定位玩家飞船在星系位置
+              if (this.player.spaceship) {
+                this.player.spaceship.position.copy(startingSystem.position);
+                
+                // 将飞船添加到场景中
+                if (this.currentScene && this.player.spaceship.mesh) {
+                  try {
+                    this.currentScene.add(this.player.spaceship.mesh);
+                    console.log('已将飞船添加到场景');
+                  } catch (e) {
+                    console.error('无法将飞船添加到场景:', e);
+                  }
+                }
+              }
+              
+              // 生成星系中的行星
+              try {
+                this.generatePlanetsForSystem(startingSystem);
+                console.log('已为起始星系生成行星');
+              } catch (e) {
+                console.error('生成行星系统时出错:', e);
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.error('设置起始位置时出错:', e);
+      }
+      
+      this.isNewGame = true;
+      this.gameTime = 0;
+      
+      // Reset warnings
+      this._lowHealthWarningShown = false;
+      this._lowEnergyWarningShown = false;
+      
+      console.log('游戏重置完成');
+      return true;
+    } catch (error) {
+      console.error('重置游戏时发生错误:', error.message, error.stack);
+      // 即使发生错误，也尝试继续游戏
+      return true;
     }
-    
-    this.isNewGame = true;
-    this.gameTime = 0;
-    
-    // Reset warnings
-    this._lowHealthWarningShown = false;
-    this._lowEnergyWarningShown = false;
-    
-    console.log('Game reset');
-    return true;
   }
   
   setDifficulty(difficulty) {

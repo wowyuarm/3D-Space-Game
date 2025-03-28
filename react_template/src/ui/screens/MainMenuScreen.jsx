@@ -215,27 +215,13 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
       case 'main':
       default:
         return (
-          <div className={`menu-container ${animationClass}`} style={{zIndex: 100}}>
+          <div className={`menu-container ${animationClass}`}>
             <h1 className="game-title">Retro Pixel<br />Space Explorer</h1>
             
             <div className="menu-buttons">
               <button 
                 className="menu-button primary-button" 
                 onClick={handleStartClick}
-                style={{
-                  display: 'block',
-                  padding: '12px 24px',
-                  margin: '10px auto',
-                  backgroundColor: '#4CAF50',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontFamily: "'Press Start 2P', cursive",
-                  fontSize: '16px',
-                  textTransform: 'uppercase',
-                  transition: 'background-color 0.3s'
-                }}
               >
                 New Game
               </button>
@@ -243,20 +229,6 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
               <button 
                 className="menu-button" 
                 onClick={handleLoadClick}
-                style={{
-                  display: 'block',
-                  padding: '10px 20px',
-                  margin: '10px auto',
-                  backgroundColor: '#2196F3',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontFamily: "'Press Start 2P', cursive",
-                  fontSize: '14px',
-                  textTransform: 'uppercase',
-                  transition: 'background-color 0.3s'
-                }}
               >
                 Load Game
               </button>
@@ -264,20 +236,6 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
               <button 
                 className="menu-button" 
                 onClick={() => handleMenuChange('options')}
-                style={{
-                  display: 'block',
-                  padding: '10px 20px',
-                  margin: '10px auto',
-                  backgroundColor: '#9E9E9E',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontFamily: "'Press Start 2P', cursive",
-                  fontSize: '14px',
-                  textTransform: 'uppercase',
-                  transition: 'background-color 0.3s'
-                }}
               >
                 Options
               </button>
@@ -285,20 +243,6 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
               <button 
                 className="menu-button" 
                 onClick={() => handleMenuChange('credits')}
-                style={{
-                  display: 'block',
-                  padding: '10px 20px',
-                  margin: '10px auto',
-                  backgroundColor: '#673AB7',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontFamily: "'Press Start 2P', cursive",
-                  fontSize: '14px',
-                  textTransform: 'uppercase',
-                  transition: 'background-color 0.3s'
-                }}
               >
                 Credits
               </button>
@@ -309,12 +253,12 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
   };
   
   return (
-    <div className="main-menu-screen" style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 50}}>
+    <div className="main-menu-screen">
       <canvas id="stars-canvas" className="stars-background"></canvas>
       
       {renderMenuContent()}
       
-      <div className="version-info" style={{position: 'absolute', bottom: '10px', right: '10px', color: 'white', opacity: 0.7}}>
+      <div className="version-info">
         v0.1.0 Alpha
       </div>
     </div>

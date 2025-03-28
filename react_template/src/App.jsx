@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { GameEngine } from './engine/GameEngine';
 import { UIManagerComponent } from './ui/UIManager.jsx';
+import { applyErrorFixes } from './utils/ErrorFixes';
 import './index.css';
 import './ui/styles/tutorial.css';
 import './ui/styles/notifications.css';
@@ -25,6 +26,11 @@ function App() {
     
     // 创建游戏引擎实例
     const gameEngine = new GameEngine();
+    
+    // 应用错误修复
+    console.log('App.jsx: 应用错误修复工具...');
+    applyErrorFixes(gameEngine);
+    
     gameEngineRef.current = gameEngine;
     
     // 强制在window对象上保存gameEngine引用以便调试
@@ -74,13 +80,33 @@ function App() {
             setInitAttempts(prev => prev + 1);
             
             // 销毁当前实例，下一个useEffect循环将创建新实例
-            gameEngineRef.current.dispose();
+            try {
+              gameEngineRef.current.dispose();
+            } catch (error) {
+              console.error('清理游戏引擎资源时出错:', error);
+            }
             gameEngineRef.current = null;
           }
         }
       } catch (error) {
         console.error("App.jsx: 游戏引擎初始化过程中发生异常:", error);
         setInitError(`初始化错误: ${error.message}`);
+        
+        // 尝试再次初始化
+        if (initAttempts < maxInitAttempts) {
+          console.log(`App.jsx: 尝试重新初始化 (${initAttempts + 1}/${maxInitAttempts})`);
+          setInitAttempts(prev => prev + 1);
+          
+          // 销毁当前实例
+          try {
+            if (gameEngineRef.current) {
+              gameEngineRef.current.dispose();
+            }
+          } catch (error) {
+            console.error('清理游戏引擎资源时出错:', error);
+          }
+          gameEngineRef.current = null;
+        }
       }
     });
     
@@ -88,7 +114,11 @@ function App() {
       // 组件卸载时清理游戏引擎
       if (gameEngineRef.current) {
         console.log('App.jsx: 清理游戏引擎资源');
-        gameEngineRef.current.dispose();
+        try {
+          gameEngineRef.current.dispose();
+        } catch (error) {
+          console.error('清理游戏引擎资源时出错:', error);
+        }
         gameEngineRef.current = null;
         window.gameEngine = null;
       }

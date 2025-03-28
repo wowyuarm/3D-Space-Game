@@ -617,10 +617,22 @@ export class AudioManager {
   
   pauseAll() {
     try {
-      Howler.volume(0); // Instantly silent
-      setTimeout(() => {
-        Howler.pause(); // Pause after going silent
-      }, 10);
+      // 不使用Howler.pause()，而是分别暂停每个音频
+      // 暂停所有音效
+      this.sounds.forEach(sound => {
+        if (sound && typeof sound.pause === 'function') {
+          sound.pause();
+        }
+      });
+      
+      // 暂停所有音乐
+      this.music.forEach(music => {
+        if (music && typeof music.pause === 'function') {
+          music.pause();
+        }
+      });
+      
+      console.log('所有音频已暂停');
     } catch (error) {
       console.error('Error pausing all audio', error);
     }
@@ -707,14 +719,28 @@ export class AudioManager {
     try {
       // Stop and unload all sounds
       this.sounds.forEach(sound => {
-        sound.stop();
-        sound.unload();
+        if (sound) {
+          if (typeof sound.stop === 'function') {
+            sound.stop();
+          }
+          
+          if (typeof sound.unload === 'function') {
+            sound.unload();
+          }
+        }
       });
       
       // Stop and unload all music
       this.music.forEach(music => {
-        music.stop();
-        music.unload();
+        if (music) {
+          if (typeof music.stop === 'function') {
+            music.stop();
+          }
+          
+          if (typeof music.unload === 'function') {
+            music.unload();
+          }
+        }
       });
       
       this.sounds.clear();

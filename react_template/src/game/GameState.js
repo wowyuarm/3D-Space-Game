@@ -202,7 +202,7 @@ export class GameState {
     }
     
     // Animate planets
-    this.animatePlanets(deltaTime);
+    this.updatePlanetAnimations(deltaTime);
     
     // Update resource collection
     if (this.resourceCollector) {

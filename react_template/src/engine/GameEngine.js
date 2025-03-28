@@ -318,37 +318,101 @@ export class GameEngine {
   }
   
   dispose() {
-    // Stop the engine
-    this.pause();
-    
-    // Dispose resources
-    if (this.renderer) {
-      this.renderer.dispose();
+    try {
+      // Stop the engine
+      this.pause();
+      
+      // Dispose resources
+      if (this.renderer && typeof this.renderer.dispose === 'function') {
+        this.renderer.dispose();
+      }
+      
+      if (this.audioManager && typeof this.audioManager.dispose === 'function') {
+        this.audioManager.dispose();
+      }
+      
+      if (this.inputManager && typeof this.inputManager.dispose === 'function') {
+        this.inputManager.dispose();
+      }
+      
+      if (this.gameState && typeof this.gameState.dispose === 'function') {
+        this.gameState.dispose();
+      }
+      
+      // 清理其他可能存在的组件
+      if (this.postProcessor && typeof this.postProcessor.dispose === 'function') {
+        this.postProcessor.dispose();
+      }
+      
+      if (this.physicsSystem && typeof this.physicsSystem.dispose === 'function') {
+        this.physicsSystem.dispose();
+      }
+      
+      // 清理THREE.js资源
+      if (this.scene) {
+        this.disposeSceneResources(this.scene);
+      }
+      
+      // Clear references
+      this.renderer = null;
+      this.audioManager = null;
+      this.inputManager = null;
+      this.physicsSystem = null;
+      this.gameState = null;
+      this.uiManager = null;
+      this.postProcessor = null;
+      this.scene = null;
+      this.camera = null;
+      this.stars = null;
+      
+      this.isInitialized = false;
+      
+      console.log('GameEngine resources disposed successfully');
+    } catch (error) {
+      console.error('Error during GameEngine disposal:', error);
     }
-    
-    if (this.audioManager) {
-      this.audioManager.dispose();
-    }
-    
-    if (this.inputManager) {
-      this.inputManager.dispose();
-    }
-    
-    if (this.gameState) {
-      this.gameState.dispose();
-    }
-    
-    // Clear references
-    this.renderer = null;
-    this.audioManager = null;
-    this.inputManager = null;
-    this.physicsSystem = null;
-    this.gameState = null;
-    this.uiManager = null;
-    
-    this.isInitialized = false;
     
     return this;
+  }
+  
+  /**
+   * 清理THREE.js场景中的资源
+   * @param {THREE.Scene} scene 要清理的场景
+   */
+  disposeSceneResources(scene) {
+    try {
+      if (!scene) return;
+      
+      // 递归处理所有子对象
+      scene.traverse(object => {
+        // 释放几何体
+        if (object.geometry && typeof object.geometry.dispose === 'function') {
+          object.geometry.dispose();
+        }
+        
+        // 释放材质
+        if (object.material) {
+          if (Array.isArray(object.material)) {
+            object.material.forEach(material => {
+              if (material && typeof material.dispose === 'function') {
+                material.dispose();
+              }
+            });
+          } else if (typeof object.material.dispose === 'function') {
+            object.material.dispose();
+          }
+        }
+      });
+      
+      // 清空场景
+      while (scene.children.length > 0) {
+        scene.remove(scene.children[0]);
+      }
+      
+      console.log('Scene resources disposed');
+    } catch (error) {
+      console.error('Error disposing scene resources:', error);
+    }
   }
   
   initAudio() {

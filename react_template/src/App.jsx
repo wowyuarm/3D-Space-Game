@@ -23,37 +23,41 @@ function App() {
     gameEngineRef.current = gameEngine;
 
     // Wait for the next frame to ensure canvas is properly in the DOM
-    requestAnimationFrame(() => {
-      gameEngine.initialize(canvasRef.current);
-      setEngineInitialized(true);
-      
-      // Handle window resize events
-      const handleResize = () => {
-        if (gameEngine.renderer) {
-          gameEngine.renderer.setResolution(window.innerWidth, window.innerHeight);
-        }
-      };
-      window.addEventListener('resize', handleResize);
-      
-      // Add keyboard event listener to show/hide controls help
-      const controlsHelp = document.querySelector('.controls-help');
-      if (controlsHelp) {
-        window.addEventListener('keydown', (e) => {
-          if (e.key === 'h' || e.key === 'H') {
-            controlsHelp.classList.toggle('visible');
+    requestAnimationFrame(async () => {
+      const initialized = await gameEngine.init(canvasRef.current);
+      if (initialized) {
+        setEngineInitialized(true);
+        
+        // Handle window resize events
+        const handleResize = () => {
+          if (gameEngine.renderer) {
+            gameEngine.renderer.setResolution(window.innerWidth, window.innerHeight);
           }
-        });
+        };
+        window.addEventListener('resize', handleResize);
+        
+        // Add keyboard event listener to show/hide controls help
+        const controlsHelp = document.querySelector('.controls-help');
+        if (controlsHelp) {
+          window.addEventListener('keydown', (e) => {
+            if (e.key === 'h' || e.key === 'H') {
+              controlsHelp.classList.toggle('visible');
+            }
+          });
+        }
+        
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+      } else {
+        console.error("Failed to initialize game engine");
       }
-      
-      return () => {
-        window.removeEventListener('resize', handleResize);
-      };
     });
     
     return () => {
       // Clean up game engine if component unmounts
       if (gameEngineRef.current) {
-        // Any cleanup needed for the game engine
+        gameEngineRef.current.dispose();
       }
     };
   }, []);

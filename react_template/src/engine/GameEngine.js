@@ -3,11 +3,10 @@ import * as THREE from 'three';
 import { Renderer } from './Renderer';
 import { AudioManager } from './AudioManager';
 import { InputManager } from './InputManager';
-import { PhysicsEngine } from './PhysicsEngine';
+import { PhysicsSystem } from './PhysicsSystem';
 import { GameState } from '../game/GameState';
 import { PostProcessor } from './PostProcessor';
 import { UIManager } from '../ui/UIManager.jsx';
-import { PhysicsSystem } from './PhysicsSystem';
 import { Universe } from '../universe/Universe';
 import { PlayerShip } from '../game/PlayerShip';
 import { CameraController } from './CameraController';
@@ -20,7 +19,7 @@ export class GameEngine {
     this.renderer = null;
     this.audioManager = null;
     this.inputManager = null;
-    this.physicsEngine = null;
+    this.physicsSystem = null;
     this.postProcessor = null;
     this.uiManager = null;
     
@@ -36,9 +35,10 @@ export class GameEngine {
     // Engine status
     this.isInitialized = false;
     this.isRunning = false;
+    this.audioInitialized = false;
   }
   
-  async init() {
+  async init(canvas) {
     if (this.isInitialized) {
       console.warn('GameEngine already initialized');
       return false;
@@ -47,6 +47,19 @@ export class GameEngine {
     console.log('Initializing GameEngine...');
     
     try {
+      // Initialize renderer with canvas if provided
+      if (canvas) {
+        this.renderer = new Renderer();
+        this.renderer.initialize(canvas, window.innerWidth, window.innerHeight);
+      } else {
+        // Otherwise create our own renderer
+        const success = await this.initRenderer();
+        if (!success) {
+          console.error('Failed to initialize renderer');
+          return false;
+        }
+      }
+      
       // Initialize physics system
       this.physicsSystem = new PhysicsSystem();
       this.physicsSystem.init();
@@ -55,17 +68,24 @@ export class GameEngine {
       this.inputManager = new InputManager(this.onKeyPressed.bind(this));
       this.inputManager.init();
       
-      // Initialize rendering system
-      const success = await this.initRenderer();
-      if (!success) {
-        console.error('Failed to initialize renderer');
-        return false;
-      }
-      
       // Initialize audio system
       const audioSuccess = this.initAudio();
       if (!audioSuccess) {
         console.warn('Audio system initialization failed, continuing without audio');
+      }
+      
+      // Initialize game state
+      this.gameState = new GameState();
+      this.gameState.initialize({ gameEngine: this });
+      
+      // Create UI manager
+      this.uiManager = new UIManager();
+      this.uiManager.initialize();
+      
+      // Connect components
+      this.uiManager.setGameState(this.gameState);
+      if (this.audioManager) {
+        this.uiManager.setAudioManager(this.audioManager);
       }
       
       // Initialize universe
@@ -88,8 +108,14 @@ export class GameEngine {
       this.missionSystem = new MissionSystem(this);
       this.missionSystem.init();
       
-      // Initialize post-processing effects
-      this.initPostProcessing();
+      // Set up post-processing if renderer was provided
+      if (this.renderer) {
+        this.postProcessor = new PostProcessor();
+        this.postProcessor.initialize(this.renderer, this.gameState.gameSettings.pixelationLevel || 4);
+      } else {
+        // Initialize post-processing effects
+        this.initPostProcessing();
+      }
       
       // Set up event listeners
       window.addEventListener('resize', this.onWindowResize.bind(this));
@@ -110,59 +136,15 @@ export class GameEngine {
         }, 1000);
       }
       
+      // Auto-start the engine
+      this.start();
+      
       console.log('GameEngine initialization complete');
       return true;
     } catch (error) {
       console.error('Error during GameEngine initialization:', error);
       return false;
     }
-  }
-  
-  initialize(canvas) {
-    if (this.isInitialized) {
-      console.warn('GameEngine already initialized');
-      return this;
-    }
-    
-    console.log('Initializing Game Engine...');
-    
-    // Create core engine components
-    this.renderer = new Renderer()
-      .initialize(canvas, window.innerWidth, window.innerHeight);
-      
-    this.audioManager = new AudioManager()
-      .initialize();
-      
-    this.inputManager = new InputManager()
-      .initialize(canvas);
-      
-    this.physicsEngine = new PhysicsEngine()
-      .initialize();
-      
-    // Create game state
-    this.gameState = new GameState(this)
-      .initialize();
-      
-    // Create UI manager
-    this.uiManager = new UIManager()
-      .initialize();
-      
-    // Connect components
-    this.uiManager.setGameState(this.gameState);
-    this.uiManager.setAudioManager(this.audioManager);
-    
-    // Set up post-processing
-    this.postProcessor = new PostProcessor()
-      .initialize(this.renderer, this.gameState.gameSettings.pixelationLevel || 4);
-    
-    // Start engine loop
-    this.isInitialized = true;
-    this.isRunning = false;
-    
-    // Auto-start the engine
-    this.start();
-    
-    return this;
   }
   
   start() {
@@ -192,16 +174,22 @@ export class GameEngine {
     this.elapsed = this.clock.getElapsedTime();
     
     // Update physics
-    this.physicsEngine.update(this.deltaTime);
+    if (this.physicsSystem) {
+      this.physicsSystem.update(this.deltaTime);
+    }
     
     // Update game state
-    this.gameState.update(this.deltaTime, this.elapsed);
+    if (this.gameState) {
+      this.gameState.update(this.deltaTime, this.elapsed);
+    }
     
     // Update UI
-    this.uiManager.updateHUD(this.gameState);
+    if (this.uiManager && this.gameState) {
+      this.uiManager.updateHUD(this.gameState);
+    }
     
     // Render scene
-    if (this.gameState.currentScene) {
+    if (this.gameState && this.gameState.currentScene && this.renderer) {
       this.renderer.render(this.gameState.currentScene, this.gameState.currentCamera);
     }
     
@@ -218,7 +206,9 @@ export class GameEngine {
       this.animationFrame = null;
     }
     
-    this.audioManager.pauseAll();
+    if (this.audioManager) {
+      this.audioManager.pauseAll();
+    }
     this.clock.stop();
     
     return this;
@@ -263,7 +253,7 @@ export class GameEngine {
     this.renderer = null;
     this.audioManager = null;
     this.inputManager = null;
-    this.physicsEngine = null;
+    this.physicsSystem = null;
     this.gameState = null;
     this.uiManager = null;
     
@@ -279,12 +269,12 @@ export class GameEngine {
         this.audioManager = new AudioManager();
         this.audioManager.init();
         
-        // 等待用户交互后加载音频
+        // Wait for user interaction before loading audio
         const unlockAudio = () => {
           if (!this.audioInitialized) {
             this.audioManager.resumeAudio();
             
-            // 预加载主要音效
+            // Preload main sound effects
             this.audioManager.preloadSounds([
               'button_click', 
               'alert', 
@@ -295,12 +285,12 @@ export class GameEngine {
             console.log('Audio unlocked by user interaction');
           }
           
-          // 移除事件监听器
+          // Remove event listeners
           document.removeEventListener('click', unlockAudio);
           document.removeEventListener('keydown', unlockAudio);
         };
         
-        // 添加事件监听器以解锁音频
+        // Add event listeners to unlock audio
         document.addEventListener('click', unlockAudio);
         document.addEventListener('keydown', unlockAudio);
         
@@ -311,5 +301,98 @@ export class GameEngine {
       }
     }
     return true;
+  }
+  
+  /**
+   * Initialize the rendering system
+   * @returns {Promise<boolean>} Success status
+   */
+  async initRenderer() {
+    try {
+      // Create scene
+      this.scene = new THREE.Scene();
+      this.scene.background = new THREE.Color(0x000011); // Dark blue background
+      
+      // Create camera
+      this.camera = new THREE.PerspectiveCamera(
+        75, // Field of view
+        window.innerWidth / window.innerHeight, // Aspect ratio
+        0.1, // Near plane
+        2000 // Far plane
+      );
+      this.camera.position.set(0, 5, 15);
+      this.camera.lookAt(0, 0, 0);
+      
+      // Create renderer
+      this.renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        powerPreference: 'high-performance'
+      });
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      this.renderer.shadowMap.enabled = true;
+      
+      // Add renderer's canvas to DOM if not already present
+      if (!document.body.contains(this.renderer.domElement)) {
+        document.body.appendChild(this.renderer.domElement);
+      }
+      
+      // Setup basic lighting
+      this.setupLights();
+      
+      return true;
+    } catch (error) {
+      console.error('Error initializing renderer:', error);
+      return false;
+    }
+  }
+  
+  /**
+   * Setup basic scene lighting
+   */
+  setupLights() {
+    // Ambient light
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+    this.scene.add(ambientLight);
+    
+    // Directional light (sun)
+    const sunLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    sunLight.position.set(10, 20, 10);
+    sunLight.castShadow = true;
+    
+    // Configure shadow properties
+    sunLight.shadow.mapSize.width = 2048;
+    sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.camera.near = 0.5;
+    sunLight.shadow.camera.far = 50;
+    sunLight.shadow.bias = -0.0001;
+    
+    this.scene.add(sunLight);
+  }
+  
+  /**
+   * Handle window resize
+   */
+  onWindowResize() {
+    if (!this.camera || !this.renderer) return;
+    
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+  
+  /**
+   * Initialize post-processing effects
+   */
+  initPostProcessing() {
+    // This can be implemented later when needed
+  }
+  
+  /**
+   * Handle key press events
+   * @param {KeyboardEvent} event - The keyboard event
+   */
+  onKeyPressed(event) {
+    // This can be implemented later when needed
   }
 }

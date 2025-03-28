@@ -68,10 +68,16 @@ export class Player {
     // Handle player flight controls if not landed
     if (!this.isLanded) {
       this.handleFlightControls(deltaTime, inputManager);
+      
+      // 更新引擎粒子效果
+      this.updateEngineParticles(deltaTime);
     }
     
     // Update spaceship systems
     this.spaceship.update(deltaTime);
+    
+    // 更新加速时的视觉效果
+    this.updateSpeedEffects(deltaTime);
   }
   
   handleFlightControls(deltaTime, inputManager) {
@@ -84,14 +90,41 @@ export class Player {
     let thrust = 0;
     const rotation = new THREE.Vector3(0, 0, 0);
     
-    // Forward/backward thrust
+    // 鼠标控制 - 处理鼠标方向控制
+    const mouseSensitivity = 0.5 * this.controlSensitivity; // 鼠标灵敏度可调整
+    
+    // 如果鼠标被激活（按住左键或右键）且鼠标位置数据可用
+    if ((inputManager.mouse.isDown || inputManager.mouse.rightIsDown) && 
+        (Math.abs(inputManager.mouse.x) > 0.05 || Math.abs(inputManager.mouse.y) > 0.05)) {
+      
+      // 横向控制 - 鼠标左右移动控制飞船转向
+      rotation.y = -inputManager.mouse.x * mouseSensitivity * deltaTime * 10;
+      
+      // 纵向控制 - 鼠标上下移动控制飞船俯仰
+      const pitchControl = inputManager.mouse.y * mouseSensitivity * deltaTime * 10;
+      rotation.x = this.invertY ? -pitchControl : pitchControl;
+      
+      // 如果鼠标右键被按下且鼠标左右移动，控制滚转
+      if (inputManager.mouse.rightIsDown && Math.abs(inputManager.mouse.x) > 0.1) {
+        rotation.z = inputManager.mouse.x * mouseSensitivity * deltaTime * 5;
+      }
+    }
+    
+    // 使用左键控制加速，右键控制减速
+    if (inputManager.mouse.isDown) {
+      thrust = thrustForce; // 左键加速
+    } else if (inputManager.mouse.rightIsDown) {
+      thrust = -thrustForce * 0.7; // 右键减速/后退
+    }
+    
+    // Forward/backward thrust (键盘控制保留)
     if (inputManager.isKeyPressed('KeyW') || inputManager.isKeyPressed('ArrowUp')) {
       thrust = thrustForce;
     } else if (inputManager.isKeyPressed('KeyS') || inputManager.isKeyPressed('ArrowDown')) {
       thrust = -thrustForce * 0.7; // 提高反向推力
     }
     
-    // Turning controls
+    // Turning controls (键盘控制保留)
     if (inputManager.isKeyPressed('KeyA') || inputManager.isKeyPressed('ArrowLeft')) {
       rotation.y = turnSpeed * deltaTime;
     }
@@ -123,6 +156,9 @@ export class Player {
     this.spaceship.setThrust(thrust);
     this.spaceship.rotate(rotation);
     
+    // 更新引擎视觉效果与声音随推力变化
+    this.updateEngineEffects(thrust, deltaTime);
+    
     // Boost (temporary speed increase)
     if ((inputManager.isKeyPressed('ShiftLeft') || inputManager.isKeyPressed('ShiftRight')) && this.spaceship.energy > 0) {
       this.spaceship.boost(deltaTime);
@@ -148,6 +184,112 @@ export class Player {
     } else if (!inputManager.isKeyPressed('Space')) {
       // 重置空格键状态
       this._lastSpaceState = false;
+    }
+  }
+  
+  // 新增方法: 更新引擎效果随推力变化
+  updateEngineEffects(thrust, deltaTime) {
+    if (!this.spaceship || !this.spaceship.engineGlow) return;
+    
+    // 获取引擎发光效果
+    const engineGlow = this.spaceship.engineGlow;
+    
+    // 根据推力调整引擎发光效果
+    if (thrust > 0) {
+      // 向前推进时，增加发光强度和大小
+      const intensity = 0.5 + (thrust / (50.0 * this.spaceship.thrustPower)) * 0.5;
+      const scale = 1.0 + (thrust / (50.0 * this.spaceship.thrustPower)) * 1.5;
+      
+      engineGlow.material.opacity = Math.min(intensity, 1.0);
+      engineGlow.scale.set(scale, scale, 1.0);
+      
+      // 创建推进粒子效果
+      if (!this.engineParticleTime || this.engineParticleTime <= 0) {
+        this.createEngineParticles();
+        this.engineParticleTime = 0.1; // 每0.1秒创建一次粒子
+      } else {
+        this.engineParticleTime -= deltaTime;
+      }
+      
+      // 播放引擎声音
+      if (this.spaceship.gameEngine && this.spaceship.gameEngine.audioManager) {
+        const audioManager = this.spaceship.gameEngine.audioManager;
+        if (!this._engineSoundPlaying) {
+          audioManager.playSound('engine_idle', 0.2, true);
+          this._engineSoundPlaying = true;
+        }
+      }
+    } else {
+      // 非推进状态，减小发光
+      engineGlow.material.opacity = 0.3;
+      engineGlow.scale.set(1.0, 1.0, 1.0);
+      
+      // 停止引擎声音
+      if (this._engineSoundPlaying && this.spaceship.gameEngine && this.spaceship.gameEngine.audioManager) {
+        const audioManager = this.spaceship.gameEngine.audioManager;
+        audioManager.stopSound('engine_idle');
+        this._engineSoundPlaying = false;
+      }
+    }
+  }
+  
+  // 创建引擎粒子效果
+  createEngineParticles() {
+    if (!this.spaceship || !this.spaceship.mesh || !this.spaceship.gameEngine || !this.spaceship.gameEngine.scene) return;
+    
+    const scene = this.spaceship.gameEngine.scene;
+    const shipDirection = this.spaceship.getDirection().clone().negate(); // 反方向，因为粒子从后面喷出
+    
+    // 创建粒子
+    const particleCount = Math.floor(5 + Math.random() * 5); // 5-10个粒子
+    
+    for (let i = 0; i < particleCount; i++) {
+      // 创建一个小球作为粒子
+      const geometry = new THREE.SphereGeometry(0.1 + Math.random() * 0.2, 8, 8);
+      const material = new THREE.MeshBasicMaterial({
+        color: new THREE.Color(0.5 + Math.random() * 0.5, 0.8 + Math.random() * 0.2, 1.0),
+        transparent: true,
+        opacity: 0.7
+      });
+      
+      const particle = new THREE.Mesh(geometry, material);
+      
+      // 设置粒子初始位置 - 在引擎后方
+      const enginePosition = this.spaceship.mesh.position.clone();
+      const engineOffset = shipDirection.clone().multiplyScalar(2); // 引擎位置偏移
+      particle.position.copy(enginePosition.add(engineOffset));
+      
+      // 添加一点随机偏移
+      particle.position.x += (Math.random() - 0.5) * 0.5;
+      particle.position.y += (Math.random() - 0.5) * 0.5;
+      particle.position.z += (Math.random() - 0.5) * 0.5;
+      
+      // 设置粒子初始速度 - 向后喷射
+      const velocity = shipDirection.clone().multiplyScalar(5 + Math.random() * 10);
+      particle.userData.velocity = velocity;
+      particle.userData.life = 1.0; // 粒子生命值
+      
+      // 添加到场景
+      scene.add(particle);
+      
+      // 添加到粒子列表用于更新
+      if (!this.engineParticles) this.engineParticles = [];
+      this.engineParticles.push(particle);
+      
+      // 粒子生命周期结束后自动移除
+      setTimeout(() => {
+        if (particle && scene) {
+          scene.remove(particle);
+          particle.geometry.dispose();
+          particle.material.dispose();
+          
+          // 从粒子列表中移除
+          if (this.engineParticles) {
+            const index = this.engineParticles.indexOf(particle);
+            if (index !== -1) this.engineParticles.splice(index, 1);
+          }
+        }
+      }, 1000); // 1秒后消失
     }
   }
   
@@ -742,5 +884,243 @@ export class Player {
     this.isInitialized = false;
     
     return this;
+  }
+  
+  // 更新引擎粒子效果
+  updateEngineParticles(deltaTime) {
+    if (!this.engineParticles || !this.engineParticles.length) return;
+    
+    // 更新每个粒子位置和生命周期
+    for (let i = this.engineParticles.length - 1; i >= 0; i--) {
+      const particle = this.engineParticles[i];
+      
+      // 更新位置
+      if (particle && particle.userData && particle.userData.velocity) {
+        particle.position.add(particle.userData.velocity.clone().multiplyScalar(deltaTime));
+        
+        // 更新生命周期
+        particle.userData.life -= deltaTime;
+        
+        // 更新大小和透明度
+        const lifeRatio = particle.userData.life;
+        particle.scale.set(lifeRatio, lifeRatio, lifeRatio);
+        
+        if (particle.material) {
+          particle.material.opacity = lifeRatio * 0.7;
+        }
+      }
+    }
+  }
+  
+  // 更新加速时的视觉效果
+  updateSpeedEffects(deltaTime) {
+    if (!this.spaceship || !this.spaceship.gameEngine || !this.spaceship.gameEngine.scene) return;
+    
+    // 获取当前速度
+    const currentSpeed = this.spaceship.velocity.length();
+    const maxNormalSpeed = 50; // 正常最大速度
+    const boostThreshold = 70; // 加速时的阈值
+    
+    // 如果速度超过一定阈值，添加速度线效果
+    if (currentSpeed > 30) {
+      // 计算速度线的强度，基于当前速度
+      const speedLineIntensity = (currentSpeed - 30) / (maxNormalSpeed - 30);
+      
+      if (!this._speedLinesActive && speedLineIntensity > 0.3) {
+        this.createSpeedLines(Math.min(speedLineIntensity, 1.0));
+        this._speedLinesActive = true;
+        
+        // 每2秒更新一次速度线
+        if (!this._speedLineTimer) {
+          this._speedLineTimer = setInterval(() => {
+            if (this.spaceship && this.spaceship.velocity.length() > 30) {
+              const newIntensity = (this.spaceship.velocity.length() - 30) / (maxNormalSpeed - 30);
+              this.createSpeedLines(Math.min(newIntensity, 1.0));
+            } else if (this._speedLineTimer) {
+              clearInterval(this._speedLineTimer);
+              this._speedLineTimer = null;
+              this._speedLinesActive = false;
+            }
+          }, 2000);
+        }
+      }
+      
+      // 加速状态效果增强
+      if (currentSpeed > boostThreshold) {
+        // 如果是加速状态，创建更明显的视觉效果
+        if (this.spaceship.isBoosting && !this._boostEffectActive) {
+          this.createBoostEffect();
+          this._boostEffectActive = true;
+          
+          // 激活后处理效果（如果有）
+          if (this.spaceship.gameEngine.postProcessor && 
+              typeof this.spaceship.gameEngine.postProcessor.addTemporaryEffect === 'function') {
+            this.spaceship.gameEngine.postProcessor.addTemporaryEffect('speedBlur', 1.0, 5000);
+          }
+          
+          // 播放加速音效
+          if (this.spaceship.gameEngine.audioManager) {
+            this.spaceship.gameEngine.audioManager.playSound('boost', 0.3);
+          }
+        }
+      } else {
+        this._boostEffectActive = false;
+      }
+    } else {
+      // 速度不够，清除速度线计时器
+      if (this._speedLineTimer) {
+        clearInterval(this._speedLineTimer);
+        this._speedLineTimer = null;
+        this._speedLinesActive = false;
+      }
+      
+      this._boostEffectActive = false;
+    }
+  }
+  
+  // 创建速度线效果
+  createSpeedLines(intensity) {
+    if (!this.spaceship || !this.spaceship.gameEngine || !this.spaceship.gameEngine.scene) return;
+    
+    const scene = this.spaceship.gameEngine.scene;
+    const camera = this.spaceship.gameEngine.camera;
+    
+    if (!camera) return;
+    
+    // 创建速度线
+    const lineCount = Math.floor(10 + intensity * 20); // 10-30条线
+    
+    for (let i = 0; i < lineCount; i++) {
+      // 创建一个线段
+      const geometry = new THREE.BufferGeometry();
+      
+      // 基于相机视锥在前方创建点
+      const distance = 50 + Math.random() * 100;
+      const spread = 30 + intensity * 30;
+      
+      // 创建起点和终点
+      const start = new THREE.Vector3(
+        (Math.random() - 0.5) * spread,
+        (Math.random() - 0.5) * spread,
+        -distance
+      );
+      
+      // 终点比起点更靠近相机，创造射向相机的效果
+      const end = start.clone();
+      end.z += 10 + Math.random() * 20;
+      
+      // 从相机空间转换到世界空间
+      const startWorld = start.clone();
+      const endWorld = end.clone();
+      
+      startWorld.applyMatrix4(camera.matrixWorld);
+      endWorld.applyMatrix4(camera.matrixWorld);
+      
+      // 设置顶点
+      const vertices = new Float32Array([
+        startWorld.x, startWorld.y, startWorld.z,
+        endWorld.x, endWorld.y, endWorld.z
+      ]);
+      
+      geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+      
+      // 创建线条材质 - 随机蓝色调
+      const material = new THREE.LineBasicMaterial({
+        color: new THREE.Color(0.5 + Math.random() * 0.3, 0.7 + Math.random() * 0.3, 1.0),
+        transparent: true,
+        opacity: 0.3 + intensity * 0.5
+      });
+      
+      const line = new THREE.Line(geometry, material);
+      scene.add(line);
+      
+      // 存储速度线以便后续清理
+      if (!this._speedLines) this._speedLines = [];
+      this._speedLines.push(line);
+      
+      // 设置自动移除
+      setTimeout(() => {
+        if (line && scene) {
+          scene.remove(line);
+          line.geometry.dispose();
+          line.material.dispose();
+          
+          if (this._speedLines) {
+            const index = this._speedLines.indexOf(line);
+            if (index !== -1) this._speedLines.splice(index, 1);
+          }
+        }
+      }, 1000 + Math.random() * 500); // 1-1.5秒后消失
+    }
+  }
+  
+  // 创建加速视觉效果
+  createBoostEffect() {
+    if (!this.spaceship || !this.spaceship.mesh) return;
+    
+    try {
+      // 移除现有效果
+      const existingEffect = this.spaceship.mesh.children.find(child => child.name === 'boostEffect');
+      if (existingEffect) {
+        this.spaceship.mesh.remove(existingEffect);
+        existingEffect.geometry.dispose();
+        existingEffect.material.dispose();
+      }
+      
+      // 创建一个拉长的圆锥体表示加速拖尾
+      const geometry = new THREE.ConeGeometry(1.5, 10, 16);
+      geometry.rotateX(Math.PI); // 旋转使尖端向前
+      
+      // 使用发光材质
+      const material = new THREE.MeshBasicMaterial({
+        color: 0x66ffff,
+        transparent: true,
+        opacity: 0.6,
+        side: THREE.DoubleSide
+      });
+      
+      const effect = new THREE.Mesh(geometry, material);
+      effect.name = 'boostEffect';
+      effect.position.z = -5; // 放在飞船后方
+      this.spaceship.mesh.add(effect);
+      
+      // 添加动画效果
+      let scale = 1.0;
+      let growing = true;
+      
+      const animate = () => {
+        if (!this.spaceship || !this.spaceship.mesh || !this._boostEffectActive) return;
+        
+        // 缩放动画
+        if (growing) {
+          scale += 0.05;
+          if (scale >= 1.5) growing = false;
+        } else {
+          scale -= 0.05;
+          if (scale <= 1.0) growing = true;
+        }
+        
+        // 应用缩放
+        const boostEffect = this.spaceship.mesh.children.find(child => child.name === 'boostEffect');
+        if (boostEffect) {
+          boostEffect.scale.set(scale, scale, scale);
+        }
+        
+        // 如果还在加速中，继续动画
+        if (this._boostEffectActive) {
+          requestAnimationFrame(animate);
+        } else if (boostEffect) {
+          // 不在加速中，移除效果
+          this.spaceship.mesh.remove(boostEffect);
+          boostEffect.geometry.dispose();
+          boostEffect.material.dispose();
+        }
+      };
+      
+      // 启动动画
+      animate();
+    } catch (error) {
+      console.error('创建加速效果失败:', error);
+    }
   }
 }

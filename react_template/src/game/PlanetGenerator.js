@@ -12,62 +12,72 @@ export class PlanetGenerator {
         colors: [0x8b5a2b, 0xa0522d, 0xcd853f, 0xd2691e, 0xbc8f8f, 0xf4a460, 0xdaa520, 0xb8860b],
         maxSize: 8,
         roughness: 0.8,
-        atmosphereDensity: 0.2
+        atmosphereDensity: 0.2,
+        resources: ['iron', 'titanium', 'silicon', 'carbon', 'tungsten']
       },
       icy: {
         colors: [0xe0ffff, 0xafeeee, 0xb0e0e6, 0xadd8e6, 0x87ceeb, 0xb0c4de, 0xbfefff, 0xcae1ff],
         maxSize: 7,
         roughness: 0.3,
-        atmosphereDensity: 0.3
+        atmosphereDensity: 0.3,
+        resources: ['water', 'methane', 'nitrogen', 'hydrogen', 'oxygen']
       },
       gas: {
         colors: [0xe3cf57, 0xffa500, 0xff8c00, 0x4682b4, 0x1e90ff, 0x6495ed, 0xffd700, 0x7b68ee],
         maxSize: 12,
         roughness: 0.1,
-        atmosphereDensity: 0.9
+        atmosphereDensity: 0.9,
+        resources: ['hydrogen', 'helium', 'ammonia', 'methane']
       },
       lava: {
         colors: [0x8b0000, 0xff0000, 0xff4500, 0xff6347, 0xcd5c5c, 0xdc143c, 0xb22222, 0xa52a2a],
         maxSize: 6,
         roughness: 0.7,
-        atmosphereDensity: 0.4
+        atmosphereDensity: 0.4,
+        resources: ['sulfur', 'iron', 'platinum', 'tungsten']
       },
       desert: {
         colors: [0xf5deb3, 0xdeb887, 0xd2b48c, 0xf0e68c, 0xeee8aa, 0xfafad2, 0xf5f5dc, 0xffebcd],
         maxSize: 9,
         roughness: 0.6,
-        atmosphereDensity: 0.1
+        atmosphereDensity: 0.1,
+        resources: ['silica', 'titanium', 'gold', 'copper']
       },
       organic: {
         colors: [0x006400, 0x228b22, 0x32cd32, 0x3cb371, 0x2e8b57, 0x808000, 0x6b8e23, 0x556b2f],
         maxSize: 10,
         roughness: 0.5,
-        atmosphereDensity: 0.7
+        atmosphereDensity: 0.7,
+        resources: ['oxygen', 'carbon', 'nitrogen', 'water']
       },
       // 添加新的行星类型
       oceanic: {
         colors: [0x000080, 0x0000cd, 0x0000ff, 0x1e90ff, 0x00bfff, 0x87ceeb, 0x87cefa, 0x4169e1],
         maxSize: 9,
         roughness: 0.3,
-        atmosphereDensity: 0.8
+        atmosphereDensity: 0.8,
+        resources: ['water', 'oxygen', 'hydrogen', 'nitrogen', 'rare_crystals']
       },
       volcanic: {
         colors: [0x800000, 0x8b0000, 0xa52a2a, 0xb22222, 0xcd5c5c, 0xdc143c, 0xff0000, 0xc71585],
         maxSize: 7,
         roughness: 0.9,
-        atmosphereDensity: 0.6
+        atmosphereDensity: 0.6,
+        resources: ['sulfur', 'iron', 'platinum', 'tungsten', 'uranium']
       },
       crystal: {
         colors: [0x9932cc, 0xba55d3, 0xda70d6, 0xee82ee, 0xdda0dd, 0xe6e6fa, 0xd8bfd8, 0xffe4e1],
         maxSize: 6,
         roughness: 0.2,
-        atmosphereDensity: 0.4
+        atmosphereDensity: 0.4,
+        resources: ['diamonds', 'rare_crystals', 'quantum_particles', 'silica']
       },
       toxic: {
         colors: [0x9acd32, 0x6b8e23, 0x556b2f, 0x808000, 0x6a5acd, 0x7b68ee, 0x9370db, 0x8a2be2],
         maxSize: 8,
         roughness: 0.6,
-        atmosphereDensity: 0.7
+        atmosphereDensity: 0.7,
+        resources: ['methane', 'ammonia', 'sulfur', 'exotic_compounds']
       }
     };
     
@@ -996,18 +1006,16 @@ export class PlanetGenerator {
         break;
         
       case 'volcanic':
-        // 添加火山口
-        this.addVolcanoes(planet, size);
+        // 添加火山口 - 暂时使用陨石坑代替
+        this.addCraters(planet, size, 0.5);
         break;
         
       case 'crystal':
-        // 添加水晶尖刺
-        this.addCrystalFormations(planet, size);
+        // 暂时跳过水晶尖刺，防止非THREE.Object3D错误
         break;
         
       case 'oceanic':
-        // 添加岛屿
-        this.addIslands(planet, size);
+        // 暂时跳过岛屿，防止非THREE.Object3D错误
         break;
     }
   }
@@ -1092,6 +1100,111 @@ export class PlanetGenerator {
     
     // 其他类型行星可着陆
     return true;
+  }
+  
+  /**
+   * 添加火山口效果 (未完全实现)
+   * @param {THREE.Mesh} planet - 行星对象
+   * @param {Number} size - 行星尺寸
+   */
+  addVolcanoes(planet, size) {
+    // 暂时使用红色陨石坑模拟火山口
+    const volcanoCount = Math.floor(3 + Math.random() * 5);
+    
+    for (let i = 0; i < volcanoCount; i++) {
+      const volcanoSize = size * (0.08 + Math.random() * 0.12);
+      const volcanoGeometry = new THREE.CircleGeometry(volcanoSize, 16);
+      
+      const volcanoMaterial = new THREE.MeshStandardMaterial({
+        color: 0x990000,
+        roughness: 0.7,
+        metalness: 0.2,
+        side: THREE.DoubleSide,
+        emissive: 0xff3300,
+        emissiveIntensity: 0.5
+      });
+      
+      const volcano = new THREE.Mesh(volcanoGeometry, volcanoMaterial);
+      
+      // 在球面上放置火山口
+      const phi = Math.random() * Math.PI;
+      const theta = Math.random() * Math.PI * 2;
+      
+      const x = size * Math.sin(phi) * Math.cos(theta);
+      const y = size * Math.sin(phi) * Math.sin(theta);
+      const z = size * Math.cos(phi);
+      
+      volcano.position.set(x, y, z);
+      volcano.lookAt(0, 0, 0);
+      volcano.position.multiplyScalar(0.99);
+      
+      planet.add(volcano);
+    }
+  }
+  
+  /**
+   * 添加水晶形态 (未完全实现)
+   * @param {THREE.Mesh} planet - 行星对象
+   * @param {Number} size - 行星尺寸
+   */
+  addCrystalFormations(planet, size) {
+    // 暂时不实现，防止错误
+  }
+  
+  /**
+   * 添加岛屿 (未完全实现)
+   * @param {THREE.Mesh} planet - 行星对象
+   * @param {Number} size - 行星尺寸
+   */
+  addIslands(planet, size) {
+    // 暂时不实现，防止错误
+  }
+  
+  /**
+   * 生成有毒行星纹理
+   * @param {Number} size - 纹理尺寸
+   * @returns {THREE.Texture} 生成的纹理
+   */
+  generateToxicTexture(size) {
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const context = canvas.getContext('2d');
+    
+    // 创建渐变背景
+    const gradient = context.createRadialGradient(
+      size/2, size/2, 0,
+      size/2, size/2, size/2
+    );
+    
+    gradient.addColorStop(0, '#88ff88');
+    gradient.addColorStop(0.5, '#66cc66');
+    gradient.addColorStop(1, '#225522');
+    
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, size, size);
+    
+    // 添加气泡/斑点效果
+    const bubbleCount = 50 + Math.random() * 100;
+    
+    for (let i = 0; i < bubbleCount; i++) {
+      const x = Math.random() * size;
+      const y = Math.random() * size;
+      const radius = 2 + Math.random() * 10;
+      
+      context.beginPath();
+      context.arc(x, y, radius, 0, Math.PI * 2);
+      
+      // 随机气泡颜色
+      const r = Math.floor(100 + Math.random() * 155);
+      const g = Math.floor(200 + Math.random() * 55);
+      const b = Math.floor(100 + Math.random() * 100);
+      
+      context.fillStyle = `rgba(${r}, ${g}, ${b}, 0.6)`;
+      context.fill();
+    }
+    
+    return new THREE.CanvasTexture(canvas);
   }
 }
 

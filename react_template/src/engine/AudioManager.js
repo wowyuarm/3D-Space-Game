@@ -145,13 +145,20 @@ export class AudioManager {
   loadSound(id, path, attempts = 0) {
     if (attempts >= this.maxAttempts) {
       console.error(`Failed to load sound after ${attempts} attempts: ${id}`);
-      return null;
+      // 即使加载失败，也返回一个"空"声音对象，避免后续代码报错
+      const silentSound = new Howl({
+        src: ['data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAAwAAAbAAeHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eN3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3//////////////////////////8AAAAExTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxAANCAad2AQACVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV'],
+        volume: 0
+      });
+      this.sounds.set(id, silentSound);
+      return silentSound;
     }
     
     try {
       const sound = new Howl({
         src: [path],
         volume: this.soundVolume,
+        html5: true,
         onloaderror: (soundId, error) => {
           console.warn(`Error loading sound ${id}, retrying...`, error);
           // 重试加载
@@ -179,8 +186,18 @@ export class AudioManager {
         loop: true,
         html5: true,
         // Add error handling
-        onloaderror: () => {
-          console.warn(`Failed to load music: ${id} from path: ${path}`);
+        onloaderror: (soundId, error) => {
+          console.warn(`Failed to load music: ${id}`, error);
+          
+          // 即使失败也创建一个空的音乐对象，防止后续报错
+          if (!this.music.has(id)) {
+            const silentMusic = new Howl({
+              src: ['data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAAwAAAbAAeHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eN3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3//////////////////////////8AAAAExTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxAANCAad2AQACVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV'],
+              volume: 0,
+              loop: true
+            });
+            this.music.set(id, silentMusic);
+          }
         }
       });
       
@@ -188,7 +205,15 @@ export class AudioManager {
       return musicTrack;
     } catch (error) {
       console.error(`Error loading music: ${id}`, error);
-      return null;
+      
+      // 创建一个静音轨道作为后备
+      const silentMusic = new Howl({
+        src: ['data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAAwAAAbAAeHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eN3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3//////////////////////////8AAAAExTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV/+MYxAANCAad2AQACVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV'],
+        volume: 0,
+        loop: true
+      });
+      this.music.set(id, silentMusic);
+      return silentMusic;
     }
   }
   
@@ -338,8 +363,26 @@ export class AudioManager {
   
   resumeAll() {
     try {
-      Howler.play();
+      // Howler.play() 错误：Howler对象没有play方法
+      // 使用正确的API恢复所有声音
+      
+      // 首先恢复音量
       Howler.volume(this.soundVolume);
+      
+      // 尝试恢复所有暂停的音效
+      this.sounds.forEach(sound => {
+        if (sound._paused && !sound._ended) {
+          sound.play();
+        }
+      });
+      
+      // 恢复背景音乐
+      if (this.currentMusic) {
+        const music = this.music.get(this.currentMusic);
+        if (music && !music.playing()) {
+          music.play();
+        }
+      }
     } catch (error) {
       console.error('Error resuming all audio', error);
     }

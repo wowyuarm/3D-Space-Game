@@ -154,6 +154,23 @@ export class PlayerShip extends Spaceship {
   }
   
   /**
+   * Get the forward direction of the ship
+   * @returns {THREE.Vector3} The normalized forward direction vector
+   */
+  getDirection() {
+    // 创建一个表示前向方向的向量 (0,0,-1) 是Three.js中的"前向"
+    const direction = new THREE.Vector3(0, 0, -1);
+    
+    // 如果有mesh，应用其旋转，将局部方向转换为世界方向
+    if (this.mesh) {
+      // 使用船舶的四元数旋转方向向量
+      direction.applyQuaternion(this.mesh.quaternion);
+    }
+    
+    return direction.normalize();
+  }
+  
+  /**
    * Apply damage to the player ship
    * @param {number} amount - Amount of damage
    * @param {string} type - Type of damage

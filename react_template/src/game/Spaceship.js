@@ -262,12 +262,25 @@ export class Spaceship {
     }
   }
   
+  /**
+   * 获取飞船的前向方向
+   * @returns {THREE.Vector3} 归一化的前向方向向量
+   */
+  getDirection() {
+    // 默认前向方向是z轴负方向 (THREE.js中的"前向")
+    const direction = new THREE.Vector3(0, 0, -1);
+    
+    // 应用飞船的旋转，将局部方向转换为世界方向
+    direction.applyQuaternion(this.rotation);
+    
+    return direction.normalize();
+  }
+  
   setThrust(thrustAmount) {
     if (!this.isInitialized) return;
     
     // Calculate thrust direction (ship's forward vector)
-    const thrustDirection = new THREE.Vector3(0, 0, -1);
-    thrustDirection.applyQuaternion(this.rotation);
+    const thrustDirection = this.getDirection();
     
     // Apply thrust as a force (F = m * a)
     const thrustVector = thrustDirection.clone().multiplyScalar(thrustAmount);

@@ -180,7 +180,7 @@ export class GameState {
     return planets;
   }
   
-  update(deltaTime) {
+  update(deltaTime, elapsed) {
     if (!this.isInitialized || this.isGamePaused) return;
     
     // Update game time
@@ -191,32 +191,80 @@ export class GameState {
     // Update player
     if (this.player) {
       this.player.update(deltaTime, this.gameEngine?.inputManager);
+      
+      // 检测最近的星球
+      this.checkNearestPlanet();
     }
     
     // Update universe
     if (this.universe) {
-      this.universe.update(deltaTime);
+      this.universe.update(deltaTime, elapsed);
     }
     
-    // 更新行星系统动画
-    this.updatePlanetAnimations(deltaTime);
+    // Animate planets
+    this.animatePlanets(deltaTime);
     
-    // 更新资源收集器
+    // Update resource collection
     if (this.resourceCollector) {
       this.resourceCollector.update(deltaTime);
     }
     
-    // 更新相机位置跟随玩家飞船
+    // Position camera
     this.updateCamera();
     
-    // Check for proximity to star systems for discovery
-    this.checkProximityToSystems();
+    // Check for star system interactions
+    this.checkStarSystemInteractions();
     
-    // 检测与行星的接近和交互
+    // Check for planet interactions
     this.checkPlanetInteractions();
     
-    // Check ship health and other critical statuses
-    this.checkShipStatus();
+    // Update current scene and camera reference for rendering
+    if (this.scene) {
+      this.currentScene = this.scene;
+    }
+    
+    if (this.camera) {
+      this.currentCamera = this.camera;
+    }
+  }
+  
+  /**
+   * 检测玩家附近的星球，并更新player.nearestPlanet和player.nearestPlanetDistance
+   */
+  checkNearestPlanet() {
+    if (!this.player || !this.player.spaceship || !this.universe) return;
+    
+    let nearestPlanet = null;
+    let nearestDistance = Infinity;
+    
+    // 获取当前星系中的所有行星
+    const currentSystem = this.player.currentStarSystem;
+    if (!currentSystem || !currentSystem.planets) return;
+    
+    // 遍历星系中的行星
+    for (const planet of currentSystem.planets) {
+      if (!planet.position) continue;
+      
+      // 计算飞船与行星之间的距离
+      const distance = this.player.spaceship.position.distanceTo(planet.position);
+      
+      // 更新最近行星
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestPlanet = planet;
+      }
+    }
+    
+    // 更新player的属性
+    this.player.nearestPlanet = nearestPlanet;
+    this.player.nearestPlanetDistance = nearestDistance;
+    
+    // 如果距离很近，显示UI提示
+    if (nearestDistance < 20 && nearestPlanet) {
+      console.log(`接近行星 ${nearestPlanet.name}，距离: ${nearestDistance.toFixed(2)}`);
+      // 可以触发HUD显示行星信息
+      // this.gameEngine?.uiManager?.showPlanetProximityAlert(nearestPlanet);
+    }
   }
   
   /**

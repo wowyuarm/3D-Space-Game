@@ -13,51 +13,57 @@
 /* 顶部状态栏 */
 .hud-top-bar {
   position: absolute;
-  top: 20px;
-  left: 20px;
-  right: 20px;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  max-width: 90%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(0, 10, 30, 0.5);
-  padding: 10px 15px;
+  background-color: rgba(0, 10, 30, 0.3);
+  padding: 6px 15px;
   border-radius: 10px;
-  border: 1px solid rgba(80, 160, 255, 0.3);
-  box-shadow: 0 0 15px rgba(0, 60, 120, 0.2);
-  backdrop-filter: blur(5px);
+  border: 1px solid rgba(80, 160, 255, 0.2);
+  box-shadow: 0 0 15px rgba(0, 60, 120, 0.15);
+  backdrop-filter: blur(3px);
   pointer-events: auto;
 }
 
 .location-info {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
   color: #fff;
+  font-size: 12px;
+  margin-right: 20px;
 }
 
 .location-label {
   font-weight: bold;
   margin-right: 5px;
   color: #8cf;
+  font-size: 11px;
 }
 
 .location-value {
   color: #fff;
+  font-size: 11px;
 }
 
 .navigation-buttons {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 .hud-button {
-  background: rgba(30, 60, 120, 0.6);
+  background: rgba(30, 60, 120, 0.4);
   color: white;
-  border: 1px solid #4488ff;
+  border: 1px solid rgba(68, 136, 255, 0.5);
   border-radius: 5px;
-  padding: 8px 12px;
+  padding: 4px 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   transition: all 0.2s;
   pointer-events: auto;
 }
@@ -348,4 +354,56 @@
   .resources-panel, .controls-help {
     max-width: 200px;
   }
+}
+
+.control-item.highlight {
+  background-color: rgba(0, 200, 255, 0.15);
+  border-radius: 6px;
+  padding: 8px;
+  margin: 8px 0;
+  border-left: 3px solid #00ccff;
+}
+
+.control-item.highlight .key {
+  background: rgba(0, 160, 255, 0.8);
+  border-color: #00ccff;
+  box-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
+}
+
+.control-item.highlight .action {
+  font-weight: bold;
+  color: #00ccff;
+}
+
+.tips-section {
+  margin-top: 15px;
+  background: rgba(0, 20, 40, 0.3);
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.tips-section h4 {
+  color: #8cf;
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(80, 160, 255, 0.2);
+  padding-bottom: 5px;
+}
+
+.tips-section ul {
+  margin: 0;
+  padding: 0 0 0 18px;
+  font-size: 12px;
+}
+
+.tips-section li {
+  margin-bottom: 5px;
+}
+
+.tips-section b {
+  color: #8cf;
+  background: rgba(0, 80, 160, 0.3);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: monospace;
 } 

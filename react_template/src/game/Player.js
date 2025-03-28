@@ -77,10 +77,10 @@ export class Player {
   handleFlightControls(deltaTime, inputManager) {
     if (!inputManager || !this.spaceship) return;
     
-    // Flight control variables - 增强控制灵敏度
-    const thrustForce = 30.0 * this.spaceship.thrustPower;  // 增强推力
-    const turnSpeed = 2.0 * this.spaceship.maneuverability;  // 增强转向速度
-    const maxRotationRate = 3.0;
+    // Flight control variables - 大幅增强控制灵敏度和速度
+    const thrustForce = 50.0 * this.spaceship.thrustPower;  // 极大增强推力
+    const turnSpeed = 3.0 * this.spaceship.maneuverability;  // 增强转向速度
+    const maxRotationRate = 4.0;
     let thrust = 0;
     const rotation = new THREE.Vector3(0, 0, 0);
     
@@ -130,11 +130,90 @@ export class Player {
       this.spaceship.stopBoost();
     }
     
-    // Brake (rapid deceleration)
+    // 空格键处理: 如果靠近星球则着陆，否则执行跃迁/急刹车
     if (inputManager.isKeyPressed('Space')) {
-      this.spaceship.brake(deltaTime);
+      // 检查是否有最近的星球
+      if (this.currentStarSystem && this.nearestPlanet && this.nearestPlanetDistance < 20) {
+        // 尝试降落到行星上
+        this.landOnPlanet(this.nearestPlanet);
+      } else {
+        // 否则执行跃迁 - 朝当前方向快速加速
+        this.performJump(deltaTime);
+      }
     } else {
-      this.spaceship.braking = false;
+      // 重置跃迁状态
+      this._isJumping = false;
+    }
+  }
+  
+  // 新增跃迁功能
+  performJump(deltaTime) {
+    if (!this.spaceship) return;
+    
+    // 如果能量足够且不在跃迁中
+    if (this.spaceship.energy > 25 && !this._isJumping) {
+      // 获取当前方向
+      const direction = this.spaceship.getDirection();
+      
+      // 设置强大的瞬时速度
+      this.spaceship.velocity.addScaledVector(direction, 80.0);
+      
+      // 消耗能量
+      this.spaceship.energy -= 25;
+      
+      // 设置跃迁标志
+      this._isJumping = true;
+      
+      // 创建跃迁视觉效果
+      this.createJumpEffect();
+      
+      // 尝试在控制台中输出跃迁效果
+      console.log('执行超空间跃迁!');
+    } else if (this.spaceship.energy <= 25) {
+      // 能量不足，只执行普通刹车
+      this.spaceship.brake(deltaTime);
+    }
+  }
+  
+  // 创建跃迁视觉效果
+  createJumpEffect() {
+    if (!this.spaceship || !this.spaceship.mesh) return;
+    
+    try {
+      // 这里可以添加粒子效果或其他视觉反馈
+      // 由于需要THREE.js渲染，简单起见先忽略具体实现
+      
+      // 给飞船添加一个临时的发光效果
+      const jumpGlow = this.spaceship.mesh.children.find(child => child.name === 'jumpGlow');
+      
+      if (!jumpGlow) {
+        // 创建一个发光球体
+        const geometry = new THREE.SphereGeometry(3, 16, 16);
+        const material = new THREE.MeshBasicMaterial({
+          color: 0x00ffff,
+          transparent: true,
+          opacity: 0.7,
+          side: THREE.BackSide
+        });
+        
+        const glow = new THREE.Mesh(geometry, material);
+        glow.name = 'jumpGlow';
+        this.spaceship.mesh.add(glow);
+        
+        // 2秒后移除发光效果
+        setTimeout(() => {
+          if (this.spaceship && this.spaceship.mesh) {
+            const glowToRemove = this.spaceship.mesh.children.find(child => child.name === 'jumpGlow');
+            if (glowToRemove) {
+              this.spaceship.mesh.remove(glowToRemove);
+              glowToRemove.geometry.dispose();
+              glowToRemove.material.dispose();
+            }
+          }
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('创建跃迁效果时出错:', error);
     }
   }
   

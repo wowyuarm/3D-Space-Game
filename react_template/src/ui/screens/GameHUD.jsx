@@ -209,42 +209,48 @@ const GameHUD = ({ gameEngine, onOpenStarMap, onOpenUpgrades, onSaveGame, onRetu
       
       {/* 控制帮助面板 - 更明显的显示/隐藏 */}
       <div className={`controls-help ${showControls ? 'visible' : ''}`}>
-        <h3>控制指南</h3>
+        <h3>飞船控制指南</h3>
         <div className="control-item">
           <span className="key">W</span>
-          <span className="action">前进</span>
+          <span className="action">引擎加速 (高速推进)</span>
         </div>
         <div className="control-item">
           <span className="key">S</span>
-          <span className="action">后退</span>
+          <span className="action">反向推进</span>
         </div>
         <div className="control-item">
           <span className="key">A/D</span>
-          <span className="action">左转/右转</span>
+          <span className="action">飞船左右转向</span>
         </div>
         <div className="control-item">
           <span className="key">Q/E</span>
-          <span className="action">左右滚转</span>
+          <span className="action">飞船滚转</span>
         </div>
         <div className="control-item">
           <span className="key">I/K</span>
-          <span className="action">俯仰控制</span>
-        </div>
-        <div className="control-item">
-          <span className="key">J/L</span>
-          <span className="action">左右滚转(备选)</span>
+          <span className="action">飞船俯仰(上下)</span>
         </div>
         <div className="control-item">
           <span className="key">Shift</span>
-          <span className="action">加速推进</span>
+          <span className="action">引擎加速器(消耗能量)</span>
         </div>
-        <div className="control-item">
+        <div className="control-item highlight">
           <span className="key">空格</span>
-          <span className="action">刹车</span>
+          <span className="action">超空间跃迁/星球降落</span>
         </div>
         <div className="control-item">
           <span className="key">ESC</span>
           <span className="action">暂停游戏</span>
+        </div>
+        
+        <div className="tips-section">
+          <h4>飞行技巧:</h4>
+          <ul>
+            <li>使用<b>W</b>快速前进，<b>空格</b>超空间跃迁</li>
+            <li>靠近星球时按<b>空格</b>可以降落</li>
+            <li>使用<b>Shift</b>加速器可大幅提升速度</li>
+            <li>组合使用转向和加速可实现复杂飞行动作</li>
+          </ul>
         </div>
       </div>
     </div>

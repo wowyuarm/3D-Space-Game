@@ -259,6 +259,9 @@ export class GameEngine {
     this.deltaTime = Math.min(this.clock.getDelta(), 0.1); // Cap delta time to prevent large jumps
     this.elapsed = this.clock.getElapsedTime();
     
+    // 更新星空背景
+    this.updateStarBackground(this.deltaTime);
+    
     // Update physics
     if (this.physicsSystem) {
       this.physicsSystem.update(this.deltaTime);
@@ -428,6 +431,9 @@ export class GameEngine {
       this.scene = new THREE.Scene();
       this.scene.background = new THREE.Color(0x000011); // Dark blue background
       
+      // 添加星星背景效果
+      this.createStarBackground();
+      
       // Create camera
       this.camera = new THREE.PerspectiveCamera(
         75, // Field of view
@@ -459,6 +465,139 @@ export class GameEngine {
     } catch (error) {
       console.error('Error initializing renderer:', error);
       return false;
+    }
+  }
+  
+  /**
+   * 创建星星背景
+   * 在远处添加大量星星以避免空间看起来太空旷
+   */
+  createStarBackground() {
+    try {
+      // 创建星星群
+      const starsGeometry = new THREE.BufferGeometry();
+      const starsMaterial = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 1.0,
+        transparent: true,
+        opacity: 0.8,
+        sizeAttenuation: false
+      });
+      
+      // 创建1000个随机位置的星星
+      const starPositions = [];
+      const starColors = [];
+      const radius = 1000; // 星星分布半径
+      
+      for (let i = 0; i < 1500; i++) {
+        // 球形分布
+        const theta = 2 * Math.PI * Math.random();
+        const phi = Math.acos(2 * Math.random() - 1);
+        const distance = radius * Math.random();
+        
+        const x = distance * Math.sin(phi) * Math.cos(theta);
+        const y = distance * Math.sin(phi) * Math.sin(theta);
+        const z = distance * Math.cos(phi);
+        
+        starPositions.push(x, y, z);
+        
+        // 随机星星颜色
+        const brightness = 0.7 + Math.random() * 0.3;
+        const colorTint = Math.random();
+        
+        if (colorTint < 0.6) {
+          // 白色到蓝色
+          starColors.push(brightness * 0.9, brightness * 0.9, brightness);
+        } else if (colorTint < 0.8) {
+          // 橙色/黄色星星
+          starColors.push(brightness, brightness * 0.8, brightness * 0.5);
+        } else if (colorTint < 0.95) {
+          // 蓝色星星
+          starColors.push(brightness * 0.7, brightness * 0.8, brightness);
+        } else {
+          // 红色星星
+          starColors.push(brightness, brightness * 0.5, brightness * 0.5);
+        }
+      }
+      
+      starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
+      starsGeometry.setAttribute('color', new THREE.Float32BufferAttribute(starColors, 3));
+      starsMaterial.vertexColors = true;
+      
+      // 创建星星点云
+      this.stars = new THREE.Points(starsGeometry, starsMaterial);
+      this.scene.add(this.stars);
+      
+      // 添加远处星云
+      this.createDistantNebulas();
+      
+      console.log('添加了星空背景');
+    } catch (error) {
+      console.error('创建星星背景时出错:', error);
+    }
+  }
+  
+  /**
+   * 创建远处的星云
+   */
+  createDistantNebulas() {
+    try {
+      // 添加几个彩色星云作为远景
+      const nebulaColors = [
+        new THREE.Color(0x3366ff).multiplyScalar(0.5), // 蓝色
+        new THREE.Color(0xff5566).multiplyScalar(0.4), // 红色
+        new THREE.Color(0x6633ff).multiplyScalar(0.5), // 紫色
+        new THREE.Color(0x66ffcc).multiplyScalar(0.4)  // 青色
+      ];
+      
+      // 创建4个星云
+      for (let i = 0; i < 4; i++) {
+        const nebulaSize = 200 + Math.random() * 300;
+        const nebulaGeometry = new THREE.PlaneGeometry(nebulaSize, nebulaSize);
+        
+        // 使用自定义着色器材质创建星云效果
+        const nebulaMaterial = new THREE.MeshBasicMaterial({
+          color: nebulaColors[i],
+          transparent: true,
+          opacity: 0.2,
+          side: THREE.DoubleSide,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false
+        });
+        
+        const nebula = new THREE.Mesh(nebulaGeometry, nebulaMaterial);
+        
+        // 随机位置
+        const distance = 500 + Math.random() * 300;
+        const theta = 2 * Math.PI * Math.random();
+        const phi = Math.acos(2 * Math.random() - 1);
+        
+        nebula.position.x = distance * Math.sin(phi) * Math.cos(theta);
+        nebula.position.y = distance * Math.sin(phi) * Math.sin(theta);
+        nebula.position.z = distance * Math.cos(phi);
+        
+        // 让星云面向中心
+        nebula.lookAt(0, 0, 0);
+        
+        // 添加到场景
+        this.scene.add(nebula);
+      }
+      
+      console.log('添加了远处星云');
+    } catch (error) {
+      console.error('创建星云时出错:', error);
+    }
+  }
+  
+  /**
+   * 更新星空背景动画
+   * 在update方法中调用
+   */
+  updateStarBackground(deltaTime) {
+    if (this.stars) {
+      // 让星星微微旋转以产生动态效果
+      this.stars.rotation.y += deltaTime * 0.01;
+      this.stars.rotation.x += deltaTime * 0.005;
     }
   }
   

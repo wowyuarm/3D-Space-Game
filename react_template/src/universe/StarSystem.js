@@ -202,76 +202,86 @@ export class StarSystem {
   }
 
   createStarSystemVisualization(scene) {
-    if (this.mesh) return this.mesh;
+    if (this.mesh && this.mesh instanceof THREE.Object3D) return this.mesh;
     
-    // Create star
-    const starGeometry = new THREE.SphereGeometry(this.starSize, 32, 32);
-    
-    // Determine star color
-    let starColor;
-    switch (this.starType) {
-      case 'blue':
-        starColor = 0x6688ff;
-        break;
-      case 'white':
-        starColor = 0xffffff;
-        break;
-      case 'yellow':
-        starColor = 0xffff99;
-        break;
-      case 'orange':
-        starColor = 0xff9966;
-        break;
-      case 'red':
-        starColor = 0xff6644;
-        break;
-      case 'binary':
-        starColor = 0xffaacc; // A pinkish color for binary
-        break;
-      default:
-        starColor = 0xffffcc;
-    }
-    
-    const starMaterial = new THREE.MeshBasicMaterial({
-      color: starColor,
-      emissive: starColor,
-      emissiveIntensity: 1.0
-    });
-    
-    const starMesh = new THREE.Mesh(starGeometry, starMaterial);
-    
-    // Create star glow
-    const starLight = new THREE.PointLight(starColor, 1.0, 100);
-    starMesh.add(starLight);
-    
-    // Create system group
-    this.mesh = new THREE.Group();
-    this.mesh.add(starMesh);
-    
-    // Add planets to the visualization
-    this.planets.forEach(planet => {
-      try {
-        if (planet && planet.isInitialized) {
-          const planetMesh = planet.createPlanetMesh();
-          if (planetMesh && planetMesh instanceof THREE.Object3D) {
-            this.mesh.add(planetMesh);
-          } else {
-            console.warn(`Failed to add planet mesh for ${planet.name}: not a valid THREE.Object3D`);
-          }
-        }
-      } catch (error) {
-        console.error(`Error adding planet mesh: ${error.message}`);
+    try {
+      // Create star
+      const starGeometry = new THREE.SphereGeometry(this.starSize, 32, 32);
+      
+      // Determine star color
+      let starColor;
+      switch (this.starType) {
+        case 'blue':
+          starColor = 0x6688ff;
+          break;
+        case 'white':
+          starColor = 0xffffff;
+          break;
+        case 'yellow':
+          starColor = 0xffff99;
+          break;
+        case 'orange':
+          starColor = 0xff9966;
+          break;
+        case 'red':
+          starColor = 0xff6644;
+          break;
+        case 'binary':
+          starColor = 0xffaacc; // A pinkish color for binary
+          break;
+        default:
+          starColor = 0xffffcc;
       }
-    });
-    
-    // Position the system
-    this.mesh.position.copy(this.position);
-    
-    if (scene) {
-      scene.add(this.mesh);
+      
+      const starMaterial = new THREE.MeshBasicMaterial({
+        color: starColor,
+        emissive: starColor,
+        emissiveIntensity: 1.0
+      });
+      
+      const starMesh = new THREE.Mesh(starGeometry, starMaterial);
+      
+      // Create star glow
+      const starLight = new THREE.PointLight(starColor, 1.0, 100);
+      starMesh.add(starLight);
+      
+      // Create system group
+      this.mesh = new THREE.Group();
+      this.mesh.add(starMesh);
+      
+      // Add planets to the visualization
+      this.planets.forEach(planet => {
+        try {
+          if (planet && planet.isInitialized) {
+            const planetMesh = planet.createPlanetMesh();
+            // Explicitly check if the returned object is a THREE.Object3D
+            if (planetMesh && planetMesh instanceof THREE.Object3D) {
+              this.mesh.add(planetMesh);
+            } else {
+              console.warn(`Failed to add planet mesh for ${planet.name}: not a valid THREE.Object3D`);
+            }
+          }
+        } catch (error) {
+          console.error(`Error adding planet mesh: ${error.message}`);
+        }
+      });
+      
+      // Position the system
+      this.mesh.position.copy(this.position);
+      
+      if (scene && scene instanceof THREE.Scene) {
+        scene.add(this.mesh);
+      }
+      
+      return this.mesh;
+    } catch (error) {
+      console.error(`Error creating star system visualization: ${error.message}`);
+      // Return an empty group as fallback
+      const emptyGroup = new THREE.Group();
+      emptyGroup.position.copy(this.position);
+      this.mesh = emptyGroup;
+      return emptyGroup;
     }
-    
-    return this.mesh;
   }
 
   markExplored() {

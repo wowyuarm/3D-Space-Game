@@ -10,6 +10,17 @@ export class Universe {
     this.isInitialized = false;
   }
 
+  /**
+   * Initialize the universe - wrapper for backward compatibility
+   * @param {Object} options - Configuration options
+   * @returns {boolean} Success status
+   */
+  init(options = {}) {
+    // Call the existing initialize method for backward compatibility
+    this.initialize(options);
+    return true;
+  }
+
   initialize(options = {}) {
     if (this.isInitialized) {
       console.warn('Universe already initialized');

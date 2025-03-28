@@ -42,7 +42,7 @@ export class AudioManager {
       
       // 设置全局错误处理
       Howler.autoUnlock = true;
-      Howler.html5PoolSize = 10;  // 减少池大小以避免耗尽
+      Howler.html5PoolSize = 30;  // 增加池大小以避免耗尽警告
       
       this.isInitialized = true;
       console.log('AudioManager initialized successfully');
@@ -51,6 +51,15 @@ export class AudioManager {
     }
     
     return this;
+  }
+
+  /**
+   * Resume audio playback - for use after user interaction
+   * Alias for resumeAll() for backward compatibility
+   */
+  resumeAudio() {
+    this.resumeAll();
+    return true;
   }
 
   // 加载空音频作为占位符，避免第一次用户交互前资源未加载的问题
@@ -68,7 +77,7 @@ export class AudioManager {
             volume: this.soundVolume,
             preload: true,
             html5: true, // 使用HTML5Audio减少Web Audio节点的使用
-            pool: 1 // 减少音频池大小
+            pool: 5 // 增加音频池大小
           });
           this.sounds.set(id, sound);
         } catch (error) {
@@ -86,7 +95,7 @@ export class AudioManager {
           volume: this.musicVolume,
           loop: true,
           html5: true, 
-          pool: 1
+          pool: 2
         });
         this.music.set(mainMusic, music);
       } catch (error) {

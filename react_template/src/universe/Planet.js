@@ -285,7 +285,8 @@ export class Planet {
   }
 
   createPlanetMesh() {
-    if (this.mesh) return this.mesh;
+    // If mesh already exists, return it
+    if (this.mesh && this.mesh instanceof THREE.Object3D) return this.mesh;
     
     try {
       // Create planet geometry
@@ -369,9 +370,14 @@ export class Planet {
       
       return this.mesh;
     } catch (error) {
-      console.error(`Error creating planet mesh: ${error.message}`);
+      console.error(`Error creating planet mesh for ${this.name}: ${error.message}`);
       // Return an empty group as fallback
-      return new THREE.Group();
+      const emptyGroup = new THREE.Group();
+      // Store reference to the planet instance in userData
+      emptyGroup.userData.planet = this;
+      // Store this fallback mesh
+      this.mesh = emptyGroup;
+      return emptyGroup;
     }
   }
 

@@ -47,45 +47,104 @@ export class GameEngine {
     console.log('Initializing GameEngine...');
     
     try {
+      // 记录初始化步骤
+      const initSteps = [];
+      
       // Initialize renderer with canvas if provided
       if (canvas) {
+        console.log('使用提供的canvas初始化渲染器');
         this.renderer = new Renderer();
         this.renderer.init(canvas, window.innerWidth, window.innerHeight);
+        initSteps.push('Renderer initialized with canvas');
       } else {
         // Otherwise create our own renderer
+        console.log('创建内部渲染器');
         const success = await this.initRenderer();
         if (!success) {
           console.error('Failed to initialize renderer');
           return false;
         }
+        initSteps.push('Internal renderer initialized');
       }
       
+      // 确保渲染器成功初始化
+      if (!this.renderer || !this.renderer.isInitialized) {
+        console.error('Renderer initialization failed or not completed');
+        return false;
+      }
+      
+      console.log('初始化物理系统');
       // Initialize physics system
       this.physicsSystem = new PhysicsSystem();
       this.physicsSystem.init();
+      initSteps.push('Physics system initialized');
       
+      console.log('初始化输入系统');
       // Initialize input system
       this.inputManager = new InputManager();
       this.inputManager.init(canvas);
+      initSteps.push('Input system initialized');
       
+      // 确保场景已创建
+      if (!this.scene) {
+        console.log('场景尚未创建，初始化场景');
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0x000011);
+        initSteps.push('Scene created');
+      }
+      
+      // 确保相机已创建
+      if (!this.camera) {
+        console.log('相机尚未创建，初始化相机');
+        this.camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          2000
+        );
+        this.camera.position.set(0, 5, 15);
+        this.camera.lookAt(0, 0, 0);
+        initSteps.push('Camera created');
+      }
+      
+      console.log('初始化音频系统');
       // Initialize audio system
       const audioSuccess = this.initAudio();
       if (!audioSuccess) {
         console.warn('Audio system initialization failed, continuing without audio');
+      } else {
+        initSteps.push('Audio system initialized');
       }
       
+      console.log('初始化游戏状态');
       // Initialize game state
       this.gameState = new GameState();
       // Check if GameState has an init method, otherwise use initialize
       if (typeof this.gameState.init === 'function') {
         this.gameState.init({ gameEngine: this });
+        initSteps.push('GameState initialized with init()');
       } else if (typeof this.gameState.initialize === 'function') {
         this.gameState.initialize({ gameEngine: this });
+        initSteps.push('GameState initialized with initialize()');
       }
       
+      // 设置当前场景和相机
+      console.log('设置GameEngine的场景和相机');
+      if (this.gameState && this.gameState.currentScene) {
+        this.scene = this.gameState.currentScene;
+        initSteps.push('Using GameState scene');
+      }
+      
+      if (this.gameState && this.gameState.currentCamera) {
+        this.camera = this.gameState.currentCamera;
+        initSteps.push('Using GameState camera');
+      }
+      
+      console.log('初始化UI管理器');
       // Create UI manager
       this.uiManager = new UIManager();
       this.uiManager.init();
+      initSteps.push('UI manager initialized');
       
       // Connect components
       this.uiManager.setGameState(this.gameState);
@@ -93,41 +152,55 @@ export class GameEngine {
         this.uiManager.setAudioManager(this.audioManager);
       }
       
+      console.log('初始化宇宙');
       // Initialize universe
       this.universe = new Universe();
       this.universe.init();
+      initSteps.push('Universe initialized');
       
+      console.log('设置玩家飞船');
       // Set up player ship
       this.player = new PlayerShip();
-      this.player.init(this.scene, new THREE.Vector3(0, 0, 10));
+      // 确保场景存在
+      const shipInitScene = this.scene || this.gameState?.currentScene || new THREE.Scene();
+      this.player.init(shipInitScene, new THREE.Vector3(0, 0, 10));
+      initSteps.push('Player ship initialized');
       
+      console.log('设置相机控制器');
       // Set up camera to follow player
       this.cameraController = new CameraController(this.camera);
       this.cameraController.setTarget(this.player.getObject());
+      initSteps.push('Camera controller initialized');
       
+      console.log('初始化资源管理器');
       // Set up resource management
       this.resourceManager = new ResourceManager();
       this.resourceManager.init();
+      initSteps.push('Resource manager initialized');
       
+      console.log('初始化任务系统');
       // Set up mission system
       this.missionSystem = new MissionSystem(this);
       this.missionSystem.init();
+      initSteps.push('Mission system initialized');
       
+      console.log('设置后处理效果');
       // Set up post-processing if renderer was provided
       if (this.renderer) {
         this.postProcessor = new PostProcessor();
         this.postProcessor.init(this.renderer, this.gameState.gameSettings.pixelationLevel || 4);
-      } else {
-        // Initialize post-processing effects
-        this.initPostProcessing();
+        initSteps.push('Post-processor initialized');
       }
       
       // Set up event listeners
       window.addEventListener('resize', this.onWindowResize.bind(this));
+      initSteps.push('Event listeners set up');
       
       // Mark as initialized
       this.isInitialized = true;
       this.lastUpdateTime = performance.now();
+      
+      console.log('游戏引擎初始化完成。初始化步骤:', initSteps.join(' → '));
       
       // Play background music once initialized
       if (this.audioManager) {
@@ -276,44 +349,73 @@ export class GameEngine {
   }
   
   initAudio() {
-    // Initialize audio system if not already
-    if (!this.audioManager) {
-      try {
-        this.audioManager = new AudioManager();
+    try {
+      console.log('Initializing audio system...');
+      
+      // 创建音频管理器
+      this.audioManager = new AudioManager();
+      
+      // 初始化音频管理器
+      if (typeof this.audioManager.init === 'function') {
         this.audioManager.init();
+      }
+      
+      // 主动标记所有可能有问题的音频文件
+      if (this.audioManager.knownBrokenAudio) {
+        console.log('Pre-marking potentially problematic audio files...');
         
-        // Wait for user interaction before loading audio
-        const unlockAudio = () => {
-          if (!this.audioInitialized) {
+        const potentialProblemFiles = [
+          'resource_collected', 
+          'space_ambient', 
+          'main_theme',
+          'discovery',
+          'button_click',
+          'alert'
+        ];
+        
+        potentialProblemFiles.forEach(id => {
+          this.audioManager.knownBrokenAudio.add(id);
+          console.log(`Pre-marking ${id} as problematic audio file`);
+        });
+      }
+      
+      // 立即创建静音替代品
+      if (typeof this.audioManager.createSilentAudio === 'function') {
+        const criticalSounds = ['button_click', 'alert', 'resource_collected'];
+        criticalSounds.forEach(id => {
+          if (!this.audioManager.sounds.has(id)) {
+            console.log(`Creating silent replacement for sound: ${id}`);
+            this.audioManager.sounds.set(id, this.audioManager.createSilentAudio());
+          }
+        });
+        
+        const musicTracks = ['main_theme', 'space_ambient'];
+        musicTracks.forEach(id => {
+          if (!this.audioManager.music.has(id)) {
+            console.log(`Creating silent replacement for music: ${id}`);
+            this.audioManager.music.set(id, this.audioManager.createSilentAudio(true));
+          }
+        });
+      }
+      
+      // 确保音频在用户交互后解锁
+      window.addEventListener('click', () => {
+        try {
+          if (this.audioManager && typeof this.audioManager.resumeAudio === 'function') {
             this.audioManager.resumeAudio();
-            
-            // Preload main sound effects
-            this.audioManager.preloadSounds([
-              'button_click', 
-              'alert', 
-              'resource_collected'
-            ]);
-            
-            this.audioInitialized = true;
             console.log('Audio unlocked by user interaction');
           }
-          
-          // Remove event listeners
-          document.removeEventListener('click', unlockAudio);
-          document.removeEventListener('keydown', unlockAudio);
-        };
-        
-        // Add event listeners to unlock audio
-        document.addEventListener('click', unlockAudio);
-        document.addEventListener('keydown', unlockAudio);
-        
-        return true;
-      } catch (error) {
-        console.error('Failed to initialize audio system:', error);
-        return false;
-      }
+        } catch (error) {
+          console.warn('Error resuming audio on user interaction:', error);
+        }
+      }, { once: true });
+      
+      return true;
+    } catch (error) {
+      console.error('Failed to initialize audio system:', error);
+      // 返回true，表示即使音频系统初始化失败，游戏也应继续进行
+      return true;
     }
-    return true;
   }
   
   /**

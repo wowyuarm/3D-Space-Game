@@ -304,45 +304,62 @@ export function UIManagerComponent({ gameEngine }) {
   
   // Functions to interact with the UI
   const handleStartGame = () => {
-    // Initialize or reset game state
-    if (gameEngine && gameEngine.gameState) {
-      if (!gameEngine.isRunning) {
-        gameEngine.start();
-      } else if (gameEngine.gameState.isNewGame) {
-        gameEngine.gameState.resetGame();
-      }
-    }
+    console.log('UIManager: 启动游戏...');
     
-    // Play game start sound
-    if (gameEngine && gameEngine.audioManager) {
-      try {
-        const audioManager = gameEngine.audioManager;
-        // 增加错误处理，确保即使音频文件加载失败也不会阻塞游戏流程
-        const musicId = 'main_theme';
-        
-        // 检查音频是否可用，不可用时不尝试播放
-        if (audioManager.isInitialized && 
-            (!audioManager.knownBrokenAudio || !audioManager.knownBrokenAudio.has(musicId))) {
-          gameEngine.audioManager.playMusic(musicId, true, true);
-        } else {
-          console.log(`Skipping music ${musicId} as it appears to be unavailable`);
+    try {
+      // Initialize or reset game state
+      if (gameEngine && gameEngine.gameState) {
+        console.log('UIManager: 初始化或重置游戏状态');
+        if (!gameEngine.isRunning) {
+          console.log('UIManager: 游戏未运行，正在启动引擎');
+          gameEngine.start();
+        } else if (gameEngine.gameState.isNewGame) {
+          console.log('UIManager: 这是新游戏，重置游戏状态');
+          gameEngine.gameState.resetGame();
         }
-      } catch (error) {
-        console.warn('Failed to play main theme music, continuing without audio:', error);
+      } else {
+        console.warn('UIManager: gameEngine或gameState不存在！');
       }
+      
+      // Play game start sound
+      if (gameEngine && gameEngine.audioManager) {
+        try {
+          console.log('UIManager: 尝试播放主题音乐');
+          const audioManager = gameEngine.audioManager;
+          // 增加错误处理，确保即使音频文件加载失败也不会阻塞游戏流程
+          const musicId = 'main_theme';
+          
+          // 检查音频是否可用，不可用时不尝试播放
+          if (audioManager.isInitialized && 
+              (!audioManager.knownBrokenAudio || !audioManager.knownBrokenAudio.has(musicId))) {
+            gameEngine.audioManager.playMusic(musicId, true, true);
+          } else {
+            console.log(`UIManager: 跳过音乐 ${musicId}，因为它不可用`);
+          }
+        } catch (error) {
+          console.warn('UIManager: 播放主题音乐失败，继续游戏:', error);
+        }
+      } else {
+        console.warn('UIManager: 音频管理器不存在');
+      }
+      
+      console.log('UIManager: 切换到游戏屏幕');
+      // Switch to game screen
+      setUiState(prev => ({
+        ...prev,
+        currentScreen: 'game',
+        showHUD: true,
+        isGamePaused: false,
+        tutorialState: {
+          ...prev.tutorialState,
+          active: !prev.tutorialState.completed
+        }
+      }));
+      
+      console.log('UIManager: 游戏成功启动');
+    } catch (error) {
+      console.error('UIManager: 启动游戏过程中发生错误:', error);
     }
-    
-    // Switch to game screen
-    setUiState(prev => ({
-      ...prev,
-      currentScreen: 'game',
-      showHUD: true,
-      isGamePaused: false,
-      tutorialState: {
-        ...prev.tutorialState,
-        active: !prev.tutorialState.completed
-      }
-    }));
   };
   
   const handleOpenStarMap = () => {

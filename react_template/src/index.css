@@ -947,3 +947,29 @@ body {
     opacity: 1;
   }
 }
+
+/* 确保错误提示框是可见的 */
+.init-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(200, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 80%;
+  text-align: center;
+  z-index: 1000;
+  font-family: 'Press Start 2P', monospace;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+}
+
+.init-error h2 {
+  margin-top: 0;
+  color: #ffcc00;
+}
+
+.init-error p {
+  margin-bottom: 10px;
+}

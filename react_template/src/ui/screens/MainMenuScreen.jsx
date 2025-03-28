@@ -12,18 +12,23 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
     difficulty: 'normal'
   });
   
-  // Add entrance animation when component mounts
+  console.log('MainMenuScreen rendered:', menuState);
+  
   useEffect(() => {
+    console.log('MainMenuScreen mounted');
     setAnimationClass('fade-in');
     
     // Stars background animation setup
     const canvas = document.getElementById('stars-canvas');
     if (canvas) {
+      console.log('Stars canvas found, initializing stars background');
       initStarsBackground(canvas);
+    } else {
+      console.warn('Stars canvas not found!');
     }
     
     return () => {
-      // Cleanup animations or event listeners if necessary
+      console.log('MainMenuScreen unmounted');
     };
   }, []);
   
@@ -82,6 +87,7 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
   };
   
   const handleMenuChange = (newState) => {
+    console.log(`Menu changing from ${menuState} to ${newState}`);
     setAnimationClass('fade-out');
     
     // Wait for fade out animation to complete before changing menu
@@ -89,6 +95,24 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
       setMenuState(newState);
       setAnimationClass('fade-in');
     }, 300);
+  };
+  
+  const handleStartClick = () => {
+    console.log('Start game button clicked, calling onStartGame');
+    if (typeof onStartGame === 'function') {
+      onStartGame();
+    } else {
+      console.error('onStartGame is not a function!', onStartGame);
+    }
+  };
+  
+  const handleLoadClick = () => {
+    console.log('Load game button clicked, calling onLoadGame');
+    if (typeof onLoadGame === 'function') {
+      onLoadGame();
+    } else {
+      console.error('onLoadGame is not a function!', onLoadGame);
+    }
   };
   
   // Render appropriate menu content based on state
@@ -191,20 +215,48 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
       case 'main':
       default:
         return (
-          <div className={`menu-container ${animationClass}`}>
+          <div className={`menu-container ${animationClass}`} style={{zIndex: 100}}>
             <h1 className="game-title">Retro Pixel<br />Space Explorer</h1>
             
             <div className="menu-buttons">
               <button 
                 className="menu-button primary-button" 
-                onClick={onStartGame}
+                onClick={handleStartClick}
+                style={{
+                  display: 'block',
+                  padding: '12px 24px',
+                  margin: '10px auto',
+                  backgroundColor: '#4CAF50',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontFamily: "'Press Start 2P', cursive",
+                  fontSize: '16px',
+                  textTransform: 'uppercase',
+                  transition: 'background-color 0.3s'
+                }}
               >
                 New Game
               </button>
               
               <button 
                 className="menu-button" 
-                onClick={onLoadGame}
+                onClick={handleLoadClick}
+                style={{
+                  display: 'block',
+                  padding: '10px 20px',
+                  margin: '10px auto',
+                  backgroundColor: '#2196F3',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontFamily: "'Press Start 2P', cursive",
+                  fontSize: '14px',
+                  textTransform: 'uppercase',
+                  transition: 'background-color 0.3s'
+                }}
               >
                 Load Game
               </button>
@@ -212,6 +264,20 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
               <button 
                 className="menu-button" 
                 onClick={() => handleMenuChange('options')}
+                style={{
+                  display: 'block',
+                  padding: '10px 20px',
+                  margin: '10px auto',
+                  backgroundColor: '#9E9E9E',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontFamily: "'Press Start 2P', cursive",
+                  fontSize: '14px',
+                  textTransform: 'uppercase',
+                  transition: 'background-color 0.3s'
+                }}
               >
                 Options
               </button>
@@ -219,6 +285,20 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
               <button 
                 className="menu-button" 
                 onClick={() => handleMenuChange('credits')}
+                style={{
+                  display: 'block',
+                  padding: '10px 20px',
+                  margin: '10px auto',
+                  backgroundColor: '#673AB7',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontFamily: "'Press Start 2P', cursive",
+                  fontSize: '14px',
+                  textTransform: 'uppercase',
+                  transition: 'background-color 0.3s'
+                }}
               >
                 Credits
               </button>
@@ -229,12 +309,12 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
   };
   
   return (
-    <div className="main-menu-screen">
+    <div className="main-menu-screen" style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 50}}>
       <canvas id="stars-canvas" className="stars-background"></canvas>
       
       {renderMenuContent()}
       
-      <div className="version-info">
+      <div className="version-info" style={{position: 'absolute', bottom: '10px', right: '10px', color: 'white', opacity: 0.7}}>
         v0.1.0 Alpha
       </div>
     </div>

@@ -10,6 +10,7 @@ const GameHUD = ({ gameEngine, onOpenStarMap, onOpenUpgrades, onSaveGame, onRetu
   const [isPaused, setIsPaused] = useState(false);
   const [showPauseMenu, setShowPauseMenu] = useState(false);
   const [nearestPlanet, setNearestPlanet] = useState(null);
+  const [nearestPlanetDistance, setNearestPlanetDistance] = useState(null);
   
   useEffect(() => {
     if (gameEngine && gameEngine.gameState) {
@@ -23,13 +24,20 @@ const GameHUD = ({ gameEngine, onOpenStarMap, onOpenUpgrades, onSaveGame, onRetu
   // 更新HUD数据
   const updateHUD = () => {
     if (gameEngine && gameEngine.gameState) {
-      setGameState({...gameEngine.gameState});
+      const state = {...gameEngine.gameState};
+      setGameState(state);
+      
+      // 更新最近行星信息
+      if (state.player) {
+        setNearestPlanet(state.player.nearestPlanet);
+        setNearestPlanetDistance(state.player.nearestPlanetDistance);
+      }
     }
   };
   
   // 定期更新HUD数据
   useEffect(() => {
-    const interval = setInterval(updateHUD, 500);
+    const interval = setInterval(updateHUD, 200); // 更新频率提高到200ms
     return () => clearInterval(interval);
   }, [gameEngine]);
   
@@ -66,7 +74,7 @@ const GameHUD = ({ gameEngine, onOpenStarMap, onOpenUpgrades, onSaveGame, onRetu
   // 如果游戏已暂停，显示暂停菜单
   if (isPaused) {
     return (
-      <div className="pause-menu">
+      <div className="pause-screen">
         <div className="pause-menu-container">
           <h2 className="pause-title">游戏已暂停</h2>
           
@@ -139,6 +147,17 @@ const GameHUD = ({ gameEngine, onOpenStarMap, onOpenUpgrades, onSaveGame, onRetu
         </div>
       </div>
       
+      {/* 行星接近提示 */}
+      {nearestPlanet && nearestPlanetDistance < 20 && (
+        <div className="planet-approach-alert">
+          <div className="alert-content">
+            <span className="planet-name">{nearestPlanet.name}</span>
+            <span className="distance">距离: {nearestPlanetDistance.toFixed(1)}</span>
+            <span className="action-hint">按 <kbd>空格键</kbd> 降落</span>
+          </div>
+        </div>
+      )}
+      
       {/* 底部状态栏 - 精简，更透明 */}
       <div className="hud-bottom-bar">
         <div className="ship-stats">
@@ -188,6 +207,15 @@ const GameHUD = ({ gameEngine, onOpenStarMap, onOpenUpgrades, onSaveGame, onRetu
             </span>
           </div>
         </div>
+        
+        {/* 最近行星信息 */}
+        {nearestPlanet && (
+          <div className="nearest-planet-info">
+            <span className="planet-label">最近行星:</span>
+            <span className="planet-name">{nearestPlanet.name}</span>
+            <span className="planet-distance">{nearestPlanetDistance ? nearestPlanetDistance.toFixed(1) : '未知'} 单位</span>
+          </div>
+        )}
       </div>
       
       {/* 资源面板 - 移至右侧，不遮挡游戏中央区域 */}

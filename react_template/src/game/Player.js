@@ -131,48 +131,98 @@ export class Player {
     }
     
     // 空格键处理: 如果靠近星球则着陆，否则执行跃迁/急刹车
-    if (inputManager.isKeyPressed('Space')) {
-      // 检查是否有最近的星球
+    if (inputManager.isKeyPressed('Space') && !this._lastSpaceState) {
+      // 设置空格键状态，防止持续触发
+      this._lastSpaceState = true;
+      
+      // 检查是否有最近的星球，且距离足够近
       if (this.currentStarSystem && this.nearestPlanet && this.nearestPlanetDistance < 20) {
         // 尝试降落到行星上
+        console.log(`尝试降落到行星: ${this.nearestPlanet.name}`);
         this.landOnPlanet(this.nearestPlanet);
       } else {
         // 否则执行跃迁 - 朝当前方向快速加速
+        console.log("执行超空间跃迁");
         this.performJump(deltaTime);
       }
-    } else {
-      // 重置跃迁状态
-      this._isJumping = false;
+    } else if (!inputManager.isKeyPressed('Space')) {
+      // 重置空格键状态
+      this._lastSpaceState = false;
     }
   }
   
-  // 新增跃迁功能
+  // 超空间跃迁功能
   performJump(deltaTime) {
     if (!this.spaceship) return;
     
     // 如果能量足够且不在跃迁中
-    if (this.spaceship.energy > 25 && !this._isJumping) {
-      // 获取当前方向
-      const direction = this.spaceship.getDirection();
+    const jumpEnergyCost = 25;
+    const jumpSpeed = 120.0; // 增强跃迁推力
+    
+    if (this.spaceship.energy > jumpEnergyCost && !this._isJumping) {
+      try {
+        // 获取当前方向
+        const direction = this.spaceship.getDirection();
+        
+        // 设置强大的瞬时速度
+        this.spaceship.velocity.addScaledVector(direction, jumpSpeed);
+        
+        // 消耗能量
+        this.spaceship.energy -= jumpEnergyCost;
+        
+        // 设置跃迁标志
+        this._isJumping = true;
+        
+        // 创建跃迁视觉效果
+        this.createJumpEffect();
+        
+        // 播放跃迁音效
+        if (this.spaceship.gameEngine && this.spaceship.gameEngine.audioManager) {
+          const audioManager = this.spaceship.gameEngine.audioManager;
+          const jumpSound = audioManager.audioFiles['jump'] || audioManager.audioFiles['boost'];
+          
+          if (jumpSound) {
+            audioManager.playSound(jumpSound, 0.8);
+          }
+        }
+        
+        // 添加通知
+        if (this.spaceship.gameEngine && this.spaceship.gameEngine.uiManager) {
+          this.spaceship.gameEngine.uiManager.addNotification(
+            '超空间跃迁已激活', 
+            'info',
+            3000
+          );
+        }
+        
+        console.log('执行超空间跃迁!');
+        
+        // 3秒后自动重置跃迁状态
+        setTimeout(() => {
+          this._isJumping = false;
+        }, 3000);
+        
+        return true;
+      } catch (error) {
+        console.error('跃迁执行失败:', error);
+        return false;
+      }
+    } else if (this.spaceship.energy <= jumpEnergyCost) {
+      // 能量不足，显示提示
+      if (this.spaceship.gameEngine && this.spaceship.gameEngine.uiManager) {
+        this.spaceship.gameEngine.uiManager.addNotification(
+          '能量不足，无法跃迁', 
+          'warning',
+          2000
+        );
+      }
       
-      // 设置强大的瞬时速度
-      this.spaceship.velocity.addScaledVector(direction, 80.0);
-      
-      // 消耗能量
-      this.spaceship.energy -= 25;
-      
-      // 设置跃迁标志
-      this._isJumping = true;
-      
-      // 创建跃迁视觉效果
-      this.createJumpEffect();
-      
-      // 尝试在控制台中输出跃迁效果
-      console.log('执行超空间跃迁!');
-    } else if (this.spaceship.energy <= 25) {
       // 能量不足，只执行普通刹车
       this.spaceship.brake(deltaTime);
+      return false;
     }
+    
+    return false;
   }
   
   // 创建跃迁视觉效果
@@ -180,38 +230,118 @@ export class Player {
     if (!this.spaceship || !this.spaceship.mesh) return;
     
     try {
-      // 这里可以添加粒子效果或其他视觉反馈
-      // 由于需要THREE.js渲染，简单起见先忽略具体实现
-      
-      // 给飞船添加一个临时的发光效果
-      const jumpGlow = this.spaceship.mesh.children.find(child => child.name === 'jumpGlow');
-      
-      if (!jumpGlow) {
-        // 创建一个发光球体
-        const geometry = new THREE.SphereGeometry(3, 16, 16);
-        const material = new THREE.MeshBasicMaterial({
-          color: 0x00ffff,
-          transparent: true,
-          opacity: 0.7,
-          side: THREE.BackSide
-        });
-        
-        const glow = new THREE.Mesh(geometry, material);
-        glow.name = 'jumpGlow';
-        this.spaceship.mesh.add(glow);
-        
-        // 2秒后移除发光效果
-        setTimeout(() => {
-          if (this.spaceship && this.spaceship.mesh) {
-            const glowToRemove = this.spaceship.mesh.children.find(child => child.name === 'jumpGlow');
-            if (glowToRemove) {
-              this.spaceship.mesh.remove(glowToRemove);
-              glowToRemove.geometry.dispose();
-              glowToRemove.material.dispose();
-            }
-          }
-        }, 2000);
+      // 移除现有的跃迁效果
+      const existingGlow = this.spaceship.mesh.children.find(child => child.name === 'jumpGlow');
+      if (existingGlow) {
+        this.spaceship.mesh.remove(existingGlow);
+        existingGlow.geometry.dispose();
+        existingGlow.material.dispose();
       }
+      
+      // 创建一个大型的发光球体
+      const geometry = new THREE.SphereGeometry(5, 24, 24);
+      const material = new THREE.MeshBasicMaterial({
+        color: 0x00ffff,
+        transparent: true,
+        opacity: 0.6,
+        side: THREE.BackSide
+      });
+      
+      const glow = new THREE.Mesh(geometry, material);
+      glow.name = 'jumpGlow';
+      this.spaceship.mesh.add(glow);
+      
+      // 创建双色发光效果
+      const innerGeometry = new THREE.SphereGeometry(3, 20, 20);
+      const innerMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.4,
+        side: THREE.BackSide
+      });
+      
+      const innerGlow = new THREE.Mesh(innerGeometry, innerMaterial);
+      innerGlow.name = 'innerJumpGlow';
+      this.spaceship.mesh.add(innerGlow);
+      
+      // 动画效果
+      let scale = 1.0;
+      let growing = true;
+      
+      const animate = () => {
+        if (!this.spaceship || !this.spaceship.mesh) return;
+        
+        // 缩放动画
+        if (growing) {
+          scale += 0.08;
+          if (scale >= 1.5) growing = false;
+        } else {
+          scale -= 0.05;
+          if (scale <= 1.0) growing = true;
+        }
+        
+        // 应用缩放
+        const jumpGlow = this.spaceship.mesh.children.find(child => child.name === 'jumpGlow');
+        const innerGlow = this.spaceship.mesh.children.find(child => child.name === 'innerJumpGlow');
+        
+        if (jumpGlow) {
+          jumpGlow.scale.set(scale, scale, scale);
+          jumpGlow.material.opacity = 0.6 - Math.abs(scale - 1.25) * 0.3;
+        }
+        
+        if (innerGlow) {
+          innerGlow.scale.set(scale * 1.2, scale * 1.2, scale * 1.2);
+          innerGlow.material.opacity = 0.4 - Math.abs(scale - 1.25) * 0.2;
+        }
+        
+        // 如果还在跃迁中，继续动画
+        if (this._isJumping) {
+          requestAnimationFrame(animate);
+        } else {
+          // 停止跃迁，移除发光效果
+          setTimeout(() => {
+            if (this.spaceship && this.spaceship.mesh) {
+              const glowToRemove = this.spaceship.mesh.children.find(child => child.name === 'jumpGlow');
+              const innerGlowToRemove = this.spaceship.mesh.children.find(child => child.name === 'innerJumpGlow');
+              
+              if (glowToRemove) {
+                this.spaceship.mesh.remove(glowToRemove);
+                glowToRemove.geometry.dispose();
+                glowToRemove.material.dispose();
+              }
+              
+              if (innerGlowToRemove) {
+                this.spaceship.mesh.remove(innerGlowToRemove);
+                innerGlowToRemove.geometry.dispose();
+                innerGlowToRemove.material.dispose();
+              }
+            }
+          }, 500);
+        }
+      };
+      
+      // 启动动画
+      animate();
+      
+      // 2.5秒后自动停止动画效果（无论跃迁状态如何）
+      setTimeout(() => {
+        if (this.spaceship && this.spaceship.mesh) {
+          const glowToRemove = this.spaceship.mesh.children.find(child => child.name === 'jumpGlow');
+          const innerGlowToRemove = this.spaceship.mesh.children.find(child => child.name === 'innerJumpGlow');
+          
+          if (glowToRemove) {
+            this.spaceship.mesh.remove(glowToRemove);
+            glowToRemove.geometry.dispose();
+            glowToRemove.material.dispose();
+          }
+          
+          if (innerGlowToRemove) {
+            this.spaceship.mesh.remove(innerGlowToRemove);
+            innerGlowToRemove.geometry.dispose();
+            innerGlowToRemove.material.dispose();
+          }
+        }
+      }, 2500);
     } catch (error) {
       console.error('创建跃迁效果时出错:', error);
     }
@@ -278,15 +408,66 @@ export class Player {
   }
   
   landOnPlanet(planet) {
-    if (!planet || !planet.canLand) return false;
+    if (!planet) {
+      console.warn('尝试降落，但没有指定行星');
+      return false;
+    }
     
+    if (!planet.canLand) {
+      // 显示无法降落的通知
+      if (this.spaceship && this.spaceship.gameEngine && this.spaceship.gameEngine.uiManager) {
+        this.spaceship.gameEngine.uiManager.addNotification(
+          `无法降落到 ${planet.name}`, 
+          'warning',
+          3000
+        );
+      }
+      console.warn(`行星 ${planet.name} 不支持降落`);
+      return false;
+    }
+    
+    // 设置降落状态
     this.currentPlanet = planet;
     this.isLanded = true;
     
-    // Stop ship movement
+    // 停止飞船移动
     if (this.spaceship) {
       this.spaceship.setThrust(0);
       this.spaceship.velocity.set(0, 0, 0);
+      
+      // 播放降落音效
+      if (this.spaceship.gameEngine && this.spaceship.gameEngine.audioManager) {
+        const audioManager = this.spaceship.gameEngine.audioManager;
+        // 使用适当的音效
+        const landingSound = audioManager.audioFiles['landing'] || audioManager.audioFiles['alert'];
+        
+        if (landingSound) {
+          audioManager.playSound(landingSound, 0.7);
+        }
+      }
+      
+      // 显示降落通知
+      if (this.spaceship.gameEngine && this.spaceship.gameEngine.uiManager) {
+        this.spaceship.gameEngine.uiManager.addNotification(
+          `已降落到 ${planet.name}`, 
+          'success',
+          4000
+        );
+      }
+      
+      // 记录统计数据
+      if (this.spaceship.gameEngine && this.spaceship.gameEngine.gameState) {
+        const stats = this.spaceship.gameEngine.gameState.stats;
+        if (stats) {
+          stats.planetLandings = (stats.planetLandings || 0) + 1;
+        }
+      }
+      
+      // 可以在这里添加更多降落功能，例如收集资源、交易等
+      console.log(`成功降落到行星: ${planet.name}`);
+      
+      // 添加一些经验值奖励
+      this.gainExperience(50);
     }
     
     return true;

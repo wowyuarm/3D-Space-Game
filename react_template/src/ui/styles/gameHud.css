@@ -406,4 +406,123 @@
   padding: 2px 4px;
   border-radius: 3px;
   font-family: monospace;
+}
+
+/* 行星接近提示 */
+.planet-approach-alert {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -200px);
+  background: rgba(0, 30, 60, 0.7);
+  border: 2px solid #4488ff;
+  border-radius: 10px;
+  padding: 15px;
+  color: white;
+  text-align: center;
+  pointer-events: none;
+  z-index: 200;
+  animation: pulseGlow 2s infinite;
+  box-shadow: 0 0 20px rgba(0, 136, 255, 0.5);
+  backdrop-filter: blur(3px);
+  max-width: 300px;
+}
+
+.alert-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.planet-name {
+  font-size: 20px;
+  font-weight: bold;
+  color: #5cfffa;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+}
+
+.distance {
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.action-hint {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #ffcc00;
+}
+
+.action-hint kbd {
+  background: rgba(0, 80, 160, 0.8);
+  border: 1px solid #55aaff;
+  border-radius: 4px;
+  padding: 2px 6px;
+  box-shadow: 0 0 10px rgba(0, 136, 255, 0.7);
+  font-family: monospace;
+  font-weight: bold;
+}
+
+/* 最近行星信息样式 */
+.nearest-planet-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 30, 60, 0.5);
+  border-radius: 8px;
+  padding: 6px 12px;
+  margin-left: 20px;
+  border-left: 3px solid #00ccff;
+}
+
+.planet-label {
+  color: #8cf;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.planet-name {
+  color: #5cfffa;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.planet-distance {
+  color: #ffffff;
+  font-size: 12px;
+  background: rgba(0, 60, 120, 0.4);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(68, 136, 255, 0.3);
+}
+
+/* 脉冲动画 */
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 20px rgba(0, 136, 255, 0.5);
+    border-color: #4488ff;
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 200, 255, 0.8);
+    border-color: #00ccff;
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(0, 136, 255, 0.5);
+    border-color: #4488ff;
+  }
+}
+
+/* 修复暂停菜单样式 */
+.pause-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 10, 30, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  pointer-events: auto;
+  backdrop-filter: blur(5px);
 } 

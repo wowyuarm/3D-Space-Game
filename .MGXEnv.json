@@ -1,0 +1,2050 @@
+{
+    "desc": "",
+    "roles": {
+        "Mike": {
+            "name": "Mike",
+            "profile": "Team Leader",
+            "goal": "Manage a team to assist users",
+            "constraints": "",
+            "desc": "",
+            "is_human": false,
+            "enable_memory": true,
+            "role_id": "",
+            "states": [
+                "0. RunCommand"
+            ],
+            "actions": [
+                {
+                    "name": "RunCommand",
+                    "i_context": "",
+                    "prefix": "\n The current date in Los Angeles is 2025-03-27.You are a Team Leader, named Mike, your goal is Manage a team to assist users. \nYou are a member of the MetaGPTX (MGX) team providing software development services on MGX platform.\nIf the request is outside your team members' capabilities such as mini programs, iOS/Android apps, desktop programs, embedded systems, operating systems, etc., tell them you can currently develop web page and can provide a web page demo based on the requirement.\nOtherwise, you MUST respond to the user message by yourself directly, DON'T ask your team members. \n\nYour team member:\nMike: Team Leader, Manage a team to assist users\nEmma: Product Manager, Analyze user needs, create a PRD or Product Research report (including competitive analysis, market research) after collecting information and data online.\nBob: Architect, Design a concise, usable, complete software system. Output the system design.\nAlex: Engineer, Take on game, app, web development and deployment.\nDavid: Data Analyst, Take on any data-related tasks, such as data analysis, machine learning, deep learning, web browsing, web scraping, web searching, terminal operation, document QA & analysis, etc.\n\n",
+                    "desc": "",
+                    "__module_class_name": "metagpt.actions.di.run_command.RunCommand"
+                }
+            ],
+            "rc": {
+                "memory": {
+                    "storage": [
+                        {
+                            "id": "85779b25bb8040a68c56966e2c8e08ab",
+                            "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                            "instruct_content": null,
+                            "role": "user",
+                            "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                            "sent_from": "",
+                            "send_to": [
+                                "Mike",
+                                "<all>"
+                            ],
+                            "metadata": {}
+                        },
+                        {
+                            "id": "56a42d4c42184977a16f624a5c54ba98",
+                            "content": "您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                            "instruct_content": null,
+                            "role": "assistant",
+                            "cause_by": "QuickThink",
+                            "sent_from": "",
+                            "send_to": [
+                                "<all>"
+                            ],
+                            "metadata": {}
+                        },
+                        {
+                            "id": "198cb386b32a460280038d774351fe32",
+                            "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                            "instruct_content": null,
+                            "role": "assistant",
+                            "cause_by": "QuickThink",
+                            "sent_from": "Mike",
+                            "send_to": [
+                                "<all>"
+                            ],
+                            "metadata": {
+                                "agent": "Mike(Team Leader)"
+                            }
+                        }
+                    ],
+                    "index": {
+                        "metagpt.actions.add_requirement.UserRequirement": [
+                            {
+                                "id": "85779b25bb8040a68c56966e2c8e08ab",
+                                "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                                "instruct_content": null,
+                                "role": "user",
+                                "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                                "sent_from": "",
+                                "send_to": [
+                                    "Mike",
+                                    "<all>"
+                                ],
+                                "metadata": {}
+                            }
+                        ],
+                        "QuickThink": [
+                            {
+                                "id": "56a42d4c42184977a16f624a5c54ba98",
+                                "content": "您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                                "instruct_content": null,
+                                "role": "assistant",
+                                "cause_by": "QuickThink",
+                                "sent_from": "",
+                                "send_to": [
+                                    "<all>"
+                                ],
+                                "metadata": {}
+                            },
+                            {
+                                "id": "198cb386b32a460280038d774351fe32",
+                                "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                                "instruct_content": null,
+                                "role": "assistant",
+                                "cause_by": "QuickThink",
+                                "sent_from": "Mike",
+                                "send_to": [
+                                    "<all>"
+                                ],
+                                "metadata": {
+                                    "agent": "Mike(Team Leader)"
+                                }
+                            }
+                        ]
+                    },
+                    "ignore_id": false,
+                    "buffer": [
+                        {
+                            "id": "85779b25bb8040a68c56966e2c8e08ab",
+                            "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                            "instruct_content": null,
+                            "role": "user",
+                            "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                            "sent_from": "",
+                            "send_to": [
+                                "Mike",
+                                "<all>"
+                            ],
+                            "metadata": {}
+                        },
+                        {
+                            "id": "56a42d4c42184977a16f624a5c54ba98",
+                            "content": "您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                            "instruct_content": null,
+                            "role": "assistant",
+                            "cause_by": "QuickThink",
+                            "sent_from": "",
+                            "send_to": [
+                                "<all>"
+                            ],
+                            "metadata": {}
+                        },
+                        {
+                            "id": "198cb386b32a460280038d774351fe32",
+                            "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                            "instruct_content": null,
+                            "role": "assistant",
+                            "cause_by": "QuickThink",
+                            "sent_from": "Mike",
+                            "send_to": [
+                                "<all>"
+                            ],
+                            "metadata": {
+                                "agent": "Mike(Team Leader)"
+                            }
+                        }
+                    ],
+                    "memory_k": 30,
+                    "compress_k": 15,
+                    "prev_summary": null,
+                    "compress_model_name": "gpt-4o-mini"
+                },
+                "working_memory": {
+                    "storage": [],
+                    "index": {},
+                    "ignore_id": false
+                },
+                "state": -1,
+                "watch": [],
+                "react_mode": "react",
+                "max_react_loop": 3
+            },
+            "addresses": [
+                "Mike",
+                "metagpt.roles.di.team_leader.TeamLeader"
+            ],
+            "planner": {
+                "plan": {
+                    "goal": "",
+                    "context": "",
+                    "tasks": [],
+                    "task_map": {},
+                    "current_task_id": ""
+                },
+                "working_memory": {
+                    "storage": [],
+                    "index": {},
+                    "ignore_id": false
+                },
+                "auto_run": true
+            },
+            "recovered": false,
+            "latest_observed_msg": null,
+            "observe_all_msg_from_buffer": true,
+            "system_msg": null,
+            "system_prompt": "\n# Basic Info\n{role_info}\n\n# Data Structure\nclass Task(BaseModel):\n    task_id: str = \"\"\n    dependent_task_ids: list[str] = []\n    instruction: str = \"\"\n    task_type: str = \"\"\n    assignee: str = \"\"\n    \n# Available Task Types\n{task_type_desc}\n\n# Available Commands\n{available_commands}\nSpecial Command: Use {{\"command_name\": \"end\"}} to do nothing or indicate completion of all requirements and the end of actions.\n\n# Example\n{example}\n\n# Instruction\n{instruction}\n\nYou may use any of the available commands. You may output mutiple commands, they will be executed sequentially.\nIf you finish current task, you will automatically take the next task in the existing plan, use Plan.finish_current_task, DON'T append a new task.\nReview the latest plan's outcome. If your completed task matches the current, consider it finished.\nIn your response, include at least one command. If you want to stop, use {{\"command_name\":\"end\"}} command.\n\n# Output (a json array of commands)\n\nSome thoughts...\n```json\n[\n    {{\n        \"command_name\": \"ClassName.method_name\" or \"function_name\",\n        \"args\": {{\"arg_name\": arg_value, ...}}\n    }},\n    {{\n        \"command_name\": \"ClassName2.method_name2\" or \"function_name2\",\n        \"args\": {{\"arg_name2\": arg_value2, ...}}\n    }},\n    ...\n]\n```\n",
+            "cmd_prompt": "\n# Past Experience\n<experience>\n\n# Current State\n{current_state}\n\n# Current Plan\n{plan_status}\n\n# Current Task\n{current_task}\n\nYour commands (output ONE and ONLY ONE command block, the block can contain one or more commands. If you want to stop, use {{\"command_name\": \"end\"}}):\n",
+            "instruction": "\nBased on the context, write a plan or modify an existing plan to achieve the goal. A plan consists of one to 3 tasks.\nIf plan is created, you should track the progress and update the plan accordingly, such as Plan.finish_current_task, Plan.append_task, Plan.reset_task, Plan.replace_task, etc.\nWhen presented a current task, tackle the task using the available commands.\nPay close attention to new user message, review the conversation history, use RoleZero.reply_to_human to respond to new user requirement.\nNote:\n1. If you keeping encountering errors, unexpected situation, or you are not sure of proceeding, use RoleZero.ask_human to ask for help.\n2. Carefully review your progress at the current task, if your actions so far has not fulfilled the task instruction, you should continue with current task. Otherwise, finish current task by Plan.finish_current_task explicitly.\n3. Each time you finish a task, use RoleZero.reply_to_human to report your progress.\n4. Don't forget to append task first when all existing tasks are finished and new tasks are required.\n5. Avoid repeating tasks you have already completed. And end loop when all requirements are met.\n",
+            "task_type_desc": null,
+            "react_mode": "react",
+            "max_react_loop": 3,
+            "consecutive_react_cnt": 0,
+            "max_consecutive_react_limit": 10,
+            "tools": [
+                "Plan",
+                "RoleZero",
+                "TeamLeader"
+            ],
+            "tool_recommender": {
+                "tools": {
+                    "Plan": {
+                        "name": "Plan",
+                        "path": "metagpt/schema.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "Plan is a sequence of tasks towards a goal.",
+                            "methods": {
+                                "append_task": {
+                                    "type": "function",
+                                    "description": "Append a new task with task_id (number) to the end of existing task sequences. If dependent_task_ids is not empty, the task will depend on the tasks with the ids in the list. Note that the assignee should be the 'name' of the role.",
+                                    "signature": "(self, task_id: 'str', dependent_task_ids: 'list[str]', instruction: 'str', assignee: 'str', task_type: 'str' = '')",
+                                    "parameters": ""
+                                },
+                                "finish_current_task": {
+                                    "type": "function",
+                                    "description": "Finish current task, set Task.is_finished=True, set current task to next task",
+                                    "signature": "(self)",
+                                    "parameters": ""
+                                },
+                                "replace_task": {
+                                    "type": "function",
+                                    "description": "Replace an existing task (can be current task) based on task_id, and reset all tasks depending on it.",
+                                    "signature": "(self, task_id: 'str', new_dependent_task_ids: 'list[str]', new_instruction: 'str', new_assignee: 'str')",
+                                    "parameters": ""
+                                },
+                                "reset_task": {
+                                    "type": "function",
+                                    "description": "Reset a task based on task_id, i.e. set Task.is_finished=False and request redo. This also resets all tasks depending on it. ",
+                                    "signature": "(self, task_id: 'str')",
+                                    "parameters": "Args: task_id (str): The ID of the task to be reset."
+                                }
+                            },
+                            "tool_path": "metagpt/schema.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "RoleZero": {
+                        "name": "RoleZero",
+                        "path": "metagpt/roles/di/role_zero.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A role who can think and act dynamically",
+                            "methods": {
+                                "ask_human": {
+                                    "type": "async_function",
+                                    "description": "Use this when you fail the current task or if you are unsure of the situation encountered. Your response should contain a brief summary of your situation, ended with a clear and concise question.",
+                                    "signature": "(self, question: 'str') -> 'str'",
+                                    "parameters": ""
+                                },
+                                "reply_to_human": {
+                                    "type": "async_function",
+                                    "description": "Reply to human user with the content provided. Use this when you have a clear answer or solution to the user's question.",
+                                    "signature": "(self, content: 'str') -> 'str'",
+                                    "parameters": ""
+                                }
+                            },
+                            "tool_path": "metagpt/roles/di/role_zero.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "TeamLeader": {
+                        "name": "TeamLeader",
+                        "path": "metagpt/roles/di/team_leader.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A role who can think and act dynamically",
+                            "methods": {
+                                "publish_team_message": {
+                                    "type": "function",
+                                    "description": "Publish a message to a team member, use member name to fill send_to args. You may copy the full original content or add additional information from upstream. This will make team members start their work. DONT omit any necessary info such as path, link, environment, programming language, framework, requirement, constraint from original content to team members because you are their sole info source.",
+                                    "signature": "(self, content: 'str', send_to: 'str')",
+                                    "parameters": ""
+                                }
+                            },
+                            "tool_path": "metagpt/roles/di/team_leader.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    }
+                },
+                "force": true
+            },
+            "special_tool_commands": [
+                "Plan.finish_current_task",
+                "end",
+                "Terminal.run",
+                "RoleZero.ask_human"
+            ],
+            "editor": {
+                "resource": {
+                    "block": "Editor",
+                    "uuid": "ba522a18-6dd2-44d8-8b52-ed1b17ae922b",
+                    "enable_llm_stream": false,
+                    "callback_url": ""
+                },
+                "current_file": null,
+                "current_line": 1,
+                "window": 50,
+                "enable_auto_lint": true,
+                "working_dir": "../workspace"
+            },
+            "browser": {
+                "accessibility_tree": [],
+                "headless": true,
+                "proxy": null,
+                "is_empty_page": true,
+                "reporter": {
+                    "block": "Browser",
+                    "uuid": "82f5fa46-568a-4b13-b4d6-40b02b5f89d3",
+                    "enable_llm_stream": false,
+                    "callback_url": ""
+                },
+                "url": null
+            },
+            "terminal": {
+                "tabs": {},
+                "current_tab_id": "",
+                "forbidden_commands": {
+                    "run preview": "Use Deployer.deploy_to_public instead.",
+                    "serve ": "Use Deployer.deploy_to_public instead."
+                },
+                "timeout": 60.0
+            },
+            "working_dir": "/data/chats/idju2/workspace",
+            "command_rsp": "",
+            "commands": [],
+            "memory_k": 30,
+            "use_fixed_sop": false,
+            "use_summary": false,
+            "__module_class_name": "metagpt.roles.di.team_leader.TeamLeader"
+        },
+        "Emma": {
+            "name": "Emma",
+            "profile": "Product Manager",
+            "goal": "Analyze user needs, create a PRD or Product Research report (including competitive analysis, market research) after collecting information and data online.",
+            "constraints": "utilize the same language as the user requirements for seamless communication",
+            "desc": "",
+            "is_human": false,
+            "enable_memory": true,
+            "role_id": "",
+            "states": [
+                "0. RunCommand"
+            ],
+            "actions": [
+                {
+                    "name": "RunCommand",
+                    "i_context": "",
+                    "prefix": " The current date in Los Angeles is 2025-03-27.You are a Product Manager, named Emma, your goal is Analyze user needs, create a PRD or Product Research report (including competitive analysis, market research) after collecting information and data online.. the constraint is utilize the same language as the user requirements for seamless communication. \nYou are a member of the MetaGPTX (MGX) team providing software development services on MGX platform.\nIf the request is outside your team members' capabilities such as mini programs, iOS/Android apps, desktop programs, embedded systems, operating systems, etc., tell them you can currently develop web page and can provide a web page demo based on the requirement.\nOtherwise, you MUST respond to the user message by yourself directly, DON'T ask your team members. \n",
+                    "desc": "",
+                    "__module_class_name": "metagpt.actions.di.run_command.RunCommand"
+                }
+            ],
+            "rc": {
+                "memory": {
+                    "storage": [
+                        {
+                            "id": "85779b25bb8040a68c56966e2c8e08ab",
+                            "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                            "instruct_content": null,
+                            "role": "user",
+                            "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                            "sent_from": "",
+                            "send_to": [
+                                "Mike",
+                                "<all>"
+                            ],
+                            "metadata": {}
+                        },
+                        {
+                            "id": "198cb386b32a460280038d774351fe32",
+                            "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                            "instruct_content": null,
+                            "role": "assistant",
+                            "cause_by": "QuickThink",
+                            "sent_from": "Mike",
+                            "send_to": [
+                                "<all>"
+                            ],
+                            "metadata": {
+                                "agent": "Mike(Team Leader)"
+                            }
+                        }
+                    ],
+                    "index": {
+                        "metagpt.actions.add_requirement.UserRequirement": [
+                            {
+                                "id": "85779b25bb8040a68c56966e2c8e08ab",
+                                "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                                "instruct_content": null,
+                                "role": "user",
+                                "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                                "sent_from": "",
+                                "send_to": [
+                                    "Mike",
+                                    "<all>"
+                                ],
+                                "metadata": {}
+                            }
+                        ],
+                        "QuickThink": [
+                            {
+                                "id": "198cb386b32a460280038d774351fe32",
+                                "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                                "instruct_content": null,
+                                "role": "assistant",
+                                "cause_by": "QuickThink",
+                                "sent_from": "Mike",
+                                "send_to": [
+                                    "<all>"
+                                ],
+                                "metadata": {
+                                    "agent": "Mike(Team Leader)"
+                                }
+                            }
+                        ]
+                    },
+                    "ignore_id": false,
+                    "buffer": [
+                        {
+                            "id": "85779b25bb8040a68c56966e2c8e08ab",
+                            "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                            "instruct_content": null,
+                            "role": "user",
+                            "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                            "sent_from": "",
+                            "send_to": [
+                                "Mike",
+                                "<all>"
+                            ],
+                            "metadata": {}
+                        },
+                        {
+                            "id": "198cb386b32a460280038d774351fe32",
+                            "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                            "instruct_content": null,
+                            "role": "assistant",
+                            "cause_by": "QuickThink",
+                            "sent_from": "Mike",
+                            "send_to": [
+                                "<all>"
+                            ],
+                            "metadata": {
+                                "agent": "Mike(Team Leader)"
+                            }
+                        }
+                    ],
+                    "memory_k": 30,
+                    "compress_k": 15,
+                    "prev_summary": null,
+                    "compress_model_name": "gpt-4o-mini"
+                },
+                "working_memory": {
+                    "storage": [],
+                    "index": {},
+                    "ignore_id": false
+                },
+                "state": -1,
+                "watch": [],
+                "react_mode": "react",
+                "max_react_loop": 50
+            },
+            "addresses": [
+                "Emma",
+                "metagpt.roles.product_manager.ProductManager"
+            ],
+            "planner": {
+                "plan": {
+                    "goal": "",
+                    "context": "",
+                    "tasks": [],
+                    "task_map": {},
+                    "current_task_id": ""
+                },
+                "working_memory": {
+                    "storage": [],
+                    "index": {},
+                    "ignore_id": false
+                },
+                "auto_run": true
+            },
+            "recovered": false,
+            "latest_observed_msg": null,
+            "observe_all_msg_from_buffer": true,
+            "system_msg": null,
+            "system_prompt": "\n# Basic Info\n{role_info}\n\n# Data Structure\nclass Task(BaseModel):\n    task_id: str = \"\"\n    dependent_task_ids: list[str] = []\n    instruction: str = \"\"\n    task_type: str = \"\"\n    assignee: str = \"\"\n    \n# Available Task Types\n{task_type_desc}\n\n# Available Commands\n{available_commands}\nSpecial Command: Use {{\"command_name\": \"end\"}} to do nothing or indicate completion of all requirements and the end of actions.\n\n# Example\n{example}\n\n# Instruction\n{instruction}\n\nYou may use any of the available commands. You may output mutiple commands, they will be executed sequentially.\nIf you finish current task, you will automatically take the next task in the existing plan, use Plan.finish_current_task, DON'T append a new task.\nReview the latest plan's outcome. If your completed task matches the current, consider it finished.\nIn your response, include at least one command. If you want to stop, use {{\"command_name\":\"end\"}} command.\n\n# Output (a json array of commands)\n\nSome thoughts...\n```json\n[\n    {{\n        \"command_name\": \"ClassName.method_name\" or \"function_name\",\n        \"args\": {{\"arg_name\": arg_value, ...}}\n    }},\n    {{\n        \"command_name\": \"ClassName2.method_name2\" or \"function_name2\",\n        \"args\": {{\"arg_name2\": arg_value2, ...}}\n    }},\n    ...\n]\n```\n",
+            "cmd_prompt": "\n# Past Experience\n<experience>\n\n# Current State\n{current_state}\n\n# Current Plan\n{plan_status}\n\n# Current Task\n{current_task}\n\nYour commands (output ONE and ONLY ONE command block, the block can contain one or more commands. If you want to stop, use {{\"command_name\": \"end\"}}):\n",
+            "instruction": "\nBased on the context, write a plan or modify an existing plan to achieve the goal. A plan consists of one to 3 tasks.\nIf plan is created, you should track the progress and update the plan accordingly, such as Plan.finish_current_task, Plan.append_task, Plan.reset_task, Plan.replace_task, etc.\nWhen presented a current task, tackle the task using the available commands.\nPay close attention to new user message, review the conversation history, use RoleZero.reply_to_human to respond to new user requirement.\nNote:\n1. If you keeping encountering errors, unexpected situation, or you are not sure of proceeding, use RoleZero.ask_human to ask for help.\n2. Carefully review your progress at the current task, if your actions so far has not fulfilled the task instruction, you should continue with current task. Otherwise, finish current task by Plan.finish_current_task explicitly.\n3. Each time you finish a task, use RoleZero.reply_to_human to report your progress.\n4. Don't forget to append task first when all existing tasks are finished and new tasks are required.\n5. Avoid repeating tasks you have already completed. And end loop when all requirements are met.\n",
+            "task_type_desc": null,
+            "react_mode": "react",
+            "max_react_loop": 50,
+            "consecutive_react_cnt": 0,
+            "max_consecutive_react_limit": 10,
+            "tools": [
+                "Editor:read,write,edit_file_by_replace,append_file",
+                "RoleZero",
+                "SearchEnhancedQA"
+            ],
+            "tool_recommender": {
+                "tools": {
+                    "Editor": {
+                        "name": "Editor",
+                        "path": "metagpt/tools/libs/editor.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A tool for reading, understanding, writing, and editing files. Support local file including text-based files (txt, md, json, py, html, js, css, etc.), pdf, docx, excluding images, csv, excel, or online links For agent: Do NOT initiate multiple Editor.insert_content_at_line calls at the same time, since the line number will change starting with the first execution, making line number of the subsequent calls incorrect. Split the calls into separate responses. For the same reason, Editor.insert_content_at_line should NOT go behind Editor.edit_file_by_replace in the same response. Perform insert operation in a separate response.",
+                            "methods": {
+                                "read": {
+                                    "type": "async_function",
+                                    "description": "Read the whole content of a file. Using an absolute path as the argument for specifying the file location.",
+                                    "signature": "(self, path: str) -> metagpt.tools.libs.editor.FileBlock",
+                                    "parameters": ""
+                                },
+                                "write": {
+                                    "type": "function",
+                                    "description": "Write the whole content to a file. When used, make sure content arg contains the full content of the file.",
+                                    "signature": "(self, path: str, content: str)",
+                                    "parameters": ""
+                                },
+                                "edit_file_by_replace": {
+                                    "type": "function",
+                                    "description": "Edit a file. This will search for `to_replace` in the given file and replace it with `new_content`. Every *to_replace* must *EXACTLY MATCH* the existing source code, character for character, including all comments, docstrings, etc. * The `to_replace` parameter should match EXACTLY one or more consecutive lines from the original file. Be mindful of whitespaces! * If the `to_replace` parameter is not unique in the file, the replacement will not be performed. Make sure to include enough context in `to_replace` to make it unique * The `new_content` parameter should contain the edited lines that should replace the `to_replace` For example, given a file \"path/to/example.txt\" with the following content: ``` line 1 line 2 line 2 line 3 ``` EDITING: If you want to replace the second occurrence of \"line 2\", you can make `to_replace` unique: edit_file_by_replace( 'path/to/example.txt', to_replace='line 2 line 3', new_content='new line line 3', ) This will replace only the second \"line 2\" with \"new line\". The first \"line 2\" will remain unchanged. The resulting file will be: ``` line 1 line 2 new line line 3 ``` REMOVAL: If you want to remove \"line 2\" and \"line 3\", you can set `new_content` to an empty string: edit_file_by_replace( 'path/to/example.txt', to_replace='line 2 line 3', new_content='', )",
+                                    "signature": "(self, file_name: str, to_replace: str, new_content: str) -> str",
+                                    "parameters": ""
+                                },
+                                "append_file": {
+                                    "type": "function",
+                                    "description": "Append content to the given file. It appends text `content` to the end of the specified file. ",
+                                    "signature": "(self, file_name: str, content: str) -> str",
+                                    "parameters": "Args: file_name: str: The name of the file to edit. content: str: The content to insert."
+                                }
+                            },
+                            "tool_path": "metagpt/tools/libs/editor.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "RoleZero": {
+                        "name": "RoleZero",
+                        "path": "metagpt/roles/di/role_zero.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A role who can think and act dynamically",
+                            "methods": {
+                                "ask_human": {
+                                    "type": "async_function",
+                                    "description": "Use this when you fail the current task or if you are unsure of the situation encountered. Your response should contain a brief summary of your situation, ended with a clear and concise question.",
+                                    "signature": "(self, question: 'str') -> 'str'",
+                                    "parameters": ""
+                                },
+                                "reply_to_human": {
+                                    "type": "async_function",
+                                    "description": "Reply to human user with the content provided. Use this when you have a clear answer or solution to the user's question.",
+                                    "signature": "(self, content: 'str') -> 'str'",
+                                    "parameters": ""
+                                }
+                            },
+                            "tool_path": "metagpt/roles/di/role_zero.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "SearchEnhancedQA": {
+                        "name": "SearchEnhancedQA",
+                        "path": "metagpt/actions/search_enhanced_qa.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "Question answering and info searching through search engine.",
+                            "methods": {
+                                "run": {
+                                    "type": "async_function",
+                                    "description": "Answer a query by leveraging web search results. ",
+                                    "signature": "(self, query: 'str', rewrite_query: 'bool' = True) -> 'str'",
+                                    "parameters": "Args: query (str): The original user query. rewrite_query (bool): Whether to rewrite the query for better web search results. Defaults to True. Returns: str: A detailed answer based on web search results. Raises: ValueError: If the query is invalid."
+                                }
+                            },
+                            "tool_path": "metagpt/actions/search_enhanced_qa.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    }
+                },
+                "force": true
+            },
+            "special_tool_commands": [
+                "Plan.finish_current_task",
+                "end",
+                "Terminal.run",
+                "RoleZero.ask_human"
+            ],
+            "editor": {
+                "resource": {
+                    "block": "Editor",
+                    "uuid": "ba522a18-6dd2-44d8-8b52-ed1b17ae922b",
+                    "enable_llm_stream": false,
+                    "callback_url": ""
+                },
+                "current_file": null,
+                "current_line": 1,
+                "window": 50,
+                "enable_auto_lint": true,
+                "working_dir": "../workspace"
+            },
+            "browser": {
+                "accessibility_tree": [],
+                "headless": true,
+                "proxy": null,
+                "is_empty_page": true,
+                "reporter": {
+                    "block": "Browser",
+                    "uuid": "82f5fa46-568a-4b13-b4d6-40b02b5f89d3",
+                    "enable_llm_stream": false,
+                    "callback_url": ""
+                },
+                "url": null
+            },
+            "terminal": {
+                "tabs": {},
+                "current_tab_id": "",
+                "forbidden_commands": {
+                    "run preview": "Use Deployer.deploy_to_public instead.",
+                    "serve ": "Use Deployer.deploy_to_public instead."
+                },
+                "timeout": 60.0
+            },
+            "working_dir": "/data/chats/idju2/workspace",
+            "command_rsp": "",
+            "commands": [],
+            "memory_k": 30,
+            "use_fixed_sop": false,
+            "use_summary": true,
+            "todo_action": "WritePRD",
+            "__module_class_name": "metagpt.roles.product_manager.ProductManager"
+        },
+        "Bob": {
+            "name": "Bob",
+            "profile": "Architect",
+            "goal": "Design a concise, usable, complete software system. Output the system design.",
+            "constraints": "Make sure the architecture is simple enough and use appropriate open source libraries. Use same language as user requirement",
+            "desc": "",
+            "is_human": false,
+            "enable_memory": false,
+            "role_id": "",
+            "states": [
+                "0. WriteDesign"
+            ],
+            "actions": [
+                {
+                    "name": "WriteDesign",
+                    "i_context": null,
+                    "prefix": " The current date in Los Angeles is 2025-03-27.You are a Architect, named Bob, your goal is Design a concise, usable, complete software system. Output the system design.. the constraint is Make sure the architecture is simple enough and use appropriate open source libraries. Use same language as user requirement. \nYou are a member of the MetaGPTX (MGX) team providing software development services on MGX platform.\nIf the request is outside your team members' capabilities such as mini programs, iOS/Android apps, desktop programs, embedded systems, operating systems, etc., tell them you can currently develop web page and can provide a web page demo based on the requirement.\nOtherwise, you MUST respond to the user message by yourself directly, DON'T ask your team members. \n",
+                    "desc": "Based on the PRD, think about the system design, and design the corresponding APIs, data structures, library tables, processes, and paths. Please provide your design, feedback clearly and in detail.",
+                    "__module_class_name": "metagpt.actions.design_api.WriteDesign"
+                }
+            ],
+            "rc": {
+                "memory": {
+                    "storage": [
+                        {
+                            "id": "85779b25bb8040a68c56966e2c8e08ab",
+                            "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                            "instruct_content": null,
+                            "role": "user",
+                            "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                            "sent_from": "",
+                            "send_to": [
+                                "Mike",
+                                "<all>"
+                            ],
+                            "metadata": {}
+                        },
+                        {
+                            "id": "198cb386b32a460280038d774351fe32",
+                            "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                            "instruct_content": null,
+                            "role": "assistant",
+                            "cause_by": "QuickThink",
+                            "sent_from": "Mike",
+                            "send_to": [
+                                "<all>"
+                            ],
+                            "metadata": {
+                                "agent": "Mike(Team Leader)"
+                            }
+                        }
+                    ],
+                    "index": {
+                        "metagpt.actions.add_requirement.UserRequirement": [
+                            {
+                                "id": "85779b25bb8040a68c56966e2c8e08ab",
+                                "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                                "instruct_content": null,
+                                "role": "user",
+                                "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                                "sent_from": "",
+                                "send_to": [
+                                    "Mike",
+                                    "<all>"
+                                ],
+                                "metadata": {}
+                            }
+                        ],
+                        "QuickThink": [
+                            {
+                                "id": "198cb386b32a460280038d774351fe32",
+                                "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                                "instruct_content": null,
+                                "role": "assistant",
+                                "cause_by": "QuickThink",
+                                "sent_from": "Mike",
+                                "send_to": [
+                                    "<all>"
+                                ],
+                                "metadata": {
+                                    "agent": "Mike(Team Leader)"
+                                }
+                            }
+                        ]
+                    },
+                    "ignore_id": false,
+                    "buffer": [
+                        {
+                            "id": "85779b25bb8040a68c56966e2c8e08ab",
+                            "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                            "instruct_content": null,
+                            "role": "user",
+                            "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                            "sent_from": "",
+                            "send_to": [
+                                "Mike",
+                                "<all>"
+                            ],
+                            "metadata": {}
+                        },
+                        {
+                            "id": "198cb386b32a460280038d774351fe32",
+                            "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                            "instruct_content": null,
+                            "role": "assistant",
+                            "cause_by": "QuickThink",
+                            "sent_from": "Mike",
+                            "send_to": [
+                                "<all>"
+                            ],
+                            "metadata": {
+                                "agent": "Mike(Team Leader)"
+                            }
+                        }
+                    ],
+                    "memory_k": 30,
+                    "compress_k": 15,
+                    "prev_summary": null,
+                    "compress_model_name": "gpt-4o-mini"
+                },
+                "working_memory": {
+                    "storage": [],
+                    "index": {},
+                    "ignore_id": false
+                },
+                "state": -1,
+                "watch": [
+                    "metagpt.actions.write_prd.WritePRD"
+                ],
+                "react_mode": "react",
+                "max_react_loop": 50
+            },
+            "addresses": [
+                "metagpt.roles.architect.Architect",
+                "Bob"
+            ],
+            "planner": {
+                "plan": {
+                    "goal": "",
+                    "context": "",
+                    "tasks": [],
+                    "task_map": {},
+                    "current_task_id": ""
+                },
+                "working_memory": {
+                    "storage": [],
+                    "index": {},
+                    "ignore_id": false
+                },
+                "auto_run": true
+            },
+            "recovered": false,
+            "latest_observed_msg": null,
+            "observe_all_msg_from_buffer": true,
+            "system_msg": null,
+            "system_prompt": "\n# Basic Info\n{role_info}\n\n# Data Structure\nclass Task(BaseModel):\n    task_id: str = \"\"\n    dependent_task_ids: list[str] = []\n    instruction: str = \"\"\n    task_type: str = \"\"\n    assignee: str = \"\"\n    \n# Available Task Types\n{task_type_desc}\n\n# Available Commands\n{available_commands}\nSpecial Command: Use {{\"command_name\": \"end\"}} to do nothing or indicate completion of all requirements and the end of actions.\n\n# Example\n{example}\n\n# Instruction\n{instruction}\n\nYou may use any of the available commands. You may output mutiple commands, they will be executed sequentially.\nIf you finish current task, you will automatically take the next task in the existing plan, use Plan.finish_current_task, DON'T append a new task.\nReview the latest plan's outcome. If your completed task matches the current, consider it finished.\nIn your response, include at least one command. If you want to stop, use {{\"command_name\":\"end\"}} command.\n\n# Output (a json array of commands)\n\nSome thoughts...\n```json\n[\n    {{\n        \"command_name\": \"ClassName.method_name\" or \"function_name\",\n        \"args\": {{\"arg_name\": arg_value, ...}}\n    }},\n    {{\n        \"command_name\": \"ClassName2.method_name2\" or \"function_name2\",\n        \"args\": {{\"arg_name2\": arg_value2, ...}}\n    }},\n    ...\n]\n```\n",
+            "cmd_prompt": "\n# Past Experience\n<experience>\n\n# Current State\n{current_state}\n\n# Current Plan\n{plan_status}\n\n# Current Task\n{current_task}\n\nYour commands (output ONE and ONLY ONE command block, the block can contain one or more commands. If you want to stop, use {{\"command_name\": \"end\"}}):\n",
+            "instruction": "\nYou are an architect. Your task is to design a software system that meets the requirements.\n1. If Product Requirement Document (PRD) is provided, read it first with Editor.read in a single response without any other commands. After reading, use it as the requirement.\n2. For web app or game design:\n  - Frontend: if user or the PRD has not specified, the default programming language is React, JavaScript and Tailwind CSS, and you may design the syste\nm on top of a template. See the Template section for more details.\n{backend_info}\n3. You should output a system design that includes the following sections: \n - Implementation approach: Analyze the difficult points of the requirements, select the appropriate open-source framework.\n - Data structures and interfaces: Use mermaid classDiagram code syntax, including classes, method(__init__ etc.) and functions with type annotations, CLEARLY MARK the RELATIONSHIPS between classes, and comply with PEP8 standards. The data structures SHOULD BE VERY DETAILED and the API should be comprehensive with a complete design.\n - Program call flow: Use sequenceDiagram code syntax, COMPLETE and VERY DETAILED, using CLASSES AND API DEFINED ABOVE accurately, covering the CRUD AND INIT of each object, SYNTAX MUST BE CORRECT.\n - Anything UNCLEAR: Mention unclear project aspects, then try to clarify it.\n4. Use Editor.write to write the system design in markdown format. The file path should be \"{{project_name}}_system_design.md\". Use command_name \"end\" when the system design is finished.\n5. If not mentioned, always use Editor.write to write \"Program call flow\" in a new file name \"{{project_name}}_sequence_diagram.mermaid\" and write \"Data structures and interfaces\" in a new file \"{{project_name}}_class_diagram.mermaid\". Mermaid code only. Do not add \"```mermaid\".\n\n## System Design Example\n{system_design_example}\n\n## Template\n{template_info}\n",
+            "task_type_desc": null,
+            "react_mode": "react",
+            "max_react_loop": 50,
+            "consecutive_react_cnt": 0,
+            "max_consecutive_react_limit": 10,
+            "tools": [
+                "Editor:write,read,similarity_search",
+                "RoleZero"
+            ],
+            "tool_recommender": {
+                "tools": {
+                    "Editor": {
+                        "name": "Editor",
+                        "path": "metagpt/tools/libs/editor.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A tool for reading, understanding, writing, and editing files. Support local file including text-based files (txt, md, json, py, html, js, css, etc.), pdf, docx, excluding images, csv, excel, or online links For agent: Do NOT initiate multiple Editor.insert_content_at_line calls at the same time, since the line number will change starting with the first execution, making line number of the subsequent calls incorrect. Split the calls into separate responses. For the same reason, Editor.insert_content_at_line should NOT go behind Editor.edit_file_by_replace in the same response. Perform insert operation in a separate response.",
+                            "methods": {
+                                "write": {
+                                    "type": "function",
+                                    "description": "Write the whole content to a file. When used, make sure content arg contains the full content of the file.",
+                                    "signature": "(self, path: str, content: str)",
+                                    "parameters": ""
+                                },
+                                "read": {
+                                    "type": "async_function",
+                                    "description": "Read the whole content of a file. Using an absolute path as the argument for specifying the file location.",
+                                    "signature": "(self, path: str) -> metagpt.tools.libs.editor.FileBlock",
+                                    "parameters": ""
+                                },
+                                "similarity_search": {
+                                    "type": "async_function",
+                                    "description": "Given a filename or a pathname, performs a similarity search for a given query across the specified file or path. This method searches the index repository for the provided query, classifying the specified files or paths. It performs a search on each cluster of files and handles non-indexed files separately, merging results from structured indices with any direct results from non-indexed files. This function call does not depend on other functions. ",
+                                    "signature": "(query: str, path: Union[str, pathlib.Path]) -> List[str]",
+                                    "parameters": "Args: query (str): The search query string to look for in the indexed files. path (Union[str, Path]): A pathname or filename to search within. Returns: List[str]: A list of results as strings, containing the text from the merged results and any direct results from non-indexed files. Example: >>> query = \"The problem to be analyzed from the document\" >>> file_or_path = \"The pathname or filename you want to search within\" >>> texts: List[str] = await Editor.similarity_search(query=query, path=file_or_path) >>> print(texts)"
+                                }
+                            },
+                            "tool_path": "metagpt/tools/libs/editor.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "RoleZero": {
+                        "name": "RoleZero",
+                        "path": "metagpt/roles/di/role_zero.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A role who can think and act dynamically",
+                            "methods": {
+                                "ask_human": {
+                                    "type": "async_function",
+                                    "description": "Use this when you fail the current task or if you are unsure of the situation encountered. Your response should contain a brief summary of your situation, ended with a clear and concise question.",
+                                    "signature": "(self, question: 'str') -> 'str'",
+                                    "parameters": ""
+                                },
+                                "reply_to_human": {
+                                    "type": "async_function",
+                                    "description": "Reply to human user with the content provided. Use this when you have a clear answer or solution to the user's question.",
+                                    "signature": "(self, content: 'str') -> 'str'",
+                                    "parameters": ""
+                                }
+                            },
+                            "tool_path": "metagpt/roles/di/role_zero.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    }
+                },
+                "force": true
+            },
+            "special_tool_commands": [
+                "Plan.finish_current_task",
+                "end",
+                "Terminal.run",
+                "RoleZero.ask_human"
+            ],
+            "editor": {
+                "resource": {
+                    "block": "Editor",
+                    "uuid": "ba522a18-6dd2-44d8-8b52-ed1b17ae922b",
+                    "enable_llm_stream": false,
+                    "callback_url": ""
+                },
+                "current_file": null,
+                "current_line": 1,
+                "window": 50,
+                "enable_auto_lint": true,
+                "working_dir": "../workspace"
+            },
+            "browser": {
+                "accessibility_tree": [],
+                "headless": true,
+                "proxy": null,
+                "is_empty_page": true,
+                "reporter": {
+                    "block": "Browser",
+                    "uuid": "82f5fa46-568a-4b13-b4d6-40b02b5f89d3",
+                    "enable_llm_stream": false,
+                    "callback_url": ""
+                },
+                "url": null
+            },
+            "terminal": {
+                "tabs": {},
+                "current_tab_id": "",
+                "forbidden_commands": {
+                    "run preview": "Use Deployer.deploy_to_public instead.",
+                    "serve ": "Use Deployer.deploy_to_public instead."
+                },
+                "timeout": 60.0
+            },
+            "working_dir": "/data/chats/idju2/workspace",
+            "command_rsp": "",
+            "commands": [],
+            "memory_k": 30,
+            "use_fixed_sop": false,
+            "use_summary": true,
+            "__module_class_name": "metagpt.roles.architect.Architect"
+        },
+        "Alex": {
+            "name": "Alex",
+            "profile": "Engineer",
+            "goal": "Take on game, app, web development and deployment.",
+            "constraints": "",
+            "desc": "",
+            "is_human": false,
+            "enable_memory": true,
+            "role_id": "",
+            "states": [
+                "0. RunCommand"
+            ],
+            "actions": [
+                {
+                    "name": "RunCommand",
+                    "i_context": "",
+                    "prefix": " The current date in Los Angeles is 2025-03-27.You are a Engineer, named Alex, your goal is Take on game, app, web development and deployment.. \nYou are a member of the MetaGPTX (MGX) team providing software development services on MGX platform.\nIf the request is outside your team members' capabilities such as mini programs, iOS/Android apps, desktop programs, embedded systems, operating systems, etc., tell them you can currently develop web page and can provide a web page demo based on the requirement.\nOtherwise, you MUST respond to the user message by yourself directly, DON'T ask your team members. \n",
+                    "desc": "",
+                    "__module_class_name": "metagpt.actions.di.run_command.RunCommand"
+                }
+            ],
+            "rc": {
+                "memory": {
+                    "storage": [
+                        {
+                            "id": "85779b25bb8040a68c56966e2c8e08ab",
+                            "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                            "instruct_content": null,
+                            "role": "user",
+                            "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                            "sent_from": "",
+                            "send_to": [
+                                "Mike",
+                                "<all>"
+                            ],
+                            "metadata": {}
+                        },
+                        {
+                            "id": "198cb386b32a460280038d774351fe32",
+                            "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                            "instruct_content": null,
+                            "role": "assistant",
+                            "cause_by": "QuickThink",
+                            "sent_from": "Mike",
+                            "send_to": [
+                                "<all>"
+                            ],
+                            "metadata": {
+                                "agent": "Mike(Team Leader)"
+                            }
+                        }
+                    ],
+                    "index": {
+                        "metagpt.actions.add_requirement.UserRequirement": [
+                            {
+                                "id": "85779b25bb8040a68c56966e2c8e08ab",
+                                "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                                "instruct_content": null,
+                                "role": "user",
+                                "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                                "sent_from": "",
+                                "send_to": [
+                                    "Mike",
+                                    "<all>"
+                                ],
+                                "metadata": {}
+                            }
+                        ],
+                        "QuickThink": [
+                            {
+                                "id": "198cb386b32a460280038d774351fe32",
+                                "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                                "instruct_content": null,
+                                "role": "assistant",
+                                "cause_by": "QuickThink",
+                                "sent_from": "Mike",
+                                "send_to": [
+                                    "<all>"
+                                ],
+                                "metadata": {
+                                    "agent": "Mike(Team Leader)"
+                                }
+                            }
+                        ]
+                    },
+                    "ignore_id": false,
+                    "buffer": [
+                        {
+                            "id": "85779b25bb8040a68c56966e2c8e08ab",
+                            "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                            "instruct_content": null,
+                            "role": "user",
+                            "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                            "sent_from": "",
+                            "send_to": [
+                                "Mike",
+                                "<all>"
+                            ],
+                            "metadata": {}
+                        },
+                        {
+                            "id": "198cb386b32a460280038d774351fe32",
+                            "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                            "instruct_content": null,
+                            "role": "assistant",
+                            "cause_by": "QuickThink",
+                            "sent_from": "Mike",
+                            "send_to": [
+                                "<all>"
+                            ],
+                            "metadata": {
+                                "agent": "Mike(Team Leader)"
+                            }
+                        }
+                    ],
+                    "memory_k": 30,
+                    "compress_k": 15,
+                    "prev_summary": null,
+                    "compress_model_name": "gpt-4o-mini"
+                },
+                "working_memory": {
+                    "storage": [],
+                    "index": {},
+                    "ignore_id": false
+                },
+                "state": -1,
+                "watch": [],
+                "react_mode": "react",
+                "max_react_loop": 40
+            },
+            "addresses": [
+                "Alex",
+                "metagpt.roles.di.frontend_engineer.FrontendEngineer"
+            ],
+            "planner": {
+                "plan": {
+                    "goal": "",
+                    "context": "",
+                    "tasks": [],
+                    "task_map": {},
+                    "current_task_id": ""
+                },
+                "working_memory": {
+                    "storage": [],
+                    "index": {},
+                    "ignore_id": false
+                },
+                "auto_run": true
+            },
+            "recovered": false,
+            "latest_observed_msg": null,
+            "observe_all_msg_from_buffer": true,
+            "system_msg": null,
+            "system_prompt": "\n# Basic Info\n{role_info}\n\n# Data Structure\nclass Task(BaseModel):\n    task_id: str = \"\"\n    dependent_task_ids: list[str] = []\n    instruction: str = \"\"\n    task_type: str = \"\"\n    assignee: str = \"\"\n    \n# Available Task Types\n{task_type_desc}\n\n# Available Commands\n{available_commands}\nSpecial Command: Use {{\"command_name\": \"end\"}} to do nothing or indicate completion of all requirements and the end of actions.\n\n# Example\n{example}\n\n# Instruction\n{instruction}\n\nYou may use any of the available commands. You may output mutiple commands, they will be executed sequentially.\nIf you finish current task, you will automatically take the next task in the existing plan, use Plan.finish_current_task, DON'T append a new task.\nReview the latest plan's outcome. If your completed task matches the current, consider it finished.\nIn your response, include at least one command. If you want to stop, use {{\"command_name\":\"end\"}} command.\n\n# Output (a json array of commands)\n\nSome thoughts...\n```json\n[\n    {{\n        \"command_name\": \"ClassName.method_name\" or \"function_name\",\n        \"args\": {{\"arg_name\": arg_value, ...}}\n    }},\n    {{\n        \"command_name\": \"ClassName2.method_name2\" or \"function_name2\",\n        \"args\": {{\"arg_name2\": arg_value2, ...}}\n    }},\n    ...\n]\n```\n",
+            "cmd_prompt": "\n# Current State\n{current_state}\n\nYour commands (output ONE and ONLY ONE command block, the block can contain one or more commands.\nIf you have completed fixing an issue in previous rounds, ask human immediately to test your outcome using RoleZero.reply_to_human. If you want to stop, use {{\"command_name\": \"end\"}}):\n",
+            "instruction": "\nBased on the context, write a plan or modify an existing plan to achieve the goal. A plan consists of one to 3 tasks.\nIf plan is created, you should track the progress and update the plan accordingly, such as Plan.finish_current_task, Plan.append_task, Plan.reset_task, Plan.replace_task, etc.\nWhen presented a current task, tackle the task using the available commands.\nPay close attention to new user message, review the conversation history, use RoleZero.reply_to_human to respond to new user requirement.\nNote:\n1. If you keeping encountering errors, unexpected situation, or you are not sure of proceeding, use RoleZero.ask_human to ask for help.\n2. Carefully review your progress at the current task, if your actions so far has not fulfilled the task instruction, you should continue with current task. Otherwise, finish current task by Plan.finish_current_task explicitly.\n3. Each time you finish a task, use RoleZero.reply_to_human to report your progress.\n4. Don't forget to append task first when all existing tasks are finished and new tasks are required.\n5. Avoid repeating tasks you have already completed. And end loop when all requirements are met.\nYou are an autonomous programmer\n\nThe special interface consists of a file editor that shows you 100 lines of a file at a time.\n\nYou can use terminal commands (e.g., cat, ls, cd) by calling Terminal.run.\n\nYou should carefully observe the behavior and results of the previous action, and avoid triggering repeated errors.\n\nIn addition to the terminal, I also provide additional tools. \n\nIf provided an issue link, you first action must be navigate to the issue page using Browser tool to understand the issue.\n\nYour must check if the repository exists at the current path. If it exists, navigate to the repository path. If the repository doesn't exist, please download it and then navigate to it.\nAll subsequent actions must be performed within this repository path. Do not leave this directory to execute any actions at any time.\n\nNote:\n\n1. If you open a file and need to get to an area around a specific line that is not in the first 100 lines, say line 583, don't just use the scroll_down command multiple times. Instead, use the Editor.goto_line command. It's much quicker. \n2. Always make sure to look at the currently open file and the current working directory (which appears right after the currently open file). The currently open file might be in a different directory than the working directory! Note that some commands, such as 'create', open files, so they might change the current open file.\n3. When using Editor.edit_file_by_replace, if there is no exact match, take the difference in indentation into consideration.\n4. After editing, verify the changes to ensure correct line numbers and proper indentation. Adhere to PEP8 standards for Python code.\n5. NOTE ABOUT THE EDIT COMMAND: Indentation really matters! When editing a file, make sure to insert appropriate indentation before each line! Ensuring the code adheres to PEP8 standards. If a edit command fails, you can try to edit the file again to correct the indentation, but don't repeat the same command without changes.\n6. To avoid syntax errors when editing files multiple times, consider opening the file to view the surrounding code related to the error line and make modifications based on this context.\n7. Ensure to observe the currently open file and the current working directory, which is displayed right after the open file. The open file might be in a different directory than the working directory. Remember, commands like 'create' open files and might alter the current open file.\n8. Effectively using Use search commands (`search_dir`, `search_file`, `find_file`) and navigation commands (`open_file`, `goto_line`) to locate and modify files efficiently. The Editor tool can fully satisfy the requirements. Follow these steps and considerations for optimal results:\n\n9. When the edit fails, try to enlarge the range of code.\n10. You must use the Editor.open_file command to open a file before using the Editor tool's edit command to modify it. When you open a file, any currently open file will be automatically closed.\n11. Remember, when you use Editor.insert_content_at_line or Editor.edit_file_by_replace, the line numbers will change after the operation. Therefore, if there are multiple operations, perform only the first operation in the current response, and defer the subsequent operations to the next turn.\n11.1 Do not use Editor.insert_content_at_line or Editor.edit_file_by_replace more than once per command list.\n12. If you choose Editor.insert_content_at_line, you must ensure that there is no duplication between the inserted content and the original code. If there is overlap between the new code and the original code, use Editor.edit_file_by_replace instead.\n13. If you choose Editor.edit_file_by_replace, the original code that needs to be replaced must start at the beginning of the line and end at the end of the line\n14. When not specified, you should write files in a folder named \"{project_name}\". The project name is the name of the project which meets the user's requirements.\n15. When provided system design or project schedule, you MUST read them first before making a plan, then adhere to them in your implementation, especially in the programming language, package, or framework. You MUST implement all code files prescribed in the system design or project schedule.\n16. When planning, initially list the files for coding, then outline all coding tasks based on the file organization in your first response.\n17. If you plan to read a file, do not include other plans in the same response.\n18. Write only one code file each time and provide its full implementation.\n19. When the requirement is simple, you don't need to create a plan, just do it right away.\n20. When using the editor, pay attention to current directory. When you use editor tools, the paths must be either absolute or relative to the editor's current directory.\n21. When planning, merge multiple tasks that operate on the same file into a single task. For example, create one task for writing unit tests for all functions in a class. Also in using the editor, merge multiple tasks that operate on the same file into a single task.\n22. When create unit tests for a code file, use Editor.read() to read the code file before planing. And create one plan to writing the unit test for the whole file.\n23. The priority to select technology stacks: Describe in Sytem Design and Project Schedule > Vite, React, JavaScript, MUI and Tailwind CSS > native HTML \n23.1. The React template is in the \"/template/default_web_project/react_template\" and Vue template is in the \"/template/default_web_project/vue_template\". \n24. If use Vite, Vue/React, JavaScript, MUI, and Tailwind CSS as the programming language or no programming language is specified in document or user requirement, follow these steps:\n24.1. Create the project folder if no exists. Use cmd \" mkdir -p {project_name} \"\n24.2. Copy a Vue/React template to your project folder, move into it and list the file in it. Use cmd \"cp -r {template_folder}/* {workspace}/{project_name}/ && cd {workspace}/{project_name} && pwd && tree \". This must be a single response without other commands.\n24.3. User Editor.read to read the content of files in the src and read the index.html in the project root before making a plan.\n24.4. List the files that you need to rewrite and create when making a plan. Indicate clearly what file to rewrite or create in each task. \"index.html\" and all files in the src folder always must be rewritten. Use Tailwind CSS for styling. Notice that you are in {project_name}.\n24.5. After finish the project. use \"pnpm install && pnpm run build\" to build the project and then deploy the project to the public using the dist folder which contains the built project.\n25. Engineer2.write_new_code is used to write or rewrite the code, which will modify the whole file. Editor.edit_file_by_replace is used to edit a small part of the file.\n26. Deploye the project to the public after you install and build the project, there will be a folder named \"dist\" in the current directory after the build.\n27. Use Engineer2.write_new_code to rewrite the whole file when you fail to use Editor.edit_file_by_replace more than three times.",
+            "task_type_desc": null,
+            "react_mode": "react",
+            "max_react_loop": 40,
+            "consecutive_react_cnt": 0,
+            "max_consecutive_react_limit": 20,
+            "tools": [
+                "Editor:read,write,edit_file_by_replace,append_file",
+                "RoleZero",
+                "Terminal:run,preview",
+                "SearchEnhancedQA",
+                "Deployer",
+                "Engineer2",
+                "SupabaseManager",
+                "Browser:click,goto,scroll"
+            ],
+            "tool_recommender": {
+                "tools": {
+                    "Editor": {
+                        "name": "Editor",
+                        "path": "metagpt/tools/libs/editor.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A tool for reading, understanding, writing, and editing files. Support local file including text-based files (txt, md, json, py, html, js, css, etc.), pdf, docx, excluding images, csv, excel, or online links For agent: Do NOT initiate multiple Editor.insert_content_at_line calls at the same time, since the line number will change starting with the first execution, making line number of the subsequent calls incorrect. Split the calls into separate responses. For the same reason, Editor.insert_content_at_line should NOT go behind Editor.edit_file_by_replace in the same response. Perform insert operation in a separate response.",
+                            "methods": {
+                                "read": {
+                                    "type": "async_function",
+                                    "description": "Read the whole content of a file. Using an absolute path as the argument for specifying the file location.",
+                                    "signature": "(self, path: str) -> metagpt.tools.libs.editor.FileBlock",
+                                    "parameters": ""
+                                },
+                                "write": {
+                                    "type": "function",
+                                    "description": "Write the whole content to a file. When used, make sure content arg contains the full content of the file.",
+                                    "signature": "(self, path: str, content: str)",
+                                    "parameters": ""
+                                },
+                                "edit_file_by_replace": {
+                                    "type": "function",
+                                    "description": "Edit a file. This will search for `to_replace` in the given file and replace it with `new_content`. Every *to_replace* must *EXACTLY MATCH* the existing source code, character for character, including all comments, docstrings, etc. * The `to_replace` parameter should match EXACTLY one or more consecutive lines from the original file. Be mindful of whitespaces! * If the `to_replace` parameter is not unique in the file, the replacement will not be performed. Make sure to include enough context in `to_replace` to make it unique * The `new_content` parameter should contain the edited lines that should replace the `to_replace` For example, given a file \"path/to/example.txt\" with the following content: ``` line 1 line 2 line 2 line 3 ``` EDITING: If you want to replace the second occurrence of \"line 2\", you can make `to_replace` unique: edit_file_by_replace( 'path/to/example.txt', to_replace='line 2 line 3', new_content='new line line 3', ) This will replace only the second \"line 2\" with \"new line\". The first \"line 2\" will remain unchanged. The resulting file will be: ``` line 1 line 2 new line line 3 ``` REMOVAL: If you want to remove \"line 2\" and \"line 3\", you can set `new_content` to an empty string: edit_file_by_replace( 'path/to/example.txt', to_replace='line 2 line 3', new_content='', )",
+                                    "signature": "(self, file_name: str, to_replace: str, new_content: str) -> str",
+                                    "parameters": ""
+                                },
+                                "append_file": {
+                                    "type": "function",
+                                    "description": "Append content to the given file. It appends text `content` to the end of the specified file. ",
+                                    "signature": "(self, file_name: str, content: str) -> str",
+                                    "parameters": "Args: file_name: str: The name of the file to edit. content: str: The content to insert."
+                                }
+                            },
+                            "tool_path": "metagpt/tools/libs/editor.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "RoleZero": {
+                        "name": "RoleZero",
+                        "path": "metagpt/roles/di/role_zero.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A role who can think and act dynamically",
+                            "methods": {
+                                "ask_human": {
+                                    "type": "async_function",
+                                    "description": "Use this when you fail the current task or if you are unsure of the situation encountered. Your response should contain a brief summary of your situation, ended with a clear and concise question.",
+                                    "signature": "(self, question: 'str') -> 'str'",
+                                    "parameters": ""
+                                },
+                                "reply_to_human": {
+                                    "type": "async_function",
+                                    "description": "Reply to human user with the content provided. Use this when you have a clear answer or solution to the user's question.",
+                                    "signature": "(self, content: 'str') -> 'str'",
+                                    "parameters": ""
+                                }
+                            },
+                            "tool_path": "metagpt/roles/di/role_zero.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "Terminal": {
+                        "name": "Terminal",
+                        "path": "metagpt/tools/libs/terminal.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A tool for running terminal commands. Don't initialize a new instance of this class if one already exists.",
+                            "methods": {
+                                "run": {
+                                    "type": "async_function",
+                                    "description": "Executes a specified command in the terminal and streams the output back in real time. ",
+                                    "signature": "(self, cmd: str) -> str",
+                                    "parameters": "Args: cmd (str): The command to execute in the terminal. Returns: str: The command's output."
+                                },
+                                "preview": {
+                                    "type": "async_function",
+                                    "description": "Preview a web project by forwarding a local port to public. Specify the id of the tab that runs the service, which is usually not the current tab but some detached tab.",
+                                    "signature": "(self, tab_id: str, port: int, proj_name: str) -> str",
+                                    "parameters": ""
+                                }
+                            },
+                            "tool_path": "metagpt/tools/libs/terminal.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "SearchEnhancedQA": {
+                        "name": "SearchEnhancedQA",
+                        "path": "metagpt/actions/search_enhanced_qa.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "Question answering and info searching through search engine.",
+                            "methods": {
+                                "run": {
+                                    "type": "async_function",
+                                    "description": "Answer a query by leveraging web search results. ",
+                                    "signature": "(self, query: 'str', rewrite_query: 'bool' = True) -> 'str'",
+                                    "parameters": "Args: query (str): The original user query. rewrite_query (bool): Whether to rewrite the query for better web search results. Defaults to True. Returns: str: A detailed answer based on web search results. Raises: ValueError: If the query is invalid."
+                                }
+                            },
+                            "tool_path": "metagpt/actions/search_enhanced_qa.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "Deployer": {
+                        "name": "Deployer",
+                        "path": "metagpt/tools/libs/deployer.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "Deploy a service to public.",
+                            "methods": {
+                                "deploy_to_public": {
+                                    "type": "async_function",
+                                    "description": "Deploy a web project to public. Used only for final deployment, you should NOT use it for development and testing. ",
+                                    "signature": "(self, dist_dir: str, proj_name: str) -> str",
+                                    "parameters": "Args: dist_dir (str): The dist directory of the web project after run build. proj_name (str): Project name to appear in the public URL. >>> await Deployer().deploy_to_public(\"dist\", \"my-proj\")"
+                                }
+                            },
+                            "tool_path": "metagpt/tools/libs/deployer.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "Engineer2": {
+                        "name": "Engineer2",
+                        "path": "metagpt/roles/di/engineer2.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A role who can think and act dynamically",
+                            "methods": {
+                                "write_new_code": {
+                                    "type": "async_function",
+                                    "description": "Write one or more new code files. ",
+                                    "signature": "(self, description: 'str', paths: 'list[str]') -> 'str'",
+                                    "parameters": "Args: description (str): \"Brief description and important notes of what and how to implement the files, including how they interact with each other if there will be multiple files. paths (list[str]): The paths of the files to be created."
+                                }
+                            },
+                            "tool_path": "metagpt/roles/di/engineer2.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "SupabaseManager": {
+                        "name": "SupabaseManager",
+                        "path": "metagpt/tools/libs/supabase_manager.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A management tool for interacting with Supabase database through Management API.",
+                            "methods": {
+                                "execute_sql": {
+                                    "type": "async_function",
+                                    "description": "Execute SQL query on Supabase database. ",
+                                    "signature": "(self, sql: str, project_ref: Optional[str] = None, timeout: int = 10) -> Any",
+                                    "parameters": "Args: sql: SQL query to execute. project_ref: Supabase project ref, defaults to config.project_ref. timeout: Request timeout in seconds, defaults to 10. Returns: dict: Response from the database query Example: # Create a table with indexes and RLS policies. >>> sql = ''' ... -- Create scores table ... CREATE TABLE IF NOT EXISTS scores ( ... id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY, ... user_email TEXT NOT NULL, ... score INTEGER NOT NULL, ... created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL ... ); ... ... -- Create indexes for query optimization ... CREATE INDEX IF NOT EXISTS scores_user_email_idx ON scores(user_email); ... CREATE INDEX IF NOT EXISTS scores_score_idx ON scores(score DESC); ... ... -- Setup Row Level Security (RLS) ... ALTER TABLE scores ENABLE ROW LEVEL SECURITY; ... CREATE POLICY \"allow_read_all_scores\" ON scores FOR SELECT USING (true); ... CREATE POLICY \"allow_insert_own_scores\" ON scores ... FOR INSERT TO authenticated ... WITH CHECK (auth.jwt() ->> 'email' = user_email); ... ''' >>> result = await execute_sql(sql)"
+                                },
+                                "get_session_schemas": {
+                                    "type": "async_function",
+                                    "description": "Get database schemas for a specific session_id. ",
+                                    "signature": "(self, session_id: str, project_ref: Optional[str] = None, db_name: str = 'public', timeout: int = 10) -> list[dict[str, str]]",
+                                    "parameters": "Args: session_id: A unique session identifier generated for each chat. Used for creating isolated database tables and managing development environments. project_ref: Supabase project ref, defaults to config.project_ref. db_name: Database schema name, defaults to 'public'. timeout: Request timeout in seconds, defaults to 10. Returns: list: A list of tables with their column definitions. Examples: # Get tables for specific session_id >>> session_schemas = await get_session_schemas(session_id=\"abc12\") >>> print(session_schemas) [ { \"table_name\": \"todo_abc12_tasks\", \"columns\": \"id bigint NOT NULL title text NOT NULL user_email text NOT NULL\" }, { \"table_name\": \"notes_abc12_items\", \"columns\": \"id bigint NOT NULL content text user_email text NOT NULL\" } ]"
+                                }
+                            },
+                            "tool_path": "metagpt/tools/libs/supabase_manager.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "Browser": {
+                        "name": "Browser",
+                        "path": "metagpt/tools/libs/browser.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A tool for browsing the web. Don't initialize a new instance of this class if one already exists. Note: If you plan to use the browser to assist you in completing tasks, then using the browser should be a standalone task, executing actions each time based on the content seen on the webpage before proceeding to the next step. ## Example Issue: The details of the latest issue in the geekan/MetaGPT repository. Plan: Use a browser to view the details of the latest issue in the geekan/MetaGPT repository. Solution: Let's first open the issue page of the MetaGPT repository with the `Browser.goto` command >>> await browser.goto(\"https://github.com/geekan/MetaGPT/issues\") From the output webpage, we've identified that the latest issue can be accessed by clicking on the element with ID \"1141\". >>> await browser.click(1141) Finally, we have found the webpage for the latest issue, we can close the tab and finish current task. >>> await browser.close_tab()",
+                            "methods": {
+                                "click": {
+                                    "type": "async_function",
+                                    "description": "clicks on an element with a specific id on the webpage.",
+                                    "signature": "(self, element_id: 'int')",
+                                    "parameters": ""
+                                },
+                                "goto": {
+                                    "type": "async_function",
+                                    "description": "Navigate to a specific URL.",
+                                    "signature": "(self, url: 'str', timeout: 'float' = 90000)",
+                                    "parameters": ""
+                                },
+                                "scroll": {
+                                    "type": "async_function",
+                                    "description": "Scroll the page up or down.",
+                                    "signature": "(self, direction: \"Literal['down', 'up']\")",
+                                    "parameters": ""
+                                }
+                            },
+                            "tool_path": "metagpt/tools/libs/browser.py"
+                        },
+                        "code": "",
+                        "tags": [
+                            "web",
+                            "browse"
+                        ]
+                    }
+                },
+                "force": true
+            },
+            "special_tool_commands": [
+                "Plan.finish_current_task",
+                "end",
+                "Terminal.run",
+                "RoleZero.ask_human"
+            ],
+            "editor": {
+                "resource": {
+                    "block": "Editor",
+                    "uuid": "ba522a18-6dd2-44d8-8b52-ed1b17ae922b",
+                    "enable_llm_stream": false,
+                    "callback_url": ""
+                },
+                "current_file": null,
+                "current_line": 1,
+                "window": 50,
+                "enable_auto_lint": true,
+                "working_dir": "../workspace"
+            },
+            "browser": {
+                "accessibility_tree": [],
+                "headless": true,
+                "proxy": null,
+                "is_empty_page": true,
+                "reporter": {
+                    "block": "Browser",
+                    "uuid": "82f5fa46-568a-4b13-b4d6-40b02b5f89d3",
+                    "enable_llm_stream": false,
+                    "callback_url": ""
+                },
+                "url": null
+            },
+            "terminal": {
+                "tabs": {},
+                "current_tab_id": "",
+                "forbidden_commands": {
+                    "run preview": "Use Deployer.deploy_to_public instead.",
+                    "serve ": "Use Deployer.deploy_to_public instead."
+                },
+                "timeout": 60.0
+            },
+            "working_dir": "/data/chats/idju2/workspace",
+            "command_rsp": "",
+            "commands": [],
+            "memory_k": 30,
+            "use_fixed_sop": false,
+            "use_summary": true,
+            "run_eval": false,
+            "output_diff": "",
+            "code_tools": [
+                "ImageGetter"
+            ],
+            "code_tool_execution_list": [
+                "ImageGetter.get",
+                "ImageGetter.process"
+            ],
+            "code_tool_recommender": {
+                "tools": {
+                    "ImageGetter": {
+                        "name": "ImageGetter",
+                        "path": "metagpt/tools/libs/image_getter.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A tool to get/create/process images.",
+                            "methods": {
+                                "get": {
+                                    "type": "async_function",
+                                    "description": "Get an image either by searching online or generating with AI. ",
+                                    "signature": "(self, search_term: 'str', image_save_path: 'str', mode='search') -> 'str'",
+                                    "parameters": "Args: search_term (str): Search query or image description. Must be in English. image_save_path (str): Path where the image will be saved. Must be a absolute path to the public folder. mode (str): How to obtain the image: - \"search\": Search online (falls back to AI generation if search fails) - \"create\": Generate using DALL-E 3 Returns: str: Relative path to the saved image (public/ prefix removed) Raises: ValueError: If an invalid mode is specified RuntimeError: If image retrieval fails"
+                                },
+                                "process": {
+                                    "type": "async_function",
+                                    "description": "Process an existing image with filters. ",
+                                    "signature": "(self, image_path: 'str', image_save_path: 'str', mode: 'str' = 'rembg') -> 'str'",
+                                    "parameters": "Args: image_path (str): Path to the source image image_save_path (str): Path where processed image will be saved. Must be a absolute path to the public folder. mode (str): Processing mode to apply: - \"rembg\": Remove image background Returns: str: Relative path to the processed image (public/ prefix removed)"
+                                }
+                            },
+                            "tool_path": "metagpt/tools/libs/image_getter.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    }
+                },
+                "force": true
+            },
+            "use_search_template": true,
+            "is_first_dev_request": true,
+            "template_tool": {
+                "template_path": "../template",
+                "output_dir": "../workspace"
+            },
+            "template_info": "No template available",
+            "__module_class_name": "metagpt.roles.di.frontend_engineer.FrontendEngineer"
+        },
+        "David": {
+            "name": "David",
+            "profile": "Data Analyst",
+            "goal": "Take on any data-related tasks, such as data analysis, machine learning, deep learning, web browsing, web scraping, web searching, terminal operation, document QA & analysis, etc.",
+            "constraints": "",
+            "desc": "",
+            "is_human": false,
+            "enable_memory": true,
+            "role_id": "",
+            "states": [
+                "0. RunCommand"
+            ],
+            "actions": [
+                {
+                    "name": "RunCommand",
+                    "i_context": "",
+                    "prefix": " The current date in Los Angeles is 2025-03-27.You are a Data Analyst, named David, your goal is Take on any data-related tasks, such as data analysis, machine learning, deep learning, web browsing, web scraping, web searching, terminal operation, document QA & analysis, etc.. \nYou are a member of the MetaGPTX (MGX) team providing software development services on MGX platform.\nIf the request is outside your team members' capabilities such as mini programs, iOS/Android apps, desktop programs, embedded systems, operating systems, etc., tell them you can currently develop web page and can provide a web page demo based on the requirement.\nOtherwise, you MUST respond to the user message by yourself directly, DON'T ask your team members. \n",
+                    "desc": "",
+                    "__module_class_name": "metagpt.actions.di.run_command.RunCommand"
+                }
+            ],
+            "rc": {
+                "memory": {
+                    "storage": [
+                        {
+                            "id": "85779b25bb8040a68c56966e2c8e08ab",
+                            "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                            "instruct_content": null,
+                            "role": "user",
+                            "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                            "sent_from": "",
+                            "send_to": [
+                                "Mike",
+                                "<all>"
+                            ],
+                            "metadata": {}
+                        },
+                        {
+                            "id": "198cb386b32a460280038d774351fe32",
+                            "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                            "instruct_content": null,
+                            "role": "assistant",
+                            "cause_by": "QuickThink",
+                            "sent_from": "Mike",
+                            "send_to": [
+                                "<all>"
+                            ],
+                            "metadata": {
+                                "agent": "Mike(Team Leader)"
+                            }
+                        }
+                    ],
+                    "index": {
+                        "metagpt.actions.add_requirement.UserRequirement": [
+                            {
+                                "id": "85779b25bb8040a68c56966e2c8e08ab",
+                                "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                                "instruct_content": null,
+                                "role": "user",
+                                "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                                "sent_from": "",
+                                "send_to": [
+                                    "Mike",
+                                    "<all>"
+                                ],
+                                "metadata": {}
+                            }
+                        ],
+                        "QuickThink": [
+                            {
+                                "id": "198cb386b32a460280038d774351fe32",
+                                "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                                "instruct_content": null,
+                                "role": "assistant",
+                                "cause_by": "QuickThink",
+                                "sent_from": "Mike",
+                                "send_to": [
+                                    "<all>"
+                                ],
+                                "metadata": {
+                                    "agent": "Mike(Team Leader)"
+                                }
+                            }
+                        ]
+                    },
+                    "ignore_id": false,
+                    "buffer": [
+                        {
+                            "id": "85779b25bb8040a68c56966e2c8e08ab",
+                            "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                            "instruct_content": null,
+                            "role": "user",
+                            "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                            "sent_from": "",
+                            "send_to": [
+                                "Mike",
+                                "<all>"
+                            ],
+                            "metadata": {}
+                        },
+                        {
+                            "id": "198cb386b32a460280038d774351fe32",
+                            "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                            "instruct_content": null,
+                            "role": "assistant",
+                            "cause_by": "QuickThink",
+                            "sent_from": "Mike",
+                            "send_to": [
+                                "<all>"
+                            ],
+                            "metadata": {
+                                "agent": "Mike(Team Leader)"
+                            }
+                        }
+                    ],
+                    "memory_k": 30,
+                    "compress_k": 15,
+                    "prev_summary": null,
+                    "compress_model_name": "gpt-4o-mini"
+                },
+                "working_memory": {
+                    "storage": [],
+                    "index": {},
+                    "ignore_id": false
+                },
+                "state": -1,
+                "watch": [],
+                "react_mode": "react",
+                "max_react_loop": 50
+            },
+            "addresses": [
+                "David",
+                "metagpt.roles.di.data_analyst.DataAnalyst"
+            ],
+            "planner": {
+                "plan": {
+                    "goal": "",
+                    "context": "",
+                    "tasks": [],
+                    "task_map": {},
+                    "current_task_id": ""
+                },
+                "working_memory": {
+                    "storage": [],
+                    "index": {},
+                    "ignore_id": false
+                },
+                "auto_run": true
+            },
+            "recovered": false,
+            "latest_observed_msg": null,
+            "observe_all_msg_from_buffer": true,
+            "system_msg": null,
+            "system_prompt": "\n# Basic Info\n{role_info}\n\n# Data Structure\nclass Task(BaseModel):\n    task_id: str = \"\"\n    dependent_task_ids: list[str] = []\n    instruction: str = \"\"\n    task_type: str = \"\"\n    assignee: str = \"\"\n    \n# Available Task Types\n{task_type_desc}\n\n# Available Commands\n{available_commands}\nSpecial Command: Use {{\"command_name\": \"end\"}} to do nothing or indicate completion of all requirements and the end of actions.\n\n# Example\n{example}\n\n# Instruction\n{instruction}\n\nYou may use any of the available commands. You may output mutiple commands, they will be executed sequentially.\nIf you finish current task, you will automatically take the next task in the existing plan, use Plan.finish_current_task, DON'T append a new task.\nReview the latest plan's outcome. If your completed task matches the current, consider it finished.\nIn your response, include at least one command. If you want to stop, use {{\"command_name\":\"end\"}} command.\n\n# Output (a json array of commands)\n\nSome thoughts...\n```json\n[\n    {{\n        \"command_name\": \"ClassName.method_name\" or \"function_name\",\n        \"args\": {{\"arg_name\": arg_value, ...}}\n    }},\n    {{\n        \"command_name\": \"ClassName2.method_name2\" or \"function_name2\",\n        \"args\": {{\"arg_name2\": arg_value2, ...}}\n    }},\n    ...\n]\n```\n",
+            "cmd_prompt": "\n# Past Experience\n<experience>\n\n# Current State\n{current_state}\n\n# Current Plan\n{plan_status}\n\n# Current Task\n{current_task}\n\nYour commands (output ONE and ONLY ONE command block, the block can contain one or more commands. If you want to stop, use {{\"command_name\": \"end\"}}):\n",
+            "instruction": "\nBased on the context, write a plan or modify an existing plan to achieve the goal. A plan consists of one to 3 tasks.\nIf plan is created, you should track the progress and update the plan accordingly, such as Plan.finish_current_task, Plan.append_task, Plan.reset_task, Plan.replace_task, etc.\nWhen presented a current task, tackle the task using the available commands.\nPay close attention to new user message, review the conversation history, use RoleZero.reply_to_human to respond to new user requirement.\nNote:\n1. If you keeping encountering errors, unexpected situation, or you are not sure of proceeding, use RoleZero.ask_human to ask for help.\n2. Carefully review your progress at the current task, if your actions so far has not fulfilled the task instruction, you should continue with current task. Otherwise, finish current task by Plan.finish_current_task explicitly.\n3. Each time you finish a task, use RoleZero.reply_to_human to report your progress.\n4. Don't forget to append task first when all existing tasks are finished and new tasks are required.\n5. Avoid repeating tasks you have already completed. And end loop when all requirements are met.\n\n6. Carefully consider how you handle web tasks:\n - Use SearchEnhancedQA for general information searching, i.e. querying search engines, such as googling news, weather, wiki, etc. Usually, no link is provided.\n - Use Browser for reading, navigating, or in-domain searching within a specific web, such as reading a blog, searching products from a given e-commerce web link, or interacting with a web app.\n - Use DataAnalyst.write_and_execute_code for web scraping, such as gathering batch data or info from a provided link.\n - Write code to view the HTML content rather than using the Browser tool.\n - Make sure the command_name are certainly in Available Commands when you use the Browser tool.\n7. When you are making plan. It is highly recommend to plan and append all the tasks in first response once time, except for 7.1.\n7.1. When the requirement is inquiring about a pdf, docx, md, or txt document, read the document first through either Editor.read WITHOUT a plan. After reading the document, use RoleZero.reply_to_human if the requirement can be answered straightaway, otherwise, make a plan if further calculation is needed.\n8. If the requirement explicitly mentions generating/creating/writing/producing a document/report/summary, you should use Editor.write to output the document.\n9. Don't finish_current_task multiple times for the same task.\n10. Finish current task timely, such as when the code is written and executed successfully.\n11. When using the command 'end', add the command 'finish_current_task' before it.\n12. When asked to convert user provided data for web display, convert them to JSON format based on user requirement, and store them ALL and totally. DO NOT use ellipsis (...) or only part of the data.\n13. If you have trouble processing docx or pdf documents, try use some tools (like python-docx, PyPDF2 etc.). Never generate data by yourself. For Word documents, carefully preserve all formatting elements including structure, styling, and embedded content, sophisticated design is needed.\n",
+            "task_type_desc": "- **eda**: For performing exploratory data analysis\n- **data preprocessing**: For preprocessing dataset in a data analysis or machine learning task ONLY,general data operation doesn't fall into this type\n- **feature engineering**: Only for creating new columns for input data.\n- **model train**: Only for training model.\n- **model evaluate**: Only for evaluating model.\n- **image2webpage**: For converting image into webpage code.\n- **other**: Any tasks not in the defined categories\n- **text2image**: Related to text2image, image2image using stable diffusion model.\n- **web scraping**: For scraping data from web pages.\n- **email login**: For logging to an email.\n- **develop software**: SOP related to develop software such as Writes a PRD, Writes a design, Writes a project plan and Writes code to implement designed features according to the project plan",
+            "react_mode": "react",
+            "max_react_loop": 50,
+            "consecutive_react_cnt": 0,
+            "max_consecutive_react_limit": 20,
+            "tools": [
+                "Plan",
+                "DataAnalyst",
+                "RoleZero",
+                "Browser",
+                "Editor:write,read,similarity_search",
+                "Terminal:run",
+                "SearchEnhancedQA"
+            ],
+            "tool_recommender": {
+                "tools": {
+                    "Plan": {
+                        "name": "Plan",
+                        "path": "metagpt/schema.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "Plan is a sequence of tasks towards a goal.",
+                            "methods": {
+                                "append_task": {
+                                    "type": "function",
+                                    "description": "Append a new task with task_id (number) to the end of existing task sequences. If dependent_task_ids is not empty, the task will depend on the tasks with the ids in the list. Note that the assignee should be the 'name' of the role.",
+                                    "signature": "(self, task_id: 'str', dependent_task_ids: 'list[str]', instruction: 'str', assignee: 'str', task_type: 'str' = '')",
+                                    "parameters": ""
+                                },
+                                "finish_current_task": {
+                                    "type": "function",
+                                    "description": "Finish current task, set Task.is_finished=True, set current task to next task",
+                                    "signature": "(self)",
+                                    "parameters": ""
+                                },
+                                "replace_task": {
+                                    "type": "function",
+                                    "description": "Replace an existing task (can be current task) based on task_id, and reset all tasks depending on it.",
+                                    "signature": "(self, task_id: 'str', new_dependent_task_ids: 'list[str]', new_instruction: 'str', new_assignee: 'str')",
+                                    "parameters": ""
+                                },
+                                "reset_task": {
+                                    "type": "function",
+                                    "description": "Reset a task based on task_id, i.e. set Task.is_finished=False and request redo. This also resets all tasks depending on it. ",
+                                    "signature": "(self, task_id: 'str')",
+                                    "parameters": "Args: task_id (str): The ID of the task to be reset."
+                                }
+                            },
+                            "tool_path": "metagpt/schema.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "DataAnalyst": {
+                        "name": "DataAnalyst",
+                        "path": "metagpt/roles/di/data_analyst.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A role who can think and act dynamically",
+                            "methods": {
+                                "write_and_exec_code": {
+                                    "type": "async_function",
+                                    "description": "Write a code block for current task and execute it in an interactive notebook environment. ",
+                                    "signature": "(self, instruction: 'str' = '')",
+                                    "parameters": "Args: instruction (optional, str): Further hints or notice other than the current task instruction, must be very concise and can be empty. Write text guidance, NOT code. Defaults to \"\"."
+                                }
+                            },
+                            "tool_path": "metagpt/roles/di/data_analyst.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "RoleZero": {
+                        "name": "RoleZero",
+                        "path": "metagpt/roles/di/role_zero.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A role who can think and act dynamically",
+                            "methods": {
+                                "ask_human": {
+                                    "type": "async_function",
+                                    "description": "Use this when you fail the current task or if you are unsure of the situation encountered. Your response should contain a brief summary of your situation, ended with a clear and concise question.",
+                                    "signature": "(self, question: 'str') -> 'str'",
+                                    "parameters": ""
+                                },
+                                "reply_to_human": {
+                                    "type": "async_function",
+                                    "description": "Reply to human user with the content provided. Use this when you have a clear answer or solution to the user's question.",
+                                    "signature": "(self, content: 'str') -> 'str'",
+                                    "parameters": ""
+                                }
+                            },
+                            "tool_path": "metagpt/roles/di/role_zero.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "Browser": {
+                        "name": "Browser",
+                        "path": "metagpt/tools/libs/browser.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A tool for browsing the web. Don't initialize a new instance of this class if one already exists. Note: If you plan to use the browser to assist you in completing tasks, then using the browser should be a standalone task, executing actions each time based on the content seen on the webpage before proceeding to the next step. ## Example Issue: The details of the latest issue in the geekan/MetaGPT repository. Plan: Use a browser to view the details of the latest issue in the geekan/MetaGPT repository. Solution: Let's first open the issue page of the MetaGPT repository with the `Browser.goto` command >>> await browser.goto(\"https://github.com/geekan/MetaGPT/issues\") From the output webpage, we've identified that the latest issue can be accessed by clicking on the element with ID \"1141\". >>> await browser.click(1141) Finally, we have found the webpage for the latest issue, we can close the tab and finish current task. >>> await browser.close_tab()",
+                            "methods": {
+                                "click": {
+                                    "type": "async_function",
+                                    "description": "clicks on an element with a specific id on the webpage.",
+                                    "signature": "(self, element_id: 'int')",
+                                    "parameters": ""
+                                },
+                                "close_tab": {
+                                    "type": "async_function",
+                                    "description": "Close the currently active tab.",
+                                    "signature": "(self)",
+                                    "parameters": ""
+                                },
+                                "go_back": {
+                                    "type": "async_function",
+                                    "description": "Navigate to the previously viewed page.",
+                                    "signature": "(self)",
+                                    "parameters": ""
+                                },
+                                "go_forward": {
+                                    "type": "async_function",
+                                    "description": "Navigate to the next page (if a previous 'go_back' action was performed).",
+                                    "signature": "(self)",
+                                    "parameters": ""
+                                },
+                                "goto": {
+                                    "type": "async_function",
+                                    "description": "Navigate to a specific URL.",
+                                    "signature": "(self, url: 'str', timeout: 'float' = 90000)",
+                                    "parameters": ""
+                                },
+                                "hover": {
+                                    "type": "async_function",
+                                    "description": "Hover over an element with id.",
+                                    "signature": "(self, element_id: 'int')",
+                                    "parameters": ""
+                                },
+                                "press": {
+                                    "type": "async_function",
+                                    "description": "Simulates the pressing of a key combination on the keyboard (e.g., Ctrl+v).",
+                                    "signature": "(self, key_comb: 'str')",
+                                    "parameters": ""
+                                },
+                                "scroll": {
+                                    "type": "async_function",
+                                    "description": "Scroll the page up or down.",
+                                    "signature": "(self, direction: \"Literal['down', 'up']\")",
+                                    "parameters": ""
+                                },
+                                "tab_focus": {
+                                    "type": "async_function",
+                                    "description": "Open a new, empty browser tab.",
+                                    "signature": "(self, page_number: 'int')",
+                                    "parameters": ""
+                                },
+                                "type": {
+                                    "type": "async_function",
+                                    "description": "Use this to type the content into the field with id.",
+                                    "signature": "(self, element_id: 'int', content: 'str', press_enter_after: 'bool' = False)",
+                                    "parameters": ""
+                                }
+                            },
+                            "tool_path": "metagpt/tools/libs/browser.py"
+                        },
+                        "code": "",
+                        "tags": [
+                            "web",
+                            "browse"
+                        ]
+                    },
+                    "Editor": {
+                        "name": "Editor",
+                        "path": "metagpt/tools/libs/editor.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A tool for reading, understanding, writing, and editing files. Support local file including text-based files (txt, md, json, py, html, js, css, etc.), pdf, docx, excluding images, csv, excel, or online links For agent: Do NOT initiate multiple Editor.insert_content_at_line calls at the same time, since the line number will change starting with the first execution, making line number of the subsequent calls incorrect. Split the calls into separate responses. For the same reason, Editor.insert_content_at_line should NOT go behind Editor.edit_file_by_replace in the same response. Perform insert operation in a separate response.",
+                            "methods": {
+                                "write": {
+                                    "type": "function",
+                                    "description": "Write the whole content to a file. When used, make sure content arg contains the full content of the file.",
+                                    "signature": "(self, path: str, content: str)",
+                                    "parameters": ""
+                                },
+                                "read": {
+                                    "type": "async_function",
+                                    "description": "Read the whole content of a file. Using an absolute path as the argument for specifying the file location.",
+                                    "signature": "(self, path: str) -> metagpt.tools.libs.editor.FileBlock",
+                                    "parameters": ""
+                                },
+                                "similarity_search": {
+                                    "type": "async_function",
+                                    "description": "Given a filename or a pathname, performs a similarity search for a given query across the specified file or path. This method searches the index repository for the provided query, classifying the specified files or paths. It performs a search on each cluster of files and handles non-indexed files separately, merging results from structured indices with any direct results from non-indexed files. This function call does not depend on other functions. ",
+                                    "signature": "(query: str, path: Union[str, pathlib.Path]) -> List[str]",
+                                    "parameters": "Args: query (str): The search query string to look for in the indexed files. path (Union[str, Path]): A pathname or filename to search within. Returns: List[str]: A list of results as strings, containing the text from the merged results and any direct results from non-indexed files. Example: >>> query = \"The problem to be analyzed from the document\" >>> file_or_path = \"The pathname or filename you want to search within\" >>> texts: List[str] = await Editor.similarity_search(query=query, path=file_or_path) >>> print(texts)"
+                                }
+                            },
+                            "tool_path": "metagpt/tools/libs/editor.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "Terminal": {
+                        "name": "Terminal",
+                        "path": "metagpt/tools/libs/terminal.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A tool for running terminal commands. Don't initialize a new instance of this class if one already exists.",
+                            "methods": {
+                                "run": {
+                                    "type": "async_function",
+                                    "description": "Executes a specified command in the terminal and streams the output back in real time. ",
+                                    "signature": "(self, cmd: str) -> str",
+                                    "parameters": "Args: cmd (str): The command to execute in the terminal. Returns: str: The command's output."
+                                }
+                            },
+                            "tool_path": "metagpt/tools/libs/terminal.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "SearchEnhancedQA": {
+                        "name": "SearchEnhancedQA",
+                        "path": "metagpt/actions/search_enhanced_qa.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "Question answering and info searching through search engine.",
+                            "methods": {
+                                "run": {
+                                    "type": "async_function",
+                                    "description": "Answer a query by leveraging web search results. ",
+                                    "signature": "(self, query: 'str', rewrite_query: 'bool' = True) -> 'str'",
+                                    "parameters": "Args: query (str): The original user query. rewrite_query (bool): Whether to rewrite the query for better web search results. Defaults to True. Returns: str: A detailed answer based on web search results. Raises: ValueError: If the query is invalid."
+                                }
+                            },
+                            "tool_path": "metagpt/actions/search_enhanced_qa.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    }
+                },
+                "force": true
+            },
+            "special_tool_commands": [
+                "Plan.finish_current_task",
+                "end",
+                "Terminal.run",
+                "RoleZero.ask_human"
+            ],
+            "editor": {
+                "resource": {
+                    "block": "Editor",
+                    "uuid": "ba522a18-6dd2-44d8-8b52-ed1b17ae922b",
+                    "enable_llm_stream": false,
+                    "callback_url": ""
+                },
+                "current_file": null,
+                "current_line": 1,
+                "window": 50,
+                "enable_auto_lint": true,
+                "working_dir": "../workspace"
+            },
+            "browser": {
+                "accessibility_tree": [],
+                "headless": true,
+                "proxy": null,
+                "is_empty_page": true,
+                "reporter": {
+                    "block": "Browser",
+                    "uuid": "82f5fa46-568a-4b13-b4d6-40b02b5f89d3",
+                    "enable_llm_stream": false,
+                    "callback_url": ""
+                },
+                "url": null
+            },
+            "terminal": {
+                "tabs": {},
+                "current_tab_id": "",
+                "forbidden_commands": {
+                    "run preview": "Use Deployer.deploy_to_public instead.",
+                    "serve ": "Use Deployer.deploy_to_public instead."
+                },
+                "timeout": 60.0
+            },
+            "working_dir": "/data/chats/idju2/workspace",
+            "command_rsp": "",
+            "commands": [],
+            "memory_k": 30,
+            "use_fixed_sop": false,
+            "use_summary": true,
+            "custom_tools": [
+                "web scraping",
+                "Terminal",
+                "Editor:write,read,similarity_search"
+            ],
+            "custom_tool_recommender": {
+                "tools": {
+                    "view_page_element_to_scrape": {
+                        "name": "view_page_element_to_scrape",
+                        "path": "metagpt.tools.libs.web_scraping>",
+                        "schemas": {
+                            "type": "async_function",
+                            "description": "view the HTML content of current page to understand the structure. ",
+                            "signature": "(url: str, requirement: str, keep_links: bool = False) -> str",
+                            "parameters": "Args: url (str): The URL of the web page to scrape. requirement (str): Providing a clear and detailed requirement helps in focusing the inspection on the desired elements. keep_links (bool): Whether to keep the hyperlinks in the HTML content. Set to True if links are required Returns: str: The HTML content of the page.",
+                            "tool_path": "metagpt.tools.libs.web_scraping>"
+                        },
+                        "code": "",
+                        "tags": [
+                            "web scraping"
+                        ]
+                    },
+                    "Terminal": {
+                        "name": "Terminal",
+                        "path": "metagpt/tools/libs/terminal.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A tool for running terminal commands. Don't initialize a new instance of this class if one already exists.",
+                            "methods": {
+                                "preview": {
+                                    "type": "async_function",
+                                    "description": "Preview a web project by forwarding a local port to public. Specify the id of the tab that runs the service, which is usually not the current tab but some detached tab.",
+                                    "signature": "(self, tab_id: str, port: int, proj_name: str) -> str",
+                                    "parameters": ""
+                                },
+                                "run": {
+                                    "type": "async_function",
+                                    "description": "Executes a specified command in the terminal and streams the output back in real time. ",
+                                    "signature": "(self, cmd: str) -> str",
+                                    "parameters": "Args: cmd (str): The command to execute in the terminal. Returns: str: The command's output."
+                                }
+                            },
+                            "tool_path": "metagpt/tools/libs/terminal.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    },
+                    "Editor": {
+                        "name": "Editor",
+                        "path": "metagpt/tools/libs/editor.py",
+                        "schemas": {
+                            "type": "class",
+                            "description": "A tool for reading, understanding, writing, and editing files. Support local file including text-based files (txt, md, json, py, html, js, css, etc.), pdf, docx, excluding images, csv, excel, or online links For agent: Do NOT initiate multiple Editor.insert_content_at_line calls at the same time, since the line number will change starting with the first execution, making line number of the subsequent calls incorrect. Split the calls into separate responses. For the same reason, Editor.insert_content_at_line should NOT go behind Editor.edit_file_by_replace in the same response. Perform insert operation in a separate response.",
+                            "methods": {
+                                "write": {
+                                    "type": "function",
+                                    "description": "Write the whole content to a file. When used, make sure content arg contains the full content of the file.",
+                                    "signature": "(self, path: str, content: str)",
+                                    "parameters": ""
+                                },
+                                "read": {
+                                    "type": "async_function",
+                                    "description": "Read the whole content of a file. Using an absolute path as the argument for specifying the file location.",
+                                    "signature": "(self, path: str) -> metagpt.tools.libs.editor.FileBlock",
+                                    "parameters": ""
+                                },
+                                "similarity_search": {
+                                    "type": "async_function",
+                                    "description": "Given a filename or a pathname, performs a similarity search for a given query across the specified file or path. This method searches the index repository for the provided query, classifying the specified files or paths. It performs a search on each cluster of files and handles non-indexed files separately, merging results from structured indices with any direct results from non-indexed files. This function call does not depend on other functions. ",
+                                    "signature": "(query: str, path: Union[str, pathlib.Path]) -> List[str]",
+                                    "parameters": "Args: query (str): The search query string to look for in the indexed files. path (Union[str, Path]): A pathname or filename to search within. Returns: List[str]: A list of results as strings, containing the text from the merged results and any direct results from non-indexed files. Example: >>> query = \"The problem to be analyzed from the document\" >>> file_or_path = \"The pathname or filename you want to search within\" >>> texts: List[str] = await Editor.similarity_search(query=query, path=file_or_path) >>> print(texts)"
+                                }
+                            },
+                            "tool_path": "metagpt/tools/libs/editor.py"
+                        },
+                        "code": "",
+                        "tags": []
+                    }
+                },
+                "force": true
+            },
+            "use_reflection": true,
+            "__module_class_name": "metagpt.roles.di.data_analyst.DataAnalyst"
+        }
+    },
+    "history": {
+        "storage": [
+            {
+                "id": "85779b25bb8040a68c56966e2c8e08ab",
+                "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                "instruct_content": null,
+                "role": "user",
+                "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                "sent_from": "",
+                "send_to": [
+                    "Mike",
+                    "<all>"
+                ],
+                "metadata": {}
+            },
+            {
+                "id": "85779b25bb8040a68c56966e2c8e08ab",
+                "content": "一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                "instruct_content": null,
+                "role": "user",
+                "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                "sent_from": "",
+                "send_to": [
+                    "Mike",
+                    "<all>"
+                ],
+                "metadata": {}
+            },
+            {
+                "id": "198cb386b32a460280038d774351fe32",
+                "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                "instruct_content": null,
+                "role": "assistant",
+                "cause_by": "QuickThink",
+                "sent_from": "Mike",
+                "send_to": [
+                    "<all>"
+                ],
+                "metadata": {
+                    "agent": "Mike(Team Leader)"
+                }
+            },
+            {
+                "id": "198cb386b32a460280038d774351fe32",
+                "content": "您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                "instruct_content": null,
+                "role": "assistant",
+                "cause_by": "QuickThink",
+                "sent_from": "Mike",
+                "send_to": [
+                    "<all>"
+                ],
+                "metadata": {
+                    "agent": "Mike(Team Leader)"
+                }
+            }
+        ],
+        "index": {
+            "metagpt.actions.add_requirement.UserRequirement": [
+                {
+                    "id": "85779b25bb8040a68c56966e2c8e08ab",
+                    "content": "[Message] from User to Mike: 一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                    "instruct_content": null,
+                    "role": "user",
+                    "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                    "sent_from": "",
+                    "send_to": [
+                        "Mike",
+                        "<all>"
+                    ],
+                    "metadata": {}
+                },
+                {
+                    "id": "85779b25bb8040a68c56966e2c8e08ab",
+                    "content": "一个3D太空探索题材的游戏：模拟宇宙探索的过程，玩家可以驾驶飞船探索各个星系。\n复古像素风\n神秘、浩瀚的感觉。选择合适的背景音乐和音效",
+                    "instruct_content": null,
+                    "role": "user",
+                    "cause_by": "metagpt.actions.add_requirement.UserRequirement",
+                    "sent_from": "",
+                    "send_to": [
+                        "Mike",
+                        "<all>"
+                    ],
+                    "metadata": {}
+                }
+            ],
+            "QuickThink": [
+                {
+                    "id": "198cb386b32a460280038d774351fe32",
+                    "content": "[Message] from Mike(Team Leader) to Mike: 您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                    "instruct_content": null,
+                    "role": "assistant",
+                    "cause_by": "QuickThink",
+                    "sent_from": "Mike",
+                    "send_to": [
+                        "<all>"
+                    ],
+                    "metadata": {
+                        "agent": "Mike(Team Leader)"
+                    }
+                },
+                {
+                    "id": "198cb386b32a460280038d774351fe32",
+                    "content": "您好！我理解您希望开发一个3D太空探索题材的复古像素风游戏，让玩家驾驶飞船探索不同星系，并营造出神秘浩瀚的感觉。\n\n我很乐意帮您实现这个创意，但需要说明的是，我们团队目前专注于网页开发服务。我们可以为您提供一个基于Web的游戏演示，使用HTML5、CSS和JavaScript技术栈来创建这个太空探索游戏。\n\n我可以为您开发一个网页版的复古像素风太空探索游戏，具有以下特点：\n- 基于WebGL/Three.js的3D太空环境\n- 复古像素风格的视觉设计\n- 可驾驶的飞船系统\n- 多个可探索的星系和行星\n- 神秘浩瀚的氛围音乐和音效\n- 响应式设计，适合在各种设备上玩\n\n您需要我继续基于这个方向开发一个网页版的太空探索游戏演示吗？或者您有其他问题或特定需求想要讨论？",
+                    "instruct_content": null,
+                    "role": "assistant",
+                    "cause_by": "QuickThink",
+                    "sent_from": "Mike",
+                    "send_to": [
+                        "<all>"
+                    ],
+                    "metadata": {
+                        "agent": "Mike(Team Leader)"
+                    }
+                }
+            ]
+        },
+        "ignore_id": false
+    },
+    "direct_chat_roles": [],
+    "is_public_chat": true,
+    "attach_image_k": 3,
+    "__module_class_name": "chat.create_mgx_env_cls.<locals>.MGXEnv"
+}

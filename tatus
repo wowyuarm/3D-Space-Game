@@ -1,0 +1,8 @@
+warning: in the working copy of 'react_template/src/App.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react_template/src/engine/AudioManager.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react_template/src/engine/GameEngine.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'react_template/src/game/GameState.js', LF will be replaced by CRLF the next time Git touches it
+react_template/src/App.jsx
+react_template/src/engine/AudioManager.js
+react_template/src/engine/GameEngine.js
+react_template/src/game/GameState.js

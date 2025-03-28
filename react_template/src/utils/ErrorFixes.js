@@ -2,10 +2,12 @@
  * 游戏引擎错误修复工具
  * 提供各种工具函数来修复游戏引擎初始化和运行过程中的常见错误
  */
+import * as THREE from 'three';
 
 // 常见错误列表和修复方法
 const knownErrors = {
   'animatePlanets': 'updatePlanetAnimations', // 方法名错误
+  'checkStarSystemInteractions': 'checkProximityToSystems', // 方法名错误
   'Howler.pause': '应该使用单独暂停各音频对象', // Howler API错误
   'e.unload is not a function': '对象没有unload方法', // 资源清理错误
   'e.dispose is not a function': '对象没有dispose方法', // 资源清理错误
@@ -27,6 +29,13 @@ export function applyErrorFixes(gameEngine) {
         typeof gameEngine.gameState.updatePlanetAnimations === 'function') {
       gameEngine.gameState.animatePlanets = gameEngine.gameState.updatePlanetAnimations;
       console.log('已修复: animatePlanets方法映射到updatePlanetAnimations');
+    }
+    
+    // 1.1 修复GameState中的checkStarSystemInteractions方法
+    if (gameEngine.gameState && !gameEngine.gameState.checkStarSystemInteractions && 
+        typeof gameEngine.gameState.checkProximityToSystems === 'function') {
+      gameEngine.gameState.checkStarSystemInteractions = gameEngine.gameState.checkProximityToSystems;
+      console.log('已修复: checkStarSystemInteractions方法映射到checkProximityToSystems');
     }
     
     // 2. 确保AudioManager的方法安全
@@ -169,6 +178,65 @@ export function applyErrorFixes(gameEngine) {
     };
     
     console.log('已修复: GameEngine资源释放方法');
+    
+    // 4. 修复鼠标事件处理中的问题（clone方法调用错误）
+    if (gameEngine.inputManager) {
+      // 包装handleMouseMove方法
+      const originalHandleMouseMove = gameEngine.inputManager.handleMouseMove;
+      if (typeof originalHandleMouseMove === 'function') {
+        gameEngine.inputManager.handleMouseMove = function(event) {
+          try {
+            // 确保必要的对象存在
+            if (!this.mousePosition) {
+              this.mousePosition = new THREE.Vector2();
+            }
+            
+            // 安全调用原始方法
+            originalHandleMouseMove.call(this, event);
+          } catch (error) {
+            console.warn('错误修复器: 鼠标移动处理出错', error);
+          }
+        };
+      }
+      
+      // 包装handleMouseDown方法
+      const originalHandleMouseDown = gameEngine.inputManager.handleMouseDown;
+      if (typeof originalHandleMouseDown === 'function') {
+        gameEngine.inputManager.handleMouseDown = function(event) {
+          try {
+            // 确保必要的对象存在
+            if (!this.mousePosition) {
+              this.mousePosition = new THREE.Vector2();
+            }
+            
+            // 安全调用原始方法
+            originalHandleMouseDown.call(this, event);
+          } catch (error) {
+            console.warn('错误修复器: 鼠标按下处理出错', error);
+          }
+        };
+      }
+      
+      // 包装handleMouseUp方法
+      const originalHandleMouseUp = gameEngine.inputManager.handleMouseUp;
+      if (typeof originalHandleMouseUp === 'function') {
+        gameEngine.inputManager.handleMouseUp = function(event) {
+          try {
+            // 确保必要的对象存在
+            if (!this.mousePosition) {
+              this.mousePosition = new THREE.Vector2();
+            }
+            
+            // 安全调用原始方法
+            originalHandleMouseUp.call(this, event);
+          } catch (error) {
+            console.warn('错误修复器: 鼠标释放处理出错', error);
+          }
+        };
+      }
+      
+      console.log('已修复: InputManager鼠标事件处理方法');
+    }
   } catch (error) {
     console.error('应用错误修复失败:', error);
   }

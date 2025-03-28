@@ -13,65 +13,112 @@ function App() {
   const canvasRef = useRef(null);
   const gameEngineRef = useRef(null);
   const [engineInitialized, setEngineInitialized] = useState(false);
+  const [initError, setInitError] = useState(null);
+  const [initAttempts, setInitAttempts] = useState(0);
+  const maxInitAttempts = 3;
 
-  // Initialize the game engine on component mount
+  // 初始化游戏引擎，并处理可能的失败情况
   useEffect(() => {
     if (!canvasRef.current || gameEngineRef.current) return;
-
-    // Create and initialize game engine
+    
+    console.log('App.jsx: 启动游戏引擎初始化流程...');
+    
+    // 创建游戏引擎实例
     const gameEngine = new GameEngine();
     gameEngineRef.current = gameEngine;
+    
+    // 强制在window对象上保存gameEngine引用以便调试
+    window.gameEngine = gameEngine;
 
-    // Wait for the next frame to ensure canvas is properly in the DOM
+    // 等待下一帧以确保canvas已正确添加到DOM中
     requestAnimationFrame(async () => {
-      const initialized = await gameEngine.init(canvasRef.current);
-      if (initialized) {
-        setEngineInitialized(true);
+      try {
+        console.log('App.jsx: 开始初始化游戏引擎...');
         
-        // Handle window resize events
-        const handleResize = () => {
-          if (gameEngine.renderer) {
-            gameEngine.renderer.setResolution(window.innerWidth, window.innerHeight);
-          }
-        };
-        window.addEventListener('resize', handleResize);
+        // 初始化引擎，传递Canvas元素
+        const initialized = await gameEngine.init(canvasRef.current);
         
-        // Add keyboard event listener to show/hide controls help
-        const controlsHelp = document.querySelector('.controls-help');
-        if (controlsHelp) {
-          window.addEventListener('keydown', (e) => {
-            if (e.key === 'h' || e.key === 'H') {
-              controlsHelp.classList.toggle('visible');
+        if (initialized) {
+          console.log('App.jsx: 游戏引擎初始化成功!');
+          setEngineInitialized(true);
+          setInitError(null);
+          
+          // 处理窗口大小变更
+          const handleResize = () => {
+            if (gameEngine.renderer) {
+              gameEngine.renderer.setResolution(window.innerWidth, window.innerHeight);
             }
-          });
+          };
+          window.addEventListener('resize', handleResize);
+          
+          // 添加键盘事件监听器，显示/隐藏控制帮助
+          const controlsHelp = document.querySelector('.controls-help');
+          if (controlsHelp) {
+            window.addEventListener('keydown', (e) => {
+              if (e.key === 'h' || e.key === 'H') {
+                controlsHelp.classList.toggle('visible');
+              }
+            });
+          }
+          
+          return () => {
+            window.removeEventListener('resize', handleResize);
+          };
+        } else {
+          console.error("App.jsx: 游戏引擎初始化失败");
+          setInitError("引擎初始化失败，请检查控制台以获取详细信息");
+          
+          // 尝试再次初始化
+          if (initAttempts < maxInitAttempts) {
+            console.log(`App.jsx: 尝试重新初始化 (${initAttempts + 1}/${maxInitAttempts})`);
+            setInitAttempts(prev => prev + 1);
+            
+            // 销毁当前实例，下一个useEffect循环将创建新实例
+            gameEngineRef.current.dispose();
+            gameEngineRef.current = null;
+          }
         }
-        
-        return () => {
-          window.removeEventListener('resize', handleResize);
-        };
-      } else {
-        console.error("Failed to initialize game engine");
+      } catch (error) {
+        console.error("App.jsx: 游戏引擎初始化过程中发生异常:", error);
+        setInitError(`初始化错误: ${error.message}`);
       }
     });
     
     return () => {
-      // Clean up game engine if component unmounts
+      // 组件卸载时清理游戏引擎
       if (gameEngineRef.current) {
+        console.log('App.jsx: 清理游戏引擎资源');
         gameEngineRef.current.dispose();
+        gameEngineRef.current = null;
+        window.gameEngine = null;
       }
     };
-  }, []);
+  }, [initAttempts]);
+
+  // 强制UI层显示，即使引擎未完全初始化
+  const forceShowUI = initAttempts >= maxInitAttempts;
 
   return (
     <div className="game-container">
-      {/* 3D Rendering Canvas */}
+      {/* 3D渲染画布 */}
       <canvas
         ref={canvasRef}
         className="game-canvas"
       />
       
-      {/* UI Layer */}
-      {engineInitialized && gameEngineRef.current && (
+      {/* 错误消息 */}
+      {initError && (
+        <div className="init-error">
+          <h2>初始化问题</h2>
+          <p>{initError}</p>
+          {forceShowUI && (
+            <p>尝试继续加载UI，但游戏功能可能受限</p>
+          )}
+        </div>
+      )}
+      
+      {/* UI层 - 即使初始化失败，在最大尝试次数后也显示 */}
+      {(engineInitialized || forceShowUI) && gameEngineRef.current && (
         <UIManagerComponent gameEngine={gameEngineRef.current} />
       )}
     </div>

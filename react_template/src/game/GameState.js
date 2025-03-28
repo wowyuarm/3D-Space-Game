@@ -283,10 +283,21 @@ export class GameState {
     let closestDistance = Infinity;
     
     planets.forEach(planet => {
-      if (!planet) return;
+      // 确保行星对象有效
+      if (!planet || !planet.mesh) return;
       
-      const distance = shipPos.distanceTo(planet.position);
-      const planetRadius = planet.userData.size || 10;
+      // 使用行星的mesh来获取位置
+      const planetPos = planet.mesh.position;
+      
+      // 安全检查：确保planetPos存在且有x、y、z属性
+      if (!planetPos || typeof planetPos.x !== 'number') {
+        console.warn(`Planet ${planet.name} has invalid position`, planet);
+        return;
+      }
+      
+      // 计算玩家和行星之间的距离
+      const distance = shipPos.distanceTo(planetPos);
+      const planetRadius = planet.size || 10;
       const interactionDistance = planetRadius * 2 + 20; // 交互距离为行星半径的2倍加20
       
       // 更新最近行星
@@ -298,20 +309,24 @@ export class GameState {
       // 当玩家接近行星时
       if (distance < interactionDistance) {
         // 如果这是首次接近该行星
-        if (!planet.userData.visited) {
-          planet.userData.visited = true;
+        if (!planet.mesh.userData.visited) {
+          planet.mesh.userData.visited = true;
           
           // 显示UI通知
           if (this.gameEngine && this.gameEngine.uiManager) {
             this.gameEngine.uiManager.addNotification(
-              `接近行星: ${planet.userData.name}`, 
+              `接近行星: ${planet.name}`, 
               'info', 
               5000
             );
             
+            // 检查是否有discovery音效，如果没有使用alert音效代替
+            const soundToPlay = this.gameEngine.audioManager.audioFiles['discovery'] 
+              ? 'discovery' : 'alert';
+            
             // 播放发现音效
             if (this.gameEngine.audioManager) {
-              this.gameEngine.audioManager.playSound('discovery', 0.7);
+              this.gameEngine.audioManager.playSound(soundToPlay, 0.7);
             }
           }
           
@@ -322,7 +337,13 @@ export class GameState {
         // 检查玩家是否按下交互键(例如E键)来收集资源
         if (this.gameEngine && this.gameEngine.inputManager &&
             this.gameEngine.inputManager.isKeyPressed('KeyE') &&
-            !this.resourceCollector.isCollecting()) {
+            this.resourceCollector && !this.resourceCollector.isCollecting()) {
+          
+          // 安全检查：确保resourceCollector存在
+          if (!this.resourceCollector || typeof this.resourceCollector.canCollectFrom !== 'function') {
+            console.warn('ResourceCollector not properly initialized');
+            return;
+          }
           
           // 尝试开始资源收集
           if (this.resourceCollector.canCollectFrom(planet)) {
@@ -332,7 +353,7 @@ export class GameState {
               // 显示开始收集通知
               if (this.gameEngine.uiManager) {
                 this.gameEngine.uiManager.addNotification(
-                  `开始从 ${planet.userData.name} 收集资源...`, 
+                  `开始从 ${planet.name} 收集资源...`, 
                   'info', 
                   3000
                 );
@@ -342,7 +363,7 @@ export class GameState {
             // 显示无法收集通知
             if (this.gameEngine.uiManager && this.gameEngine.inputManager.isKeyJustPressed('KeyE')) {
               this.gameEngine.uiManager.addNotification(
-                `无法从 ${planet.userData.name} 收集资源`, 
+                `无法从 ${planet.name} 收集资源`, 
                 'warning', 
                 3000
               );

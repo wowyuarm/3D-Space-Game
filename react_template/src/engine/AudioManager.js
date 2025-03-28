@@ -42,7 +42,7 @@ export class AudioManager {
       
       // 设置全局错误处理
       Howler.autoUnlock = true;
-      Howler.html5PoolSize = 30;  // 增加池大小以避免耗尽警告
+      Howler.html5PoolSize = 50;  // 大幅增加池大小以彻底避免耗尽警告
       
       this.isInitialized = true;
       console.log('AudioManager initialized successfully');
@@ -77,7 +77,7 @@ export class AudioManager {
             volume: this.soundVolume,
             preload: true,
             html5: true, // 使用HTML5Audio减少Web Audio节点的使用
-            pool: 5 // 增加音频池大小
+            pool: 8 // 增加音频池大小
           });
           this.sounds.set(id, sound);
         } catch (error) {
@@ -95,7 +95,7 @@ export class AudioManager {
           volume: this.musicVolume,
           loop: true,
           html5: true, 
-          pool: 2
+          pool: 4  // 增加音频池大小
         });
         this.music.set(mainMusic, music);
       } catch (error) {
@@ -221,13 +221,23 @@ export class AudioManager {
     if (this.isMuted) return null;
     
     try {
+      // 验证声音ID
+      if (!id) {
+        console.warn('Attempted to play sound with empty id');
+        return null;
+      }
+      
       let sound = this.sounds.get(id);
       
-      // Load sound if it doesn't exist
+      // 处理audioFiles中不存在的音效
       if (!sound) {
         const path = this.audioFiles[id];
         if (!path) {
           console.warn(`Sound '${id}' not found in audio files`);
+          // 使用alert音效作为后备
+          if (id !== 'alert' && this.sounds.has('alert')) {
+            return this.playSound('alert', volume * 0.7);
+          }
           return null;
         }
         sound = this.loadSound(id, path);
@@ -235,9 +245,21 @@ export class AudioManager {
       }
       
       // 防止过多播放同一音效
-      if (sound.playing() && sound._sounds.length > 5) {
-        console.warn(`Too many instances of sound: ${id} already playing`);
-        return null;
+      if (sound.playing() && sound._sounds.length > 3) {
+        // 如果已经有多个相同音效播放中，只调整最后一个的音量，而不再创建新实例
+        console.warn(`Limiting concurrent instances of sound: ${id}`);
+        const lastSoundId = sound._sounds[sound._sounds.length - 1]._id;
+        sound.volume(volume * this.soundVolume, lastSoundId);
+        return lastSoundId;
+      }
+      
+      // 限制每个音效的最大同时播放实例数
+      // 短音效只需要很少的实例
+      if (sound._sounds.length >= 5) {
+        // 停止最早的音效实例
+        if (sound._sounds[0]) {
+          sound.stop(sound._sounds[0]._id);
+        }
       }
       
       // Play sound with adjusted volume

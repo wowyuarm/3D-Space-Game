@@ -489,11 +489,31 @@ export class GameEngine {
    * Handle window resize
    */
   onWindowResize() {
-    if (!this.camera || !this.renderer) return;
+    if (!this.camera || !this.renderer) {
+      console.warn('相机或渲染器不存在，无法调整大小');
+      return;
+    }
     
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    try {
+      // 更新相机宽高比
+      this.camera.aspect = window.innerWidth / window.innerHeight;
+      this.camera.updateProjectionMatrix();
+      
+      // 更新渲染器大小
+      if (typeof this.renderer.setSize === 'function') {
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+      } else if (this.renderer.renderer && typeof this.renderer.renderer.setSize === 'function') {
+        // 尝试使用renderer.renderer.setSize
+        this.renderer.renderer.setSize(window.innerWidth, window.innerHeight);
+      } else if (typeof this.renderer.setResolution === 'function') {
+        // 尝试使用renderer.setResolution
+        this.renderer.setResolution(window.innerWidth, window.innerHeight);
+      } else {
+        console.warn('无法调整渲染器大小：renderer没有setSize方法');
+      }
+    } catch (error) {
+      console.error('调整窗口大小时出错:', error);
+    }
   }
   
   /**

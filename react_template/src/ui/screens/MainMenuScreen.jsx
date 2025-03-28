@@ -18,13 +18,13 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
     console.log('MainMenuScreen mounted');
     setAnimationClass('fade-in');
     
-    // Stars background animation setup
+    // 星空背景动画设置
     const canvas = document.getElementById('stars-canvas');
     if (canvas) {
-      console.log('Stars canvas found, initializing stars background');
+      console.log('找到星空画布，初始化星空背景');
       initStarsBackground(canvas);
     } else {
-      console.warn('Stars canvas not found!');
+      console.warn('未找到星空画布！');
     }
     
     return () => {
@@ -32,15 +32,15 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
     };
   }, []);
   
-  // Function to animate stars in background
+  // 星空背景动画函数
   const initStarsBackground = (canvas) => {
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     
-    // Create stars
+    // 创建星星
     const stars = [];
-    const numStars = 200;
+    const numStars = 300; // 增加星星数量
     
     for (let i = 0; i < numStars; i++) {
       stars.push({
@@ -48,26 +48,76 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
         y: Math.random() * canvas.height,
         radius: Math.random() * 1.5 + 0.5,
         color: `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`,
-        speed: Math.random() * 0.3
+        speed: Math.random() * 0.3,
+        twinkleSpeed: Math.random() * 0.05, // 闪烁速度
+        twinkleAmount: Math.random() * 0.3, // 闪烁强度
+        twinkleOffset: Math.random() * Math.PI * 2 // 闪烁偏移量
       });
     }
     
-    // Animation function
-    function animateStars() {
+    // 创建遥远星云
+    const nebulas = [];
+    const numNebulas = 3;
+    
+    const nebulaColors = [
+      'rgba(41, 121, 255, 0.1)', // 蓝色星云
+      'rgba(255, 61, 87, 0.1)',  // 红色星云
+      'rgba(170, 0, 255, 0.1)',  // 紫色星云
+      'rgba(0, 212, 250, 0.1)',  // 青色星云
+      'rgba(255, 188, 66, 0.1)'  // 黄色星云
+    ];
+    
+    for (let i = 0; i < numNebulas; i++) {
+      nebulas.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 300 + 200,
+        color: nebulaColors[Math.floor(Math.random() * nebulaColors.length)]
+      });
+    }
+    
+    // 动画函数
+    function animateStars(time) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = 'rgba(0, 0, 17, 1)';
+      
+      // 渐变背景
+      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      gradient.addColorStop(0, 'rgba(5, 5, 25, 1)');
+      gradient.addColorStop(1, 'rgba(15, 10, 50, 1)');
+      ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      stars.forEach(star => {
+      // 绘制星云
+      nebulas.forEach(nebula => {
+        const grd = ctx.createRadialGradient(
+          nebula.x, nebula.y, 0,
+          nebula.x, nebula.y, nebula.radius
+        );
+        grd.addColorStop(0, nebula.color);
+        grd.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        
+        ctx.fillStyle = grd;
         ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = star.color;
+        ctx.arc(nebula.x, nebula.y, nebula.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      
+      // 绘制星星
+      stars.forEach(star => {
+        // 计算闪烁效果
+        const twinkle = star.twinkleAmount * Math.sin(time * 0.001 * star.twinkleSpeed + star.twinkleOffset);
+        const radius = star.radius * (1 + twinkle);
+        const alpha = Math.min(1, star.color.split(',')[3].slice(0, -1) * (1 + twinkle));
+        
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
         ctx.fill();
         
-        // Move star
+        // 移动星星
         star.y += star.speed;
         
-        // Reset if star goes off screen
+        // 星星超出屏幕时重置
         if (star.y > canvas.height) {
           star.y = 0;
           star.x = Math.random() * canvas.width;
@@ -77,9 +127,9 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
       requestAnimationFrame(animateStars);
     }
     
-    animateStars();
+    animateStars(0);
     
-    // Handle resize
+    // 处理窗口大小调整
     window.addEventListener('resize', () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -87,10 +137,10 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
   };
   
   const handleMenuChange = (newState) => {
-    console.log(`Menu changing from ${menuState} to ${newState}`);
+    console.log(`菜单从 ${menuState} 切换至 ${newState}`);
     setAnimationClass('fade-out');
     
-    // Wait for fade out animation to complete before changing menu
+    // 等待淡出动画完成后再切换菜单
     setTimeout(() => {
       setMenuState(newState);
       setAnimationClass('fade-in');
@@ -98,33 +148,33 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
   };
   
   const handleStartClick = () => {
-    console.log('Start game button clicked, calling onStartGame');
+    console.log('点击开始游戏按钮，调用 onStartGame');
     if (typeof onStartGame === 'function') {
       onStartGame();
     } else {
-      console.error('onStartGame is not a function!', onStartGame);
+      console.error('onStartGame 不是函数!', onStartGame);
     }
   };
   
   const handleLoadClick = () => {
-    console.log('Load game button clicked, calling onLoadGame');
+    console.log('点击加载游戏按钮，调用 onLoadGame');
     if (typeof onLoadGame === 'function') {
       onLoadGame();
     } else {
-      console.error('onLoadGame is not a function!', onLoadGame);
+      console.error('onLoadGame 不是函数!', onLoadGame);
     }
   };
   
-  // Render appropriate menu content based on state
+  // 根据状态渲染相应的菜单内容
   const renderMenuContent = () => {
     switch (menuState) {
       case 'options':
         return (
           <div className={`menu-container ${animationClass}`}>
-            <h2>Game Options</h2>
+            <h2 className="menu-title">游戏设置</h2>
             
             <div className="option-row">
-              <label htmlFor="music-volume">Music Volume</label>
+              <label htmlFor="music-volume">音乐音量</label>
               <input 
                 type="range" 
                 id="music-volume" 
@@ -134,10 +184,11 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
                 value={settings.musicVolume}
                 onChange={(e) => setSettings({...settings, musicVolume: parseFloat(e.target.value)})}
               />
+              <span className="option-value">{Math.round(settings.musicVolume * 100)}%</span>
             </div>
             
             <div className="option-row">
-              <label htmlFor="sound-volume">Sound Effects</label>
+              <label htmlFor="sound-volume">音效音量</label>
               <input 
                 type="range" 
                 id="sound-volume" 
@@ -147,10 +198,11 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
                 value={settings.soundVolume}
                 onChange={(e) => setSettings({...settings, soundVolume: parseFloat(e.target.value)})}
               />
+              <span className="option-value">{Math.round(settings.soundVolume * 100)}%</span>
             </div>
             
             <div className="option-row">
-              <label htmlFor="pixelation">Pixelation Effect</label>
+              <label htmlFor="pixelation">像素化效果</label>
               <input 
                 type="range" 
                 id="pixelation" 
@@ -160,18 +212,20 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
                 value={settings.pixelationLevel}
                 onChange={(e) => setSettings({...settings, pixelationLevel: parseInt(e.target.value)})}
               />
+              <span className="option-value">{settings.pixelationLevel}</span>
             </div>
             
             <div className="option-row">
-              <label htmlFor="difficulty">Difficulty</label>
+              <label htmlFor="difficulty">难度</label>
               <select 
                 id="difficulty"
                 value={settings.difficulty}
                 onChange={(e) => setSettings({...settings, difficulty: e.target.value})}
+                className="select-styled"
               >
-                <option value="easy">Easy</option>
-                <option value="normal">Normal</option>
-                <option value="hard">Hard</option>
+                <option value="easy">简单</option>
+                <option value="normal">中等</option>
+                <option value="hard">困难</option>
               </select>
             </div>
             
@@ -179,7 +233,7 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
               className="menu-button back-button" 
               onClick={() => handleMenuChange('main')}
             >
-              Back
+              返回
             </button>
           </div>
         );
@@ -187,27 +241,27 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
       case 'credits':
         return (
           <div className={`menu-container ${animationClass}`}>
-            <h2>Credits</h2>
+            <h2 className="menu-title">制作团队</h2>
             
             <div className="credits-content">
-              <p><strong>Retro Pixel Space Explorer</strong></p>
-              <p>A nostalgic journey through procedurally generated galaxies</p>
+              <p><strong>像素星际探索者</strong></p>
+              <p>一段穿越程序生成星系的怀旧之旅</p>
               <p>&nbsp;</p>
-              <p><strong>Development Team</strong></p>
-              <p>Game Design - Alex Explorer</p>
-              <p>Programming - Cosmo Coder</p>
-              <p>Pixel Art - Retro Painter</p>
-              <p>Music & Sound - Space Soundsmith</p>
+              <p><strong>开发团队</strong></p>
+              <p>游戏设计 - 星际探索者</p>
+              <p>编程 - 宇宙编码者</p>
+              <p>像素艺术 - 复古画师</p>
+              <p>音乐与音效 - 太空音匠</p>
               <p>&nbsp;</p>
-              <p><strong>Special Thanks</strong></p>
-              <p>To all the classic space games that inspired this adventure</p>
+              <p><strong>特别鸣谢</strong></p>
+              <p>感谢所有启发这次冒险的经典太空游戏</p>
             </div>
             
             <button 
               className="menu-button back-button" 
               onClick={() => handleMenuChange('main')}
             >
-              Back
+              返回
             </button>
           </div>
         );
@@ -216,35 +270,35 @@ const MainMenuScreen = ({ onStartGame, onLoadGame }) => {
       default:
         return (
           <div className={`menu-container ${animationClass}`}>
-            <h1 className="game-title">Retro Pixel<br />Space Explorer</h1>
+            <h1 className="game-title">像素<br />星际探索者</h1>
             
             <div className="menu-buttons">
               <button 
                 className="menu-button primary-button" 
                 onClick={handleStartClick}
               >
-                New Game
+                开始新游戏
               </button>
               
               <button 
                 className="menu-button" 
                 onClick={handleLoadClick}
               >
-                Load Game
+                加载游戏
               </button>
               
               <button 
                 className="menu-button" 
                 onClick={() => handleMenuChange('options')}
               >
-                Options
+                游戏设置
               </button>
               
               <button 
                 className="menu-button" 
                 onClick={() => handleMenuChange('credits')}
               >
-                Credits
+                制作团队
               </button>
             </div>
           </div>

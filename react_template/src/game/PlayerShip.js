@@ -32,18 +32,54 @@ export class PlayerShip extends Spaceship {
       return this;
     }
     
-    // Set position
-    this.position.copy(position);
+    console.log('PlayerShip初始化开始...');
     
-    // Create ship mesh
-    this.createPlayerShipMesh();
-    
-    // Add to scene
-    if (scene && this.mesh) {
-      scene.add(this.mesh);
+    try {
+      // Set position
+      this.position.copy(position);
+      
+      // Create ship mesh
+      this.createPlayerShipMesh();
+      
+      // 验证mesh是否创建成功
+      if (!this.mesh) {
+        console.error('PlayerShip mesh创建失败');
+        this.mesh = new THREE.Group(); // 创建空组作为后备
+        this.mesh.userData.spaceship = this;
+      }
+      
+      // 确保mesh是THREE.Object3D的实例
+      if (!(this.mesh instanceof THREE.Object3D)) {
+        console.error('PlayerShip mesh不是THREE.Object3D的实例，创建备用对象');
+        const backup = new THREE.Group();
+        backup.position.copy(this.position);
+        backup.userData.spaceship = this;
+        this.mesh = backup;
+      }
+      
+      // Add to scene
+      if (scene && this.mesh) {
+        console.log('将飞船添加到场景中');
+        try {
+          scene.add(this.mesh);
+        } catch (e) {
+          console.error('添加飞船到场景时出错:', e);
+        }
+      } else {
+        console.warn('场景或mesh无效，无法添加飞船');
+      }
+      
+      this.isInitialized = true;
+      console.log('PlayerShip初始化完成');
+    } catch (error) {
+      console.error('PlayerShip初始化过程中出错:', error);
+      // 确保即使出错也有有效的mesh
+      if (!this.mesh) {
+        this.mesh = new THREE.Group();
+        this.mesh.userData.spaceship = this;
+      }
     }
     
-    this.isInitialized = true;
     return this;
   }
   

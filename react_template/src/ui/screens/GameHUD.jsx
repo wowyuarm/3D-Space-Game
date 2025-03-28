@@ -5,207 +5,246 @@ import '../styles/resourceCollection.css';
 import '../styles/gameHud.css';
 
 const GameHUD = ({ gameEngine, onOpenStarMap, onOpenUpgrades, onSaveGame, onReturnToMainMenu }) => {
-  const [playerData, setPlayerData] = useState({
-    shipHealth: 100,
-    shipEnergy: 100,
-    credits: 1000,
-    velocity: 0,
-    location: 'Unknown Region',
-    level: 1
-  });
-  
+  const [gameState, setGameState] = useState(null);
+  const [showControls, setShowControls] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [showPauseMenu, setShowPauseMenu] = useState(false);
   const [nearestPlanet, setNearestPlanet] = useState(null);
   
-  // Update player data from game engine
   useEffect(() => {
-    const updateInterval = setInterval(() => {
-      if (gameEngine && gameEngine.gameState && gameEngine.gameState.player) {
-        const player = gameEngine.gameState.player;
-        const spaceship = player.spaceship;
-        
-        if (spaceship) {
-          const velocity = spaceship.velocity ? 
-            Math.sqrt(
-              spaceship.velocity.x * spaceship.velocity.x + 
-              spaceship.velocity.y * spaceship.velocity.y + 
-              spaceship.velocity.z * spaceship.velocity.z
-            ) : 0;
-            
-          setPlayerData({
-            shipHealth: spaceship.health || 100,
-            shipEnergy: spaceship.energy || 100,
-            credits: player.credits || 0,
-            velocity: Math.floor(velocity * 10) / 10,
-            location: player.currentStarSystem ? 
-                      player.currentStarSystem.name : 'Unknown Region',
-            level: player.level || 1
-          });
-          
-          // 更新最近的行星信息
-          setNearestPlanet(player.nearestPlanet);
-        }
-      }
-    }, 250); // Update 4 times per second
-    
-    return () => clearInterval(updateInterval);
+    if (gameEngine && gameEngine.gameState) {
+      setGameState(gameEngine.gameState);
+      
+      // 检测初始暂停状态
+      setIsPaused(!gameEngine.isRunning);
+    }
   }, [gameEngine]);
   
-  // Handle keyboard events for pause menu
+  // 更新HUD数据
+  const updateHUD = () => {
+    if (gameEngine && gameEngine.gameState) {
+      setGameState({...gameEngine.gameState});
+    }
+  };
+  
+  // 定期更新HUD数据
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.code === 'Escape') {
-        togglePauseMenu();
-      }
-    };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isPaused]);
+    const interval = setInterval(updateHUD, 500);
+    return () => clearInterval(interval);
+  }, [gameEngine]);
   
-  const togglePauseMenu = () => {
-    const newPauseState = !showPauseMenu;
-    setShowPauseMenu(newPauseState);
+  // 切换暂停状态
+  const handleTogglePause = () => {
+    if (!gameEngine) return;
     
-    // Pause or resume game engine
-    if (gameEngine) {
-      if (newPauseState) {
-        gameEngine.pause();
-        setIsPaused(true);
-      } else {
-        gameEngine.resume();
-        setIsPaused(false);
-      }
+    if (gameEngine.isRunning) {
+      gameEngine.pause();
+      setIsPaused(true);
+    } else {
+      gameEngine.resume();
+      setIsPaused(false);
     }
   };
   
-  // 格式化行星信息
-  const getPlanetInfoText = () => {
-    if (!nearestPlanet || !nearestPlanet.userData) return null;
-    
-    const planetData = nearestPlanet.userData;
-    const planetName = planetData.name || 'Unknown Planet';
-    const planetType = planetData.type || 'unknown';
-    
-    let resourcesText = '';
-    if (planetData.resources) {
-      const resourceCount = Object.keys(planetData.resources).filter(r => planetData.resources[r] > 0).length;
-      resourcesText = resourceCount > 0 ? ` [${resourceCount} resources]` : ' [No resources]';
-    }
-    
-    return `Nearby: ${planetName} (${planetType})${resourcesText}`;
+  // 显示/隐藏控制帮助
+  const toggleControls = () => {
+    setShowControls(!showControls);
   };
   
+  // 如果游戏已暂停，显示暂停菜单
+  if (isPaused) {
+    return (
+      <div className="pause-menu">
+        <div className="pause-menu-container">
+          <h2 className="pause-title">游戏已暂停</h2>
+          
+          <div className="pause-buttons">
+            <button className="hud-button primary-button" onClick={() => {
+              gameEngine.resume();
+              setIsPaused(false);
+            }}>
+              继续游戏
+            </button>
+            
+            <button className="hud-button" onClick={onOpenStarMap}>
+              星图导航
+            </button>
+            
+            <button className="hud-button" onClick={onOpenUpgrades}>
+              飞船升级
+            </button>
+            
+            <button className="hud-button" onClick={onSaveGame}>
+              保存游戏
+            </button>
+            
+            <button className="hud-button danger-button" onClick={onReturnToMainMenu}>
+              返回主菜单
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  // 游戏运行中的HUD界面
   return (
     <div className="game-hud">
-      {/* Main HUD display */}
+      {/* 顶部状态栏 */}
       <div className="hud-top-bar">
-        <div className="player-info">
-          <span className="player-level">LVL {playerData.level}</span>
-          <span className="player-credits">{playerData.credits} CR</span>
-        </div>
-        
         <div className="location-info">
-          <span>{playerData.location}</span>
+          <div>
+            <span className="location-label">星系:</span>
+            <span className="location-value">
+              {gameState?.player?.currentStarSystem?.name || '未知'}
+            </span>
+          </div>
+          
+          <div>
+            <span className="location-label">坐标:</span>
+            <span className="location-value">
+              {gameState?.player?.spaceship?.position ? 
+                `X:${Math.round(gameState.player.spaceship.position.x)} 
+                 Y:${Math.round(gameState.player.spaceship.position.y)} 
+                 Z:${Math.round(gameState.player.spaceship.position.z)}` : 
+                '未知'}
+            </span>
+          </div>
         </div>
         
-        <div className="hud-buttons">
-          <button onClick={togglePauseMenu} className="hud-button">
-            {isPaused ? 'Resume' : 'Pause'}
+        <div className="navigation-buttons">
+          <button className="hud-button" onClick={handleTogglePause}>
+            暂停
           </button>
           
-          <button onClick={onOpenStarMap} className="hud-button star-map-button">
-            Star Map
+          <button className="hud-button" onClick={onOpenStarMap}>
+            星图
           </button>
           
-          <button onClick={onOpenUpgrades} className="hud-button upgrade-button">
-            Upgrades
+          <button className="hud-button" onClick={onOpenUpgrades}>
+            升级
+          </button>
+          
+          <button className="hud-button" onClick={toggleControls}>
+            {showControls ? '隐藏控制' : '显示控制'}
           </button>
         </div>
       </div>
       
-      {/* Ship status indicators */}
-      <div className="ship-status">
-        <div className="status-bar-container">
-          <label>Hull</label>
-          <div className="status-bar">
-            <div 
-              className="status-bar-fill health-bar" 
-              style={{ width: `${playerData.shipHealth}%` }}
-            ></div>
+      {/* 底部状态栏 */}
+      <div className="hud-bottom-bar">
+        <div className="ship-stats">
+          <div className="stat-item">
+            <span className="stat-label">船体完整度:</span>
+            <div className="progress-bar">
+              <div className="progress-fill health-fill" 
+                style={{width: `${gameState?.player?.spaceship?.health / gameState?.player?.spaceship?.maxHealth * 100 || 0}%`}}>
+              </div>
+            </div>
+            <span className="stat-value">
+              {Math.round(gameState?.player?.spaceship?.health || 0)}/{Math.round(gameState?.player?.spaceship?.maxHealth || 0)}
+            </span>
           </div>
-          <span>{playerData.shipHealth}%</span>
-        </div>
-        
-        <div className="status-bar-container">
-          <label>Energy</label>
-          <div className="status-bar">
-            <div 
-              className="status-bar-fill energy-bar" 
-              style={{ width: `${playerData.shipEnergy}%` }}
-            ></div>
+          
+          <div className="stat-item">
+            <span className="stat-label">能量:</span>
+            <div className="progress-bar">
+              <div className="progress-fill energy-fill" 
+                style={{width: `${gameState?.player?.spaceship?.energy / gameState?.player?.spaceship?.maxEnergy * 100 || 0}%`}}>
+              </div>
+            </div>
+            <span className="stat-value">
+              {Math.round(gameState?.player?.spaceship?.energy || 0)}/{Math.round(gameState?.player?.spaceship?.maxEnergy || 0)}
+            </span>
           </div>
-          <span>{playerData.shipEnergy}%</span>
+          
+          <div className="stat-item">
+            <span className="stat-label">护盾:</span>
+            <div className="progress-bar">
+              <div className="progress-fill shield-fill" 
+                style={{width: `${gameState?.player?.spaceship?.shields?.strength / 100 * 100 || 0}%`}}>
+              </div>
+            </div>
+            <span className="stat-value">
+              {Math.round(gameState?.player?.spaceship?.shields?.strength || 0)}%
+            </span>
+          </div>
+          
+          <div className="stat-item">
+            <span className="stat-label">等级:</span>
+            <span className="stat-value">
+              {gameState?.player?.level || 1}
+            </span>
+          </div>
+          
+          <div className="stat-item">
+            <span className="stat-label">经验:</span>
+            <span className="stat-value">
+              {gameState?.player?.experience || 0}
+            </span>
+          </div>
+          
+          <div className="stat-item">
+            <span className="stat-label">信用点:</span>
+            <span className="stat-value">
+              {gameState?.player?.credits || 0} CR
+            </span>
+          </div>
         </div>
       </div>
       
-      {/* 行星信息显示 */}
-      {nearestPlanet && (
-        <div className="planet-proximity-info">
-          {getPlanetInfoText()}
-          {nearestPlanet.userData && gameEngine && gameEngine.gameState && 
-           gameEngine.gameState.resourceCollector && 
-           gameEngine.gameState.resourceCollector.canCollectFrom(nearestPlanet) && (
-            <span className="collect-hint">Press E to collect resources</span>
+      {/* 资源面板 */}
+      <div className="resources-panel">
+        <h3>物资清单</h3>
+        <div className="resources-list">
+          {gameState?.player?.resources && Object.entries(gameState.player.resources).length > 0 ? (
+            Object.entries(gameState.player.resources).map(([resourceId, amount]) => (
+              <div key={resourceId} className="resource-item">
+                <span className="resource-name">{resourceId}</span>
+                <span className="resource-amount">{amount}</span>
+              </div>
+            ))
+          ) : (
+            <div className="empty-message">空仓</div>
           )}
         </div>
-      )}
-      
-      {/* Ship velocity indicator */}
-      <div className="velocity-indicator">
-        <span className="velocity-value">{playerData.velocity}</span>
-        <span className="velocity-unit">u/s</span>
       </div>
       
-      {/* 资源收集界面 */}
-      <ResourceCollectionOverlay gameEngine={gameEngine} />
-      
-      {/* Pause menu overlay */}
-      {showPauseMenu && (
-        <div className="pause-menu-overlay">
-          <div className="pause-menu">
-            <h2>Game Paused</h2>
-            
-            <div className="pause-menu-buttons">
-              <button onClick={togglePauseMenu}>
-                Resume Game
-              </button>
-              
-              <button onClick={onSaveGame}>
-                Save Game
-              </button>
-              
-              <button onClick={onOpenStarMap}>
-                View Star Map
-              </button>
-              
-              <button onClick={onOpenUpgrades}>
-                Ship Upgrades
-              </button>
-              
-              <button onClick={onReturnToMainMenu}>
-                Main Menu
-              </button>
-            </div>
-          </div>
+      {/* 控制帮助面板 */}
+      <div className={`controls-help ${showControls ? 'visible' : ''}`}>
+        <h3>控制指南</h3>
+        <div className="control-item">
+          <span className="key">W/S</span>
+          <span className="action">推进/减速</span>
         </div>
-      )}
-      
-      {/* Controls reminder */}
-      <div className="controls-reminder">
-        <div>W/S - Thrust | A/D - Turn | Q/E - Roll | Arrow Keys - Pitch/Yaw</div>
-        <div>Shift - Boost | Space - Brake | E - Interact | ESC - Pause</div>
+        <div className="control-item">
+          <span className="key">A/D</span>
+          <span className="action">左转/右转</span>
+        </div>
+        <div className="control-item">
+          <span className="key">Q/E</span>
+          <span className="action">侧移</span>
+        </div>
+        <div className="control-item">
+          <span className="key">↑/↓</span>
+          <span className="action">上仰/俯冲</span>
+        </div>
+        <div className="control-item">
+          <span className="key">空格</span>
+          <span className="action">增压引擎</span>
+        </div>
+        <div className="control-item">
+          <span className="key">E</span>
+          <span className="action">交互/收集</span>
+        </div>
+        <div className="control-item">
+          <span className="key">TAB</span>
+          <span className="action">星图</span>
+        </div>
+        <div className="control-item">
+          <span className="key">ESC</span>
+          <span className="action">暂停</span>
+        </div>
       </div>
     </div>
   );

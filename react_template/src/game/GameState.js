@@ -117,23 +117,16 @@ export class GameState {
   setupScene() {
     // 创建场景
     this.currentScene = new THREE.Scene();
-    
-    // 使用更深的蓝黑色作为背景
-    this.currentScene.background = new THREE.Color(0x000022);
+    this.currentScene.background = new THREE.Color(0x000011);
     
     // 添加环境光
-    const ambientLight = new THREE.AmbientLight(0x303050, 0.7);
+    const ambientLight = new THREE.AmbientLight(0x202020);
     this.currentScene.add(ambientLight);
     
     // 添加定向光源
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
     directionalLight.position.set(1, 1, 1);
     this.currentScene.add(directionalLight);
-    
-    // 添加第二个彩色光源营造氛围
-    const colorLight = new THREE.DirectionalLight(0x6666ff, 0.4);
-    colorLight.position.set(-1, 0.5, -1);
-    this.currentScene.add(colorLight);
     
     // 创建相机
     this.currentCamera = new THREE.PerspectiveCamera(
@@ -142,337 +135,7 @@ export class GameState {
     this.currentCamera.position.set(0, 10, 20);
     this.currentCamera.lookAt(0, 0, 0);
     
-    // 添加远处的恒星背景
-    this.createStarfield();
-    
-    // 添加星云效果
-    this.createNebulae();
-    
     return this;
-  }
-  
-  /**
-   * 创建恒星背景
-   */
-  createStarfield() {
-    // 创建大量恒星 
-    const starsGeometry = new THREE.BufferGeometry();
-    const starCount = 2000;
-    const starPositions = [];
-    const starColors = [];
-    const starSizes = [];
-    
-    for (let i = 0; i < starCount; i++) {
-      // 随机位置 - 在以相机为中心的大半径球上
-      const radius = 1000 + Math.random() * 4000;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.random() * Math.PI;
-      
-      const x = radius * Math.sin(phi) * Math.cos(theta);
-      const y = radius * Math.sin(phi) * Math.sin(theta);
-      const z = radius * Math.cos(phi);
-      
-      starPositions.push(x, y, z);
-      
-      // 随机星星颜色 - 主要是白、蓝、黄和红色系
-      let r, g, b;
-      const colorType = Math.random();
-      
-      if (colorType < 0.6) {
-        // 白色/蓝白色恒星 (60%)
-        r = 0.8 + Math.random() * 0.2;
-        g = 0.8 + Math.random() * 0.2;
-        b = 0.9 + Math.random() * 0.1;
-      } else if (colorType < 0.8) {
-        // 黄色/橙色恒星 (20%)
-        r = 0.9 + Math.random() * 0.1;
-        g = 0.6 + Math.random() * 0.3;
-        b = 0.3 + Math.random() * 0.2;
-      } else if (colorType < 0.95) {
-        // 蓝色恒星 (15%)
-        r = 0.4 + Math.random() * 0.2;
-        g = 0.6 + Math.random() * 0.2;
-        b = 0.9 + Math.random() * 0.1;
-      } else {
-        // 红色恒星 (5%)
-        r = 0.9 + Math.random() * 0.1;
-        g = 0.2 + Math.random() * 0.3;
-        b = 0.2 + Math.random() * 0.2;
-      }
-      
-      starColors.push(r, g, b);
-      
-      // 星星大小 - 有少量明亮的大恒星
-      let size;
-      if (Math.random() < 0.05) {
-        // 亮星 (5%)
-        size = 3 + Math.random() * 3;
-      } else {
-        // 普通恒星 (95%)
-        size = 0.5 + Math.random() * 1.5;
-      }
-      
-      starSizes.push(size);
-    }
-    
-    // 创建恒星的Buffer属性
-    starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
-    starsGeometry.setAttribute('color', new THREE.Float32BufferAttribute(starColors, 3));
-    starsGeometry.setAttribute('size', new THREE.Float32BufferAttribute(starSizes, 1));
-    
-    // 创建恒星材质 - 使用自定义着色器实现闪烁效果
-    const starsMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        time: { value: 0 }
-      },
-      vertexShader: `
-        attribute float size;
-        attribute vec3 color;
-        varying vec3 vColor;
-        uniform float time;
-        
-        void main() {
-          vColor = color;
-          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-          
-          // 添加时间因子产生闪烁效果
-          float twinkle = sin(time * 0.5 + position.x * 0.01 + position.y * 0.01 + position.z * 0.01) * 0.5 + 0.5;
-          
-          gl_PointSize = size * (1.0 + twinkle * 0.2) * (300.0 / -mvPosition.z);
-          gl_Position = projectionMatrix * mvPosition;
-        }
-      `,
-      fragmentShader: `
-        varying vec3 vColor;
-        
-        void main() {
-          // 计算到点中心的距离，创建圆形光点
-          float distance = length(gl_PointCoord - vec2(0.5, 0.5));
-          if (distance > 0.5) discard; // 丢弃远离中心的片段，形成圆形
-          
-          // 根据到中心的距离创建发光效果
-          float intensity = 1.0 - distance * 2.0;
-          vec3 finalColor = vColor * intensity;
-          
-          gl_FragColor = vec4(finalColor, 1.0);
-        }
-      `,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-      transparent: true
-    });
-    
-    // 创建点云
-    const starField = new THREE.Points(starsGeometry, starsMaterial);
-    this.currentScene.add(starField);
-    this.starField = starField;
-    
-    // 添加几个特别明亮的恒星和光晕
-    this.createBrightStars();
-  }
-  
-  /**
-   * 创建明亮的恒星
-   */
-  createBrightStars() {
-    // 添加6-10个明亮的恒星
-    const brightStarCount = 6 + Math.floor(Math.random() * 5);
-    
-    for (let i = 0; i < brightStarCount; i++) {
-      // 随机位置 - 较远处
-      const radius = 2000 + Math.random() * 3000;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.random() * Math.PI;
-      
-      const x = radius * Math.sin(phi) * Math.cos(theta);
-      const y = radius * Math.sin(phi) * Math.sin(theta);
-      const z = radius * Math.cos(phi);
-      
-      // 决定恒星颜色
-      let color;
-      const colorType = Math.random();
-      
-      if (colorType < 0.3) {
-        color = 0xffffaa; // 黄色
-      } else if (colorType < 0.6) {
-        color = 0xaaaaff; // 蓝色
-      } else if (colorType < 0.8) {
-        color = 0xffaa88; // 橙色
-      } else {
-        color = 0xff8888; // 红色
-      }
-      
-      // 创建恒星光晕
-      const size = 15 + Math.random() * 15;
-      
-      // 几何体
-      const starGeometry = new THREE.SphereGeometry(size, 16, 16);
-      
-      // 恒星材质 - 使用自发光
-      const starMaterial = new THREE.MeshBasicMaterial({
-        color: color,
-        transparent: true,
-        opacity: 0.8
-      });
-      
-      const star = new THREE.Mesh(starGeometry, starMaterial);
-      star.position.set(x, y, z);
-      this.currentScene.add(star);
-      
-      // 添加光晕
-      const glowSize = size * 2;
-      const glowGeometry = new THREE.SphereGeometry(glowSize, 16, 16);
-      const glowMaterial = new THREE.MeshBasicMaterial({
-        color: color,
-        transparent: true,
-        opacity: 0.2,
-        side: THREE.BackSide
-      });
-      
-      const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-      star.add(glow);
-      
-      // 添加射线效果
-      this.createStarRays(star, color, size * 3);
-    }
-  }
-  
-  /**
-   * 创建恒星射线
-   */
-  createStarRays(star, color, length) {
-    const rayCount = 4 + Math.floor(Math.random() * 4); // 4-8条射线
-    
-    for (let i = 0; i < rayCount; i++) {
-      // 随机角度
-      const angle = Math.random() * Math.PI * 2;
-      
-      // 创建射线几何体
-      const rayGeometry = new THREE.CylinderGeometry(0.5, 0.1, length, 8);
-      rayGeometry.rotateX(Math.PI / 2); // 使射线指向外部
-      
-      // 随机旋转
-      rayGeometry.rotateY(angle);
-      rayGeometry.rotateZ(Math.random() * Math.PI / 4); // 添加一些倾斜
-      
-      // 射线材质
-      const rayMaterial = new THREE.MeshBasicMaterial({
-        color: color,
-        transparent: true,
-        opacity: 0.3 + Math.random() * 0.3
-      });
-      
-      const ray = new THREE.Mesh(rayGeometry, rayMaterial);
-      ray.position.set(0, 0, 0);
-      star.add(ray);
-    }
-  }
-  
-  /**
-   * 创建星云效果
-   */
-  createNebulae() {
-    // 添加2-4个星云
-    const nebulaCount = 2 + Math.floor(Math.random() * 3);
-    
-    for (let i = 0; i < nebulaCount; i++) {
-      // 随机位置 - 较远处但可见
-      const radius = 1000 + Math.random() * 2000;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.random() * Math.PI;
-      
-      const x = radius * Math.sin(phi) * Math.cos(theta);
-      const y = radius * Math.sin(phi) * Math.sin(theta);
-      const z = radius * Math.cos(phi);
-      
-      // 星云尺寸
-      const size = 200 + Math.random() * 500;
-      
-      // 星云材质颜色 - 多彩
-      let color;
-      const colorType = Math.random();
-      
-      if (colorType < 0.25) {
-        color = new THREE.Color(0.2, 0.1, 0.6); // 蓝紫色
-      } else if (colorType < 0.5) {
-        color = new THREE.Color(0.6, 0.1, 0.2); // 红色
-      } else if (colorType < 0.75) {
-        color = new THREE.Color(0.2, 0.6, 0.1); // 绿色
-      } else {
-        color = new THREE.Color(0.6, 0.4, 0.1); // 橙黄色
-      }
-      
-      // 创建云状几何体
-      const nebulaGeometry = new THREE.SphereGeometry(size, 24, 24);
-      
-      // 创建基于噪声的星云材质
-      const nebulaMaterial = new THREE.ShaderMaterial({
-        uniforms: {
-          time: { value: 0 },
-          baseColor: { value: color }
-        },
-        vertexShader: `
-          varying vec3 vPosition;
-          
-          void main() {
-            vPosition = position;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }
-        `,
-        fragmentShader: `
-          uniform float time;
-          uniform vec3 baseColor;
-          varying vec3 vPosition;
-          
-          // 简单的噪声函数
-          float noise(vec3 p) {
-            float t = fract(time * 0.01);
-            return fract(sin(dot(p, vec3(12.9898, 78.233, 45.164)) + t) * 43758.5453);
-          }
-          
-          void main() {
-            // 生成多层噪声，创建云状效果
-            float n1 = noise(vPosition * 0.01);
-            float n2 = noise(vPosition * 0.02 + vec3(100.0));
-            float n3 = noise(vPosition * 0.005 - vec3(50.0));
-            
-            // 组合噪声层
-            float finalNoise = n1 * 0.5 + n2 * 0.3 + n3 * 0.2;
-            
-            // 使边缘更透明
-            float distFromCenter = length(gl_PointCoord - vec2(0.5));
-            float edge = 1.0 - distFromCenter * 2.0;
-            
-            // 最终颜色和不透明度
-            vec3 finalColor = baseColor * finalNoise * 1.5;
-            float opacity = finalNoise * edge * 0.4; // 控制透明度
-            
-            // 丢弃非常暗的部分
-            if (opacity < 0.05) discard;
-            
-            gl_FragColor = vec4(finalColor, opacity);
-          }
-        `,
-        transparent: true,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-        side: THREE.DoubleSide
-      });
-      
-      const nebula = new THREE.Mesh(nebulaGeometry, nebulaMaterial);
-      nebula.position.set(x, y, z);
-      
-      // 随机旋转星云
-      nebula.rotation.x = Math.random() * Math.PI * 2;
-      nebula.rotation.y = Math.random() * Math.PI * 2;
-      nebula.rotation.z = Math.random() * Math.PI * 2;
-      
-      this.currentScene.add(nebula);
-      
-      // 将星云加入到可动画对象列表
-      if (!this.nebulae) this.nebulae = [];
-      this.nebulae.push(nebula);
-    }
   }
   
   /**
@@ -524,9 +187,6 @@ export class GameState {
     this.currentTime += deltaTime;
     this.gameTime += deltaTime * this.gameSpeed;
     this.stats.timePlayed += deltaTime;
-    
-    // 更新星空背景动画
-    this.updateStarfieldAnimations(deltaTime);
     
     // Update player
     if (this.player) {
@@ -1135,30 +795,8 @@ export class GameState {
     return true;
   }
   
-  travelToStarSystem(starSystem, instantTravel = false) {
+  travelToStarSystem(starSystem) {
     if (!this.player || !starSystem) return false;
-    
-    // 检查是否超出跃迁范围
-    if (!instantTravel && this.player.currentStarSystem) {
-      // 计算与当前星系的距离
-      const distance = new THREE.Vector3()
-        .copy(starSystem.position)
-        .sub(this.player.currentStarSystem.position)
-        .length();
-      
-      // 如果超出最大跃迁范围且不是立即传送，返回错误
-      const maxJumpDistance = this.player.spaceship ? this.player.spaceship.maxJumpDistance || 500 : 500;
-      if (distance > maxJumpDistance) {
-        if (this.gameEngine && this.gameEngine.uiManager) {
-          this.gameEngine.uiManager.addNotification(
-            `目标星系超出跃迁范围，距离：${distance.toFixed(1)}光年，最大范围：${maxJumpDistance.toFixed(1)}光年`,
-            'warning',
-            5000
-          );
-        }
-        return false;
-      }
-    }
     
     // Record travel distance for stats
     if (this.player.currentStarSystem) {
@@ -1170,44 +808,6 @@ export class GameState {
       this.stats.distanceTraveled += distance;
     }
     
-    // 创建超空间跃迁效果，无论是否立即传送
-    if (this.player.spaceship && this.player.createJumpEffect) {
-      try {
-        this.player.createJumpEffect();
-        
-        // 创建扭曲效果
-        if (this.player.createWarpEffect) {
-          this.player.createWarpEffect();
-        }
-      } catch (error) {
-        console.error("创建跃迁效果失败:", error);
-      }
-    }
-    
-    if (instantTravel) {
-      // 立即执行传送，不需要等待动画
-      this._executeTravelToSystem(starSystem);
-      return true;
-    } else {
-      // 延迟800毫秒执行传送，等待动画效果
-      if (this.gameEngine && this.gameEngine.uiManager) {
-        this.gameEngine.uiManager.addNotification(
-          `正在准备超空间跃迁到 ${starSystem.name}...`,
-          'info',
-          3000
-        );
-      }
-      
-      setTimeout(() => {
-        this._executeTravelToSystem(starSystem);
-      }, 800);
-      
-      return true;
-    }
-  }
-  
-  // 内部方法：执行传送到新星系的逻辑
-  _executeTravelToSystem(starSystem) {
     // 从场景中移除当前星系的行星
     if (this.player.currentStarSystem && this.player.currentStarSystem.planets) {
       this.player.currentStarSystem.planets.forEach(planet => {
@@ -1238,20 +838,6 @@ export class GameState {
         
         // Award experience for discovery
         this.player.gainExperience(50);
-        
-        // 播放发现音效
-        if (this.gameEngine && this.gameEngine.audioManager) {
-          this.gameEngine.audioManager.playSound('discovery');
-        }
-        
-        // 显示发现通知
-        if (this.gameEngine && this.gameEngine.uiManager) {
-          this.gameEngine.uiManager.addNotification(
-            `发现新星系：${starSystem.name}！`,
-            'discovery',
-            5000
-          );
-        }
       } else {
         // 如果星系已探索但行星未加载到场景中，则重新加载
         if (starSystem.planets && starSystem.planets.length > 0) {
@@ -1266,15 +852,6 @@ export class GameState {
       // 切换背景音乐
       if (this.gameEngine && this.gameEngine.audioManager) {
         this.gameEngine.audioManager.playMusic('space_ambient', true, true);
-      }
-      
-      // 显示到达通知
-      if (this.gameEngine && this.gameEngine.uiManager) {
-        this.gameEngine.uiManager.addNotification(
-          `已抵达 ${starSystem.name} 星系`,
-          'success',
-          3000
-        );
       }
     }
     
@@ -1559,137 +1136,6 @@ export class GameState {
     
     this.isInitialized = false;
     return this;
-  }
-  
-  /**
-   * 更新星空背景动画
-   * @param {Number} deltaTime - 时间增量
-   */
-  updateStarfieldAnimations(deltaTime) {
-    // 更新星星闪烁效果
-    if (this.starField && this.starField.material && this.starField.material.uniforms) {
-      this.starField.material.uniforms.time.value += deltaTime;
-    }
-    
-    // 更新星云动画
-    if (this.nebulae && this.nebulae.length > 0) {
-      this.nebulae.forEach(nebula => {
-        if (nebula && nebula.material && nebula.material.uniforms) {
-          // 更新时间值
-          nebula.material.uniforms.time.value += deltaTime;
-          
-          // 轻微旋转星云
-          nebula.rotation.y += 0.001 * deltaTime;
-          nebula.rotation.z += 0.0005 * deltaTime;
-        }
-      });
-    }
-    
-    // 随机创建流星效果 (平均每30秒一次)
-    if (Math.random() < 0.001 * deltaTime * 30) {
-      this.createMeteor();
-    }
-  }
-  
-  /**
-   * 创建流星效果
-   */
-  createMeteor() {
-    if (!this.currentScene || !this.currentCamera) return;
-    
-    // 创建流星几何体
-    const meteorGeometry = new THREE.BufferGeometry();
-    
-    // 流星起点(相对于相机在随机位置出现)
-    const startX = (Math.random() - 0.5) * 300;
-    const startY = 100 + Math.random() * 200;
-    const startZ = -200 - Math.random() * 500;
-    
-    // 终点(向屏幕对侧落下)
-    const endX = startX + (Math.random() - 0.5) * 400;
-    const endY = -100 - Math.random() * 200;
-    const endZ = startZ + (Math.random() - 0.5) * 200;
-    
-    // 转换到世界坐标
-    const startWorld = new THREE.Vector3(startX, startY, startZ);
-    const endWorld = new THREE.Vector3(endX, endY, endZ);
-    
-    startWorld.applyMatrix4(this.currentCamera.matrixWorld);
-    endWorld.applyMatrix4(this.currentCamera.matrixWorld);
-    
-    // 创建轨迹点
-    const points = [];
-    const segments = 20;
-    for (let i = 0; i <= segments; i++) {
-      const point = new THREE.Vector3().lerpVectors(
-        startWorld, endWorld, i / segments
-      );
-      points.push(point);
-    }
-    
-    // 设置顶点
-    const positions = new Float32Array(points.length * 3);
-    for (let i = 0; i < points.length; i++) {
-      positions[i * 3] = points[i].x;
-      positions[i * 3 + 1] = points[i].y;
-      positions[i * 3 + 2] = points[i].z;
-    }
-    
-    meteorGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    
-    // 流星材质 - 随机颜色，但偏向蓝白色
-    const meteorMaterial = new THREE.LineBasicMaterial({
-      color: new THREE.Color(0.7 + Math.random() * 0.3, 0.8 + Math.random() * 0.2, 1.0),
-      transparent: true,
-      opacity: 0.7
-    });
-    
-    const meteor = new THREE.Line(meteorGeometry, meteorMaterial);
-    this.currentScene.add(meteor);
-    
-    // 创建流星头部的发光效果
-    const headGeometry = new THREE.SphereGeometry(1, 8, 8);
-    const headMaterial = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.9
-    });
-    
-    const meteorHead = new THREE.Mesh(headGeometry, headMaterial);
-    meteorHead.position.copy(startWorld);
-    this.currentScene.add(meteorHead);
-    
-    // 流星动画
-    const duration = 1 + Math.random() * 1.5; // 1-2.5秒
-    let elapsed = 0;
-    
-    const animateMeteor = () => {
-      if (elapsed >= duration) {
-        // 动画结束，移除流星
-        this.currentScene.remove(meteor);
-        this.currentScene.remove(meteorHead);
-        meteor.geometry.dispose();
-        meteor.material.dispose();
-        meteorHead.geometry.dispose();
-        meteorHead.material.dispose();
-        return;
-      }
-      
-      // 更新流星位置
-      const progress = elapsed / duration;
-      const position = new THREE.Vector3().lerpVectors(startWorld, endWorld, progress);
-      meteorHead.position.copy(position);
-      
-      // 更新拖尾透明度
-      meteor.material.opacity = 0.7 * (1 - progress);
-      
-      // 下一帧继续动画
-      elapsed += 0.016; // 约60fps
-      requestAnimationFrame(animateMeteor);
-    };
-    
-    // 启动流星动画
-    animateMeteor();
   }
 }
 

@@ -1,4 +1,4 @@
-// src/game/PlanetGenerator.js
+ // src/game/PlanetGenerator.js
 import * as THREE from 'three';
 
 /**
@@ -6,85 +6,96 @@ import * as THREE from 'three';
  */
 export class PlanetGenerator {
   constructor() {
-    // 定义不同类型行星的属性
+    // 行星类型及其特性
     this.planetTypes = {
+      // 岩石类行星
       rocky: {
-        colors: [0x8b5a2b, 0xa0522d, 0xcd853f, 0xd2691e, 0xbc8f8f, 0xf4a460, 0xdaa520, 0xb8860b],
-        maxSize: 8,
-        roughness: 0.8,
+        colors: [
+          new THREE.Color(0x8B4513), // 棕色
+          new THREE.Color(0xA0522D), // 赭石色
+          new THREE.Color(0xCD853F), // 秘鲁色
+          new THREE.Color(0xD2691E)  // 巧克力色
+        ],
+        resources: ['iron', 'titanium', 'silicon', 'carbon'],
         atmosphereDensity: 0.2,
-        resources: ['iron', 'titanium', 'silicon', 'carbon', 'tungsten']
+        roughness: 0.8,
+        maxSize: 15
       },
+      
+      // 冰冻类行星
       icy: {
-        colors: [0xe0ffff, 0xafeeee, 0xb0e0e6, 0xadd8e6, 0x87ceeb, 0xb0c4de, 0xbfefff, 0xcae1ff],
-        maxSize: 7,
-        roughness: 0.3,
+        colors: [
+          new THREE.Color(0xE0FFFF), // 浅蓝色
+          new THREE.Color(0xADD8E6), // 淡蓝色
+          new THREE.Color(0xB0E0E6), // 粉蓝色
+          new THREE.Color(0x87CEEB)  // 天空蓝
+        ],
+        resources: ['water', 'methane', 'nitrogen', 'hydrogen'],
         atmosphereDensity: 0.3,
-        resources: ['water', 'methane', 'nitrogen', 'hydrogen', 'oxygen']
+        roughness: 0.4,
+        maxSize: 18
       },
+      
+      // 气态巨行星
       gas: {
-        colors: [0xe3cf57, 0xffa500, 0xff8c00, 0x4682b4, 0x1e90ff, 0x6495ed, 0xffd700, 0x7b68ee],
-        maxSize: 12,
-        roughness: 0.1,
+        colors: [
+          new THREE.Color(0xFFA07A), // 浅鲑鱼色
+          new THREE.Color(0xE9967A), // 深鲑鱼色
+          new THREE.Color(0xFA8072), // 鲑鱼色
+          new THREE.Color(0xF08080)  // 浅珊瑚色
+        ],
+        resources: ['hydrogen', 'helium', 'ammonia', 'methane'],
         atmosphereDensity: 0.9,
-        resources: ['hydrogen', 'helium', 'ammonia', 'methane']
+        roughness: 0.1,
+        maxSize: 25
       },
+      
+      // 熔岩类行星
       lava: {
-        colors: [0x8b0000, 0xff0000, 0xff4500, 0xff6347, 0xcd5c5c, 0xdc143c, 0xb22222, 0xa52a2a],
-        maxSize: 6,
+        colors: [
+          new THREE.Color(0xFF4500), // 橙红色
+          new THREE.Color(0xFF6347), // 番茄色
+          new THREE.Color(0xFF7F50), // 珊瑚色
+          new THREE.Color(0xFF8C00)  // 深橙色
+        ],
+        resources: ['sulfur', 'iron', 'platinum', 'tungsten'],
+        atmosphereDensity: 0.5,
         roughness: 0.7,
-        atmosphereDensity: 0.4,
-        resources: ['sulfur', 'iron', 'platinum', 'tungsten']
+        maxSize: 14
       },
+      
+      // 荒漠类行星
       desert: {
-        colors: [0xf5deb3, 0xdeb887, 0xd2b48c, 0xf0e68c, 0xeee8aa, 0xfafad2, 0xf5f5dc, 0xffebcd],
-        maxSize: 9,
-        roughness: 0.6,
+        colors: [
+          new THREE.Color(0xF5DEB3), // 小麦色
+          new THREE.Color(0xDEB887), // 实木色
+          new THREE.Color(0xD2B48C), // 棕褐色
+          new THREE.Color(0xBC8F8F)  // 玫瑰褐色
+        ],
+        resources: ['silica', 'titanium', 'gold', 'copper'],
         atmosphereDensity: 0.1,
-        resources: ['silica', 'titanium', 'gold', 'copper']
-      },
-      organic: {
-        colors: [0x006400, 0x228b22, 0x32cd32, 0x3cb371, 0x2e8b57, 0x808000, 0x6b8e23, 0x556b2f],
-        maxSize: 10,
-        roughness: 0.5,
-        atmosphereDensity: 0.7,
-        resources: ['oxygen', 'carbon', 'nitrogen', 'water']
-      },
-      // 添加新的行星类型
-      oceanic: {
-        colors: [0x000080, 0x0000cd, 0x0000ff, 0x1e90ff, 0x00bfff, 0x87ceeb, 0x87cefa, 0x4169e1],
-        maxSize: 9,
-        roughness: 0.3,
-        atmosphereDensity: 0.8,
-        resources: ['water', 'oxygen', 'hydrogen', 'nitrogen', 'rare_crystals']
-      },
-      volcanic: {
-        colors: [0x800000, 0x8b0000, 0xa52a2a, 0xb22222, 0xcd5c5c, 0xdc143c, 0xff0000, 0xc71585],
-        maxSize: 7,
-        roughness: 0.9,
-        atmosphereDensity: 0.6,
-        resources: ['sulfur', 'iron', 'platinum', 'tungsten', 'uranium']
-      },
-      crystal: {
-        colors: [0x9932cc, 0xba55d3, 0xda70d6, 0xee82ee, 0xdda0dd, 0xe6e6fa, 0xd8bfd8, 0xffe4e1],
-        maxSize: 6,
-        roughness: 0.2,
-        atmosphereDensity: 0.4,
-        resources: ['diamonds', 'rare_crystals', 'quantum_particles', 'silica']
-      },
-      toxic: {
-        colors: [0x9acd32, 0x6b8e23, 0x556b2f, 0x808000, 0x6a5acd, 0x7b68ee, 0x9370db, 0x8a2be2],
-        maxSize: 8,
         roughness: 0.6,
-        atmosphereDensity: 0.7,
-        resources: ['methane', 'ammonia', 'sulfur', 'exotic_compounds']
+        maxSize: 16
+      },
+      
+      // 有机类行星(类地行星)
+      organic: {
+        colors: [
+          new THREE.Color(0x32CD32), // 酸橙绿
+          new THREE.Color(0x3CB371), // 中海蓝
+          new THREE.Color(0x228B22), // 森林绿
+          new THREE.Color(0x008000)  // 绿色
+        ],
+        resources: ['oxygen', 'carbon', 'nitrogen', 'water'],
+        atmosphereDensity: 0.8,
+        roughness: 0.5,
+        maxSize: 20
       }
     };
     
-    // 定义资源类型及其价值
-    this.resourceTypes = {
-      iron: 3,
-      gold: 8,
+    // 资源类型和它们的价值(1-10)
+    this.resourceValues = {
+      iron: 2,
       titanium: 6,
       silicon: 4,
       carbon: 3,
@@ -100,14 +111,7 @@ export class PlanetGenerator {
       silica: 2,
       gold: 10,
       copper: 4,
-      oxygen: 6,
-      // 添加更多资源类型
-      uranium: 12,
-      diamonds: 15,
-      rare_crystals: 14,
-      exotic_compounds: 18,
-      alien_artifacts: 20,
-      quantum_particles: 25
+      oxygen: 6
     };
     
     // 定义行星后处理材质
@@ -133,9 +137,8 @@ export class PlanetGenerator {
     // 确定行星位置
     const position = options.position || this.getRandomPosition();
     
-    // 创建行星几何体 - 增加复杂度
-    const detail = Math.max(2, Math.floor(size / 3)); // 基于大小增加细节级别
-    const geometry = new THREE.SphereGeometry(size, 32 + detail * 8, 32 + detail * 8);
+    // 创建行星几何体
+    const geometry = new THREE.SphereGeometry(size, 64, 64);
     
     // 创建行星材质
     const material = this.createPlanetMaterial(type);
@@ -144,50 +147,39 @@ export class PlanetGenerator {
     const planet = new THREE.Mesh(geometry, material);
     planet.position.copy(position);
     
-    // 添加大气层效果 - 更加多样化的大气层
-    if (Math.random() < planetType.atmosphereDensity) {
+    // 如果是气态行星，添加大气环
+    if (type === 'gas' || planetType.atmosphereDensity > 0.6) {
       const atmosphere = this.createAtmosphere(size, type);
       planet.add(atmosphere);
     }
     
-    // 添加云层效果 - 适用于更多类型的行星
-    if ((type === 'organic' || type === 'oceanic' || (type === 'gas' && Math.random() > 0.5) || 
-        (type === 'toxic' && Math.random() > 0.7))) {
-      const clouds = this.createClouds(size * 1.02, type);
+    // 如果是有机行星，添加云层效果
+    if (type === 'organic') {
+      const clouds = this.createClouds(size * 1.02);
       planet.add(clouds);
     }
     
-    // 创建行星环 - 增加出现概率和多样性
-    if ((type === 'gas' && Math.random() < 0.7) || 
-        (type === 'icy' && Math.random() < 0.4) || 
-        (type === 'crystal' && Math.random() < 0.5)) {
-      const rings = this.createPlanetaryRings(size, type);
+    // 创建行星环(5%的几率，主要是气态行星)
+    if (type === 'gas' && Math.random() < 0.5) {
+      const rings = this.createPlanetaryRings(size);
       planet.add(rings);
     }
-    
-    // 添加表面特征 - 为某些行星类型添加独特特征
-    this.addSurfaceFeatures(planet, type, size);
     
     // 为行星添加随机旋转
     planet.rotation.x = Math.random() * Math.PI;
     planet.rotation.y = Math.random() * Math.PI;
-    planet.rotation.z = Math.random() * Math.PI * 0.1; // 减小z轴旋转，让行星看起来更自然
+    planet.rotation.z = Math.random() * Math.PI;
     
     // 添加行星元数据
-    const name = this.generatePlanetName();
-    planet.name = name;
-    
     planet.userData = {
       type: type,
       size: size,
-      name: name,
+      name: this.generatePlanetName(),
       resources: this.generatePlanetResources(type),
       description: this.generatePlanetDescription(type),
       orbitSpeed: 0.001 + Math.random() * 0.002, // 轨道速度
       rotationSpeed: 0.003 + Math.random() * 0.005, // 自转速度
-      inhabited: (type === 'organic' || type === 'oceanic') && Math.random() < 0.3, // 有机和水生行星有30%几率有生命
-      habitable: this.calculateHabitability(type, size), // 计算宜居性
-      canLand: this.canLandOnPlanet(type) // 确定是否可以着陆
+      inhabited: type === 'organic' && Math.random() < 0.3 // 有机行星有30%几率有生命存在
     };
     
     return planet;
@@ -202,74 +194,41 @@ export class PlanetGenerator {
     const planetType = this.planetTypes[type];
     const baseColor = planetType.colors[Math.floor(Math.random() * planetType.colors.length)];
     
-    // 创建更高级的材质
-    const material = new THREE.MeshPhysicalMaterial({
+    // 创建基础材质
+    const material = new THREE.MeshStandardMaterial({
       color: baseColor,
       roughness: planetType.roughness,
-      metalness: type === 'rocky' || type === 'lava' || type === 'crystal' ? 0.5 : 0.1,
-      flatShading: type === 'rocky' || type === 'desert' || type === 'volcanic',
-      clearcoat: type === 'oceanic' || type === 'icy' || type === 'crystal' ? 0.5 : 0,
-      clearcoatRoughness: 0.3,
-      reflectivity: type === 'crystal' ? 0.8 : 0.2
+      metalness: type === 'rocky' || type === 'lava' ? 0.5 : 0.1,
+      flatShading: type === 'rocky' || type === 'desert'
     });
     
-    // 针对不同类型行星创建特定纹理
-    switch(type) {
-      case 'rocky':
-      case 'desert':
-        // 添加凹凸纹理
-        const bumpTexture = this.generateNoiseTexture(512, 0.7);
-        material.bumpMap = bumpTexture;
-        material.bumpScale = 0.5;
-        break;
-        
-      case 'icy':
-        // 添加反光效果
-        material.specular = new THREE.Color(0xffffff);
-        material.shininess = 100;
-        material.envMapIntensity = 0.8;
-        break;
-        
-      case 'gas':
-        // 气态行星使用有条纹的纹理
-        const stripeTexture = this.generateGasGiantTexture(1024);
-        material.map = stripeTexture;
-        material.opacity = 0.9;
-        material.transparent = true;
-        break;
-        
-      case 'lava':
-      case 'volcanic':
-        // 熔岩行星使用发光纹理
-        material.emissive = new THREE.Color(type === 'lava' ? 0xff2200 : 0xdd0000);
-        material.emissiveIntensity = 0.5;
-        
-        const glowTexture = this.generateLavaTexture(512);
-        material.emissiveMap = glowTexture;
-        break;
-        
-      case 'organic':
-      case 'oceanic':
-        // 有机行星(类地行星)添加地表纹理
-        const landTexture = this.generateLandTexture(1024);
-        material.map = landTexture;
-        break;
-        
-      case 'crystal':
-        // 水晶行星特效
-        material.transmission = 0.3; // 半透明
-        material.metalness = 0.7;
-        material.roughness = 0.1;
-        material.clearcoat = 0.8;
-        break;
-        
-      case 'toxic':
-        // 有毒行星效果
-        const toxicTexture = this.generateToxicTexture(512);
-        material.map = toxicTexture;
-        material.emissive = new THREE.Color(0x448844);
-        material.emissiveIntensity = 0.2;
-        break;
+    // 创建纹理
+    if (type === 'rocky' || type === 'desert') {
+      // 添加凹凸纹理
+      const bumpTexture = this.generateNoiseTexture(512, 0.7);
+      material.bumpMap = bumpTexture;
+      material.bumpScale = 0.5;
+    } else if (type === 'icy') {
+      // 添加反光效果
+      material.specular = new THREE.Color(0xffffff);
+      material.shininess = 100;
+    } else if (type === 'gas') {
+      // 气态行星使用有条纹的纹理
+      const stripeTexture = this.generateGasGiantTexture(1024);
+      material.map = stripeTexture;
+      material.opacity = 0.9;
+      material.transparent = true;
+    } else if (type === 'lava') {
+      // 熔岩行星使用发光纹理
+      material.emissive = new THREE.Color(0xff2200);
+      material.emissiveIntensity = 0.5;
+      
+      const glowTexture = this.generateLavaTexture(512);
+      material.emissiveMap = glowTexture;
+    } else if (type === 'organic') {
+      // 有机行星(类地行星)添加地表纹理
+      const landTexture = this.generateLandTexture(1024);
+      material.map = landTexture;
     }
     
     return material;
@@ -516,60 +475,38 @@ export class PlanetGenerator {
   }
   
   /**
-   * 创建大气层
-   * @param {Number} planetSize - 行星大小
-   * @param {String} planetType - 行星类型
+   * 创建大气层效果
+   * @param {Number} radius - 行星半径
+   * @param {String} type - 行星类型
    * @returns {THREE.Mesh} 大气层网格
    */
-  createAtmosphere(planetSize, planetType) {
-    // 大气层稍大于行星
-    const atmosphereSize = planetSize * 1.05;
-    const geometry = new THREE.SphereGeometry(atmosphereSize, 32, 32);
+  createAtmosphere(radius, type) {
+    // 大气层稍大于行星本身
+    const atmosphereRadius = radius * 1.1;
+    const geometry = new THREE.SphereGeometry(atmosphereRadius, 64, 64);
     
-    // 根据行星类型选择大气颜色
+    // 根据行星类型设置大气层颜色
     let color;
-    switch(planetType) {
-      case 'oceanic':
-      case 'organic':
-        // 蓝色系大气，类似地球
-        color = new THREE.Color(0x6a9fe5);
-        break;
+    
+    switch (type) {
       case 'gas':
-        // 气态巨行星，金黄色或蓝色大气
-        color = Math.random() > 0.5 ? 
-          new THREE.Color(0xe5b54e) : 
-          new THREE.Color(0x4e8de5);
+        color = new THREE.Color(0xFFFACD);
         break;
-      case 'toxic':
-        // 有毒行星，绿色或紫色大气
-        color = Math.random() > 0.5 ? 
-          new THREE.Color(0x88ff88) : 
-          new THREE.Color(0xbb55dd);
+      case 'organic':
+        color = new THREE.Color(0x87CEEB);
         break;
       case 'lava':
-      case 'volcanic':
-        // 火山行星，红色或橙色大气
-        color = Math.random() > 0.5 ? 
-          new THREE.Color(0xff8866) : 
-          new THREE.Color(0xffaa22);
-        break;
-      case 'icy':
-      case 'crystal':
-        // 冰冻或水晶行星，淡蓝或淡紫色大气
-        color = Math.random() > 0.5 ? 
-          new THREE.Color(0xaaddff) : 
-          new THREE.Color(0xddaaff);
+        color = new THREE.Color(0xFF4500);
         break;
       default:
-        // 默认淡蓝色大气
-        color = new THREE.Color(0x88aaff);
+        color = new THREE.Color(0xAAAAAA);
     }
     
-    // 创建大气层材质
+    // 创建半透明材质
     const material = new THREE.MeshBasicMaterial({
       color: color,
       transparent: true,
-      opacity: 0.2 + Math.random() * 0.3, // 随机不透明度
+      opacity: 0.2,
       side: THREE.BackSide
     });
     
@@ -577,53 +514,24 @@ export class PlanetGenerator {
   }
   
   /**
-   * 创建云层
-   * @param {Number} planetSize - 行星大小
-   * @param {String} planetType - 行星类型
+   * 创建云层效果
+   * @param {Number} radius - 云层半径
    * @returns {THREE.Mesh} 云层网格
    */
-  createClouds(planetSize, planetType = 'organic') {
-    const cloudsGeometry = new THREE.SphereGeometry(planetSize, 32, 32);
+  createClouds(radius) {
+    const geometry = new THREE.SphereGeometry(radius, 64, 64);
     
-    // 根据行星类型定制云层
-    let cloudColor;
+    // 生成云层纹理
+    const cloudTexture = this.generateCloudTexture(512);
     
-    switch(planetType) {
-      case 'organic':
-        cloudColor = 0xffffff; // 白色云彩
-        break;
-      case 'oceanic':
-        cloudColor = 0xf0f8ff; // 略带蓝色的云彩
-        break;
-      case 'gas':
-        cloudColor = Math.random() > 0.5 ? 0xffffcc : 0xddddff; // 黄色或蓝色云层
-        break;
-      case 'toxic':
-        cloudColor = 0xccffcc; // 绿色云层
-        break;
-      default:
-        cloudColor = 0xeeeeee; // 默认白色
-    }
-    
-    // 创建云层材质
-    const cloudsMaterial = new THREE.MeshBasicMaterial({
-      color: cloudColor,
+    const material = new THREE.MeshBasicMaterial({
+      map: cloudTexture,
       transparent: true,
       opacity: 0.6,
-      side: THREE.FrontSide
+      blending: THREE.AdditiveBlending
     });
     
-    // 为云层添加噪声纹理
-    const cloudTexture = this.generateCloudTexture(512, planetType);
-    cloudsMaterial.alphaMap = cloudTexture;
-    cloudsMaterial.alphaTest = 0.2;
-    
-    const clouds = new THREE.Mesh(cloudsGeometry, cloudsMaterial);
-    
-    // 为云层添加随机旋转
-    clouds.rotation.y = Math.random() * Math.PI * 2;
-    
-    return clouds;
+    return new THREE.Mesh(geometry, material);
   }
   
   /**
@@ -668,125 +576,77 @@ export class PlanetGenerator {
   
   /**
    * 创建行星环
-   * @param {Number} planetSize - 行星大小
-   * @param {String} planetType - 行星类型
+   * @param {Number} planetRadius - 行星半径
    * @returns {THREE.Mesh} 行星环网格
    */
-  createPlanetaryRings(planetSize, planetType = 'gas') {
-    // 确定环的内外半径
-    const innerRadius = planetSize * 1.3;
-    const outerRadius = planetSize * 2.2;
+  createPlanetaryRings(planetRadius) {
+    // 内半径和外半径
+    const innerRadius = planetRadius * 1.3;
+    const outerRadius = planetRadius * 2.0;
     
-    // 使用更多的环段获得更平滑的效果
-    const ringGeometry = new THREE.RingGeometry(innerRadius, outerRadius, 64);
+    const geometry = new THREE.RingGeometry(innerRadius, outerRadius, 64);
     
-    // 选择环的颜色和特性
-    let ringColor, ringOpacity;
+    // 设置UV坐标，以便纹理能够正确映射
+    const pos = geometry.attributes.position;
+    const v3 = new THREE.Vector3();
+    const uv = [];
     
-    switch(planetType) {
-      case 'gas':
-        // 气态巨行星环，类似土星
-        ringColor = Math.random() > 0.5 ? 0xd4c6ad : 0xb5a67e;
-        ringOpacity = 0.6 + Math.random() * 0.3;
-        break;
-      case 'icy':
-        // 冰冻行星环，更亮更反光
-        ringColor = 0xe0e0ff;
-        ringOpacity = 0.4 + Math.random() * 0.3;
-        break;
-      case 'crystal':
-        // 水晶行星环，彩虹色
-        ringColor = 0xffffff; // 基础白色，但下面会添加彩虹效果
-        ringOpacity = 0.5 + Math.random() * 0.3;
-        break;
-      default:
-        ringColor = 0xbbbbbb;
-        ringOpacity = 0.5;
+    for (let i = 0; i < pos.count; i++) {
+      v3.fromBufferAttribute(pos, i);
+      const len = v3.length();
+      const u = (len - innerRadius) / (outerRadius - innerRadius);
+      const v = Math.atan2(v3.y, v3.x) / (Math.PI * 2) + 0.5;
+      
+      uv.push(u, v);
     }
     
-    // 创建环的材质
-    let ringMaterial;
+    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
     
-    if (planetType === 'crystal') {
-      // 为水晶行星创建彩虹环
-      ringMaterial = new THREE.ShaderMaterial({
-        uniforms: {
-          innerRadius: { value: innerRadius },
-          outerRadius: { value: outerRadius }
-        },
-        vertexShader: `
-          varying vec2 vUv;
-          
-          void main() {
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }
-        `,
-        fragmentShader: `
-          uniform float innerRadius;
-          uniform float outerRadius;
-          varying vec2 vUv;
-          
-          vec3 hsb2rgb(vec3 c) {
-            vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0), 6.0)-3.0)-1.0, 0.0, 1.0);
-            rgb = rgb * rgb * (3.0 - 2.0 * rgb);
-            return c.z * mix(vec3(1.0), rgb, c.y);
-          }
-          
-          void main() {
-            // 计算当前位置到环中心的距离
-            vec2 center = vec2(0.5, 0.5);
-            float dist = length(gl_PointCoord.xy - center) * 2.0;
-            
-            // 归一化当前半径在内外环之间的位置
-            float normRadius = distance(vUv, vec2(0.5)) * 2.0;
-            
-            // 使用半径生成彩虹色
-            vec3 color = hsb2rgb(vec3(normRadius, 0.7, 0.8));
-            
-            gl_FragColor = vec4(color, 0.6);
-          }
-        `,
-        side: THREE.DoubleSide,
-        transparent: true,
-        blending: THREE.AdditiveBlending
-      });
-    } else {
-      // 标准环材质
-      ringMaterial = new THREE.MeshBasicMaterial({
-        color: ringColor,
-        transparent: true,
-        opacity: ringOpacity,
-        side: THREE.DoubleSide
-      });
-    }
+    // 生成行星环纹理
+    const ringTexture = this.generateRingTexture(512);
     
-    const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+    const material = new THREE.MeshBasicMaterial({
+      map: ringTexture,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.8
+    });
     
-    // 旋转环使其水平
-    ring.rotation.x = Math.PI / 2;
+    const ring = new THREE.Mesh(geometry, material);
     
-    // 有时添加第二个内环
-    if (Math.random() < 0.3) {
-      const innerRingRadius = planetSize * 1.2;
-      const midRingRadius = planetSize * 1.4;
-      
-      const innerRingGeometry = new THREE.RingGeometry(innerRingRadius, midRingRadius, 64);
-      
-      const innerRingMaterial = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        transparent: true,
-        opacity: 0.3,
-        side: THREE.DoubleSide
-      });
-      
-      const innerRing = new THREE.Mesh(innerRingGeometry, innerRingMaterial);
-      innerRing.rotation.x = Math.PI / 2;
-      
-      ring.add(innerRing);
-    }
+    // 稍微倾斜行星环
+    ring.rotation.x = Math.PI / 4;
     
     return ring;
+  }
+  
+  /**
+   * 生成行星环纹理
+   * @param {Number} size - 纹理尺寸
+   * @returns {THREE.Texture} 生成的纹理
+   */
+  generateRingTexture(size) {
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const context = canvas.getContext('2d');
+    
+    // 生成条纹
+    for (let i = 0; i < size; i++) {
+      // 条纹密度随机变化
+      if (Math.random() > 0.5) {
+        const alpha = 0.3 + Math.random() * 0.7;
+        context.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        context.fillRect(0, i, size, 1 + Math.random() * 3);
+      }
+    }
+    
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.repeat.set(1, 3);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    
+    return texture;
   }
   
   /**
@@ -990,221 +850,6 @@ export class PlanetGenerator {
         }
       });
     });
-  }
-  
-  /**
-   * 为行星添加表面特征
-   * @param {THREE.Mesh} planet - 行星对象
-   * @param {String} type - 行星类型
-   * @param {Number} size - 行星尺寸
-   */
-  addSurfaceFeatures(planet, type, size) {
-    switch(type) {
-      case 'rocky':
-        // 添加陨石坑
-        this.addCraters(planet, size, 0.7);
-        break;
-        
-      case 'volcanic':
-        // 添加火山口 - 暂时使用陨石坑代替
-        this.addCraters(planet, size, 0.5);
-        break;
-        
-      case 'crystal':
-        // 暂时跳过水晶尖刺，防止非THREE.Object3D错误
-        break;
-        
-      case 'oceanic':
-        // 暂时跳过岛屿，防止非THREE.Object3D错误
-        break;
-    }
-  }
-  
-  /**
-   * 添加陨石坑
-   * @param {THREE.Mesh} planet - 行星对象
-   * @param {Number} size - 行星尺寸
-   * @param {Number} density - 陨石坑密度
-   */
-  addCraters(planet, size, density = 0.5) {
-    const craterCount = Math.floor(5 + Math.random() * 10 * density);
-    
-    for (let i = 0; i < craterCount; i++) {
-      // 创建陨石坑几何体
-      const craterSize = size * (0.05 + Math.random() * 0.15); // 陨石坑大小
-      const craterGeometry = new THREE.CircleGeometry(craterSize, 16);
-      
-      // 陨石坑材质
-      const craterMaterial = new THREE.MeshStandardMaterial({
-        color: 0x555555,
-        roughness: 0.8,
-        metalness: 0.1,
-        side: THREE.DoubleSide
-      });
-      
-      const crater = new THREE.Mesh(craterGeometry, craterMaterial);
-      
-      // 在球面上放置陨石坑
-      const phi = Math.random() * Math.PI;
-      const theta = Math.random() * Math.PI * 2;
-      
-      const x = size * Math.sin(phi) * Math.cos(theta);
-      const y = size * Math.sin(phi) * Math.sin(theta);
-      const z = size * Math.cos(phi);
-      
-      crater.position.set(x, y, z);
-      
-      // 使陨石坑面向行星中心
-      crater.lookAt(0, 0, 0);
-      
-      // 稍微下沉陨石坑
-      crater.position.multiplyScalar(0.99);
-      
-      planet.add(crater);
-    }
-  }
-  
-  /**
-   * 根据类型计算行星宜居性
-   * @param {String} type - 行星类型
-   * @param {Number} size - 行星大小
-   * @returns {Boolean} 是否宜居
-   */
-  calculateHabitability(type, size) {
-    // 只有有机和海洋行星可能宜居
-    if (type !== 'organic' && type !== 'oceanic') {
-      return false;
-    }
-    
-    // 大小要适中 - 不能太小也不能太大
-    const idealSize = 8;
-    const sizeVariance = Math.abs(size - idealSize);
-    
-    // 基于类型和大小的宜居概率
-    const baseChance = type === 'organic' ? 0.3 : 0.2;
-    const sizeAdjustment = Math.max(0, 0.2 - sizeVariance * 0.05);
-    
-    return Math.random() < (baseChance + sizeAdjustment);
-  }
-  
-  /**
-   * 判断行星是否可以着陆
-   * @param {String} type - 行星类型
-   * @returns {Boolean} 是否可以着陆
-   */
-  canLandOnPlanet(type) {
-    // 气态和熔岩行星不能着陆
-    if (type === 'gas' || type === 'lava') {
-      return false;
-    }
-    
-    // 其他类型行星可着陆
-    return true;
-  }
-  
-  /**
-   * 添加火山口效果 (未完全实现)
-   * @param {THREE.Mesh} planet - 行星对象
-   * @param {Number} size - 行星尺寸
-   */
-  addVolcanoes(planet, size) {
-    // 暂时使用红色陨石坑模拟火山口
-    const volcanoCount = Math.floor(3 + Math.random() * 5);
-    
-    for (let i = 0; i < volcanoCount; i++) {
-      const volcanoSize = size * (0.08 + Math.random() * 0.12);
-      const volcanoGeometry = new THREE.CircleGeometry(volcanoSize, 16);
-      
-      const volcanoMaterial = new THREE.MeshStandardMaterial({
-        color: 0x990000,
-        roughness: 0.7,
-        metalness: 0.2,
-        side: THREE.DoubleSide,
-        emissive: 0xff3300,
-        emissiveIntensity: 0.5
-      });
-      
-      const volcano = new THREE.Mesh(volcanoGeometry, volcanoMaterial);
-      
-      // 在球面上放置火山口
-      const phi = Math.random() * Math.PI;
-      const theta = Math.random() * Math.PI * 2;
-      
-      const x = size * Math.sin(phi) * Math.cos(theta);
-      const y = size * Math.sin(phi) * Math.sin(theta);
-      const z = size * Math.cos(phi);
-      
-      volcano.position.set(x, y, z);
-      volcano.lookAt(0, 0, 0);
-      volcano.position.multiplyScalar(0.99);
-      
-      planet.add(volcano);
-    }
-  }
-  
-  /**
-   * 添加水晶形态 (未完全实现)
-   * @param {THREE.Mesh} planet - 行星对象
-   * @param {Number} size - 行星尺寸
-   */
-  addCrystalFormations(planet, size) {
-    // 暂时不实现，防止错误
-  }
-  
-  /**
-   * 添加岛屿 (未完全实现)
-   * @param {THREE.Mesh} planet - 行星对象
-   * @param {Number} size - 行星尺寸
-   */
-  addIslands(planet, size) {
-    // 暂时不实现，防止错误
-  }
-  
-  /**
-   * 生成有毒行星纹理
-   * @param {Number} size - 纹理尺寸
-   * @returns {THREE.Texture} 生成的纹理
-   */
-  generateToxicTexture(size) {
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const context = canvas.getContext('2d');
-    
-    // 创建渐变背景
-    const gradient = context.createRadialGradient(
-      size/2, size/2, 0,
-      size/2, size/2, size/2
-    );
-    
-    gradient.addColorStop(0, '#88ff88');
-    gradient.addColorStop(0.5, '#66cc66');
-    gradient.addColorStop(1, '#225522');
-    
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, size, size);
-    
-    // 添加气泡/斑点效果
-    const bubbleCount = 50 + Math.random() * 100;
-    
-    for (let i = 0; i < bubbleCount; i++) {
-      const x = Math.random() * size;
-      const y = Math.random() * size;
-      const radius = 2 + Math.random() * 10;
-      
-      context.beginPath();
-      context.arc(x, y, radius, 0, Math.PI * 2);
-      
-      // 随机气泡颜色
-      const r = Math.floor(100 + Math.random() * 155);
-      const g = Math.floor(200 + Math.random() * 55);
-      const b = Math.floor(100 + Math.random() * 100);
-      
-      context.fillStyle = `rgba(${r}, ${g}, ${b}, 0.6)`;
-      context.fill();
-    }
-    
-    return new THREE.CanvasTexture(canvas);
   }
 }
 

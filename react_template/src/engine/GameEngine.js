@@ -466,12 +466,12 @@ export class GameEngine {
    * Setup basic scene lighting
    */
   setupLights() {
-    // Ambient light
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+    // Ambient light - 增强环境光亮度
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
     this.scene.add(ambientLight);
     
-    // Directional light (sun)
-    const sunLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    // Directional light (sun) - 增强直射光亮度
+    const sunLight = new THREE.DirectionalLight(0xffffff, 2.0);
     sunLight.position.set(10, 20, 10);
     sunLight.castShadow = true;
     
@@ -483,6 +483,16 @@ export class GameEngine {
     sunLight.shadow.bias = -0.0001;
     
     this.scene.add(sunLight);
+    
+    // 添加额外的点光源以增强视觉效果
+    const pointLight1 = new THREE.PointLight(0xffffcc, 1.0, 50);
+    pointLight1.position.set(-10, 15, 5);
+    this.scene.add(pointLight1);
+    
+    // 添加另一个点光源，从不同角度照亮物体
+    const pointLight2 = new THREE.PointLight(0xccffff, 1.0, 50);
+    pointLight2.position.set(10, -5, 15);
+    this.scene.add(pointLight2);
   }
   
   /**

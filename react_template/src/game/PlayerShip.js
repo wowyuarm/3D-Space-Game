@@ -97,11 +97,12 @@ export class PlayerShip extends Spaceship {
     // Cockpit 
     const cockpitGeometry = new THREE.SphereGeometry(0.3, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2);
     const cockpitMaterial = new THREE.MeshStandardMaterial({
-      color: 0x88ccff,
+      color: 0xaaddff,
+      emissive: 0x1133cc,
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.9,
       roughness: 0.1,
-      metalness: 0.2
+      metalness: 0.3
     });
     
     const cockpit = new THREE.Mesh(cockpitGeometry, cockpitMaterial);
@@ -112,9 +113,10 @@ export class PlayerShip extends Spaceship {
     // Engine boosters
     const boosterGeometry = new THREE.CylinderGeometry(0.15, 0.25, 0.5, 8);
     const boosterMaterial = new THREE.MeshStandardMaterial({
-      color: 0x666666,
-      roughness: 0.4,
-      metalness: 0.8
+      color: 0x999999,
+      emissive: 0x222222,
+      roughness: 0.3,
+      metalness: 0.9
     });
     
     // Left booster
@@ -132,9 +134,9 @@ export class PlayerShip extends Spaceship {
     // Engine glow for boosters
     const engineGlowGeometry = new THREE.CircleGeometry(0.2, 16);
     const engineGlowMaterial = new THREE.MeshBasicMaterial({
-      color: 0x66aaff,
+      color: 0x22ffff,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.9,
       side: THREE.DoubleSide
     });
     
@@ -145,6 +147,18 @@ export class PlayerShip extends Spaceship {
     const rightBoosterGlow = new THREE.Mesh(engineGlowGeometry, engineGlowMaterial);
     rightBoosterGlow.position.set(0.6, 0, -1.1);
     this.mesh.add(rightBoosterGlow);
+    
+    // 添加飞船轮廓发光效果
+    const outlineGeometry = new THREE.SphereGeometry(1.5, 16, 16);
+    const outlineMaterial = new THREE.MeshBasicMaterial({
+      color: 0x0088ff,
+      transparent: true,
+      opacity: 0.15,
+      side: THREE.BackSide
+    });
+    
+    const outline = new THREE.Mesh(outlineGeometry, outlineMaterial);
+    this.mesh.add(outline);
     
     // Store references for animation
     this.engineGlows = [this.engineGlow, leftBoosterGlow, rightBoosterGlow];

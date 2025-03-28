@@ -51,6 +51,18 @@ const GameHUD = ({ gameEngine, onOpenStarMap, onOpenUpgrades, onSaveGame, onRetu
     setShowControls(!showControls);
   };
   
+  // 暂停游戏的快捷键处理
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        handleTogglePause();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [gameEngine]);
+  
   // 如果游戏已暂停，显示暂停菜单
   if (isPaused) {
     return (
@@ -60,7 +72,7 @@ const GameHUD = ({ gameEngine, onOpenStarMap, onOpenUpgrades, onSaveGame, onRetu
           
           <div className="pause-buttons">
             <button className="hud-button primary-button" onClick={() => {
-              gameEngine.resume();
+              gameEngine?.resume();
               setIsPaused(false);
             }}>
               继续游戏
@@ -90,7 +102,7 @@ const GameHUD = ({ gameEngine, onOpenStarMap, onOpenUpgrades, onSaveGame, onRetu
   // 游戏运行中的HUD界面
   return (
     <div className="game-hud">
-      {/* 顶部状态栏 */}
+      {/* 顶部状态栏 - 简化，仅显示关键信息 */}
       <div className="hud-top-bar">
         <div className="location-info">
           <div>
@@ -121,31 +133,29 @@ const GameHUD = ({ gameEngine, onOpenStarMap, onOpenUpgrades, onSaveGame, onRetu
             星图
           </button>
           
-          <button className="hud-button" onClick={onOpenUpgrades}>
-            升级
-          </button>
-          
           <button className="hud-button" onClick={toggleControls}>
             {showControls ? '隐藏控制' : '显示控制'}
           </button>
         </div>
       </div>
       
-      {/* 底部状态栏 */}
+      {/* 底部状态栏 - 精简，更透明 */}
       <div className="hud-bottom-bar">
         <div className="ship-stats">
+          {/* 健康度 */}
           <div className="stat-item">
-            <span className="stat-label">船体完整度:</span>
+            <span className="stat-label">船体:</span>
             <div className="progress-bar">
               <div className="progress-fill health-fill" 
                 style={{width: `${gameState?.player?.spaceship?.health / gameState?.player?.spaceship?.maxHealth * 100 || 0}%`}}>
               </div>
             </div>
             <span className="stat-value">
-              {Math.round(gameState?.player?.spaceship?.health || 0)}/{Math.round(gameState?.player?.spaceship?.maxHealth || 0)}
+              {Math.round(gameState?.player?.spaceship?.health || 0)}
             </span>
           </div>
           
+          {/* 能量 */}
           <div className="stat-item">
             <span className="stat-label">能量:</span>
             <div className="progress-bar">
@@ -154,54 +164,41 @@ const GameHUD = ({ gameEngine, onOpenStarMap, onOpenUpgrades, onSaveGame, onRetu
               </div>
             </div>
             <span className="stat-value">
-              {Math.round(gameState?.player?.spaceship?.energy || 0)}/{Math.round(gameState?.player?.spaceship?.maxEnergy || 0)}
+              {Math.round(gameState?.player?.spaceship?.energy || 0)}
             </span>
           </div>
           
+          {/* 护盾 */}
           <div className="stat-item">
             <span className="stat-label">护盾:</span>
             <div className="progress-bar">
               <div className="progress-fill shield-fill" 
-                style={{width: `${gameState?.player?.spaceship?.shields?.strength / 100 * 100 || 0}%`}}>
+                style={{width: `${gameState?.player?.spaceship?.shields?.strength / gameState?.player?.spaceship?.shields?.maxStrength * 100 || 0}%`}}>
               </div>
             </div>
             <span className="stat-value">
-              {Math.round(gameState?.player?.spaceship?.shields?.strength || 0)}%
+              {Math.round(gameState?.player?.spaceship?.shields?.strength || 0)}
             </span>
           </div>
           
-          <div className="stat-item">
-            <span className="stat-label">等级:</span>
-            <span className="stat-value">
-              {gameState?.player?.level || 1}
-            </span>
-          </div>
-          
-          <div className="stat-item">
-            <span className="stat-label">经验:</span>
-            <span className="stat-value">
-              {gameState?.player?.experience || 0}
-            </span>
-          </div>
-          
-          <div className="stat-item">
+          <div className="stat-item credits-display">
             <span className="stat-label">信用点:</span>
-            <span className="stat-value">
+            <span className="stat-value credits-value">
               {gameState?.player?.credits || 0} CR
             </span>
           </div>
         </div>
       </div>
       
-      {/* 资源面板 */}
+      {/* 资源面板 - 移至右侧，不遮挡游戏中央区域 */}
       <div className="resources-panel">
         <h3>物资清单</h3>
         <div className="resources-list">
-          {gameState?.player?.resources && Object.entries(gameState.player.resources).length > 0 ? (
-            Object.entries(gameState.player.resources).map(([resourceId, amount]) => (
-              <div key={resourceId} className="resource-item">
-                <span className="resource-name">{resourceId}</span>
-                <span className="resource-amount">{amount}</span>
+          {gameState?.player?.inventory?.items && gameState.player.inventory.items.length > 0 ? (
+            gameState.player.inventory.items.map((item, index) => (
+              <div key={index} className="resource-item">
+                <span className="resource-name">{item.name}</span>
+                <span className="resource-amount">{item.quantity || 1}</span>
               </div>
             ))
           ) : (
@@ -210,12 +207,16 @@ const GameHUD = ({ gameEngine, onOpenStarMap, onOpenUpgrades, onSaveGame, onRetu
         </div>
       </div>
       
-      {/* 控制帮助面板 */}
+      {/* 控制帮助面板 - 更明显的显示/隐藏 */}
       <div className={`controls-help ${showControls ? 'visible' : ''}`}>
         <h3>控制指南</h3>
         <div className="control-item">
-          <span className="key">W/S</span>
-          <span className="action">推进/减速</span>
+          <span className="key">W</span>
+          <span className="action">前进</span>
+        </div>
+        <div className="control-item">
+          <span className="key">S</span>
+          <span className="action">后退</span>
         </div>
         <div className="control-item">
           <span className="key">A/D</span>
@@ -223,27 +224,27 @@ const GameHUD = ({ gameEngine, onOpenStarMap, onOpenUpgrades, onSaveGame, onRetu
         </div>
         <div className="control-item">
           <span className="key">Q/E</span>
-          <span className="action">侧移</span>
+          <span className="action">左右滚转</span>
         </div>
         <div className="control-item">
-          <span className="key">↑/↓</span>
-          <span className="action">上仰/俯冲</span>
+          <span className="key">I/K</span>
+          <span className="action">俯仰控制</span>
+        </div>
+        <div className="control-item">
+          <span className="key">J/L</span>
+          <span className="action">左右滚转(备选)</span>
+        </div>
+        <div className="control-item">
+          <span className="key">Shift</span>
+          <span className="action">加速推进</span>
         </div>
         <div className="control-item">
           <span className="key">空格</span>
-          <span className="action">增压引擎</span>
-        </div>
-        <div className="control-item">
-          <span className="key">E</span>
-          <span className="action">交互/收集</span>
-        </div>
-        <div className="control-item">
-          <span className="key">TAB</span>
-          <span className="action">星图</span>
+          <span className="action">刹车</span>
         </div>
         <div className="control-item">
           <span className="key">ESC</span>
-          <span className="action">暂停</span>
+          <span className="action">暂停游戏</span>
         </div>
       </div>
     </div>

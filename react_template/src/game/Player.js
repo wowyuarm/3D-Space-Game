@@ -77,44 +77,45 @@ export class Player {
   handleFlightControls(deltaTime, inputManager) {
     if (!inputManager || !this.spaceship) return;
     
-    // Flight control variables
-    const thrustForce = 20.0 * this.spaceship.thrustPower;
-    const turnSpeed = 1.5 * this.spaceship.maneuverability;
-    const maxRotationRate = 2.0;
+    // Flight control variables - 增强控制灵敏度
+    const thrustForce = 30.0 * this.spaceship.thrustPower;  // 增强推力
+    const turnSpeed = 2.0 * this.spaceship.maneuverability;  // 增强转向速度
+    const maxRotationRate = 3.0;
     let thrust = 0;
     const rotation = new THREE.Vector3(0, 0, 0);
     
     // Forward/backward thrust
-    if (inputManager.isKeyPressed('KeyW')) {
+    if (inputManager.isKeyPressed('KeyW') || inputManager.isKeyPressed('ArrowUp')) {
       thrust = thrustForce;
-    } else if (inputManager.isKeyPressed('KeyS')) {
-      thrust = -thrustForce * 0.5; // Reverse is slower
+    } else if (inputManager.isKeyPressed('KeyS') || inputManager.isKeyPressed('ArrowDown')) {
+      thrust = -thrustForce * 0.7; // 提高反向推力
     }
     
     // Turning controls
-    if (inputManager.isKeyPressed('KeyA')) {
+    if (inputManager.isKeyPressed('KeyA') || inputManager.isKeyPressed('ArrowLeft')) {
       rotation.y = turnSpeed * deltaTime;
     }
     
-    if (inputManager.isKeyPressed('KeyD')) {
+    if (inputManager.isKeyPressed('KeyD') || inputManager.isKeyPressed('ArrowRight')) {
       rotation.y = -turnSpeed * deltaTime;
     }
     
+    // 将键盘上下键映射为前进和后退，而不是俯仰控制
     // Pitch control
-    if (inputManager.isKeyPressed('ArrowUp')) {
+    if (inputManager.isKeyPressed('KeyI')) {
       rotation.x = this.invertY ? -turnSpeed * deltaTime : turnSpeed * deltaTime;
     }
     
-    if (inputManager.isKeyPressed('ArrowDown')) {
+    if (inputManager.isKeyPressed('KeyK')) {
       rotation.x = this.invertY ? turnSpeed * deltaTime : -turnSpeed * deltaTime;
     }
     
     // Roll control
-    if (inputManager.isKeyPressed('KeyQ')) {
+    if (inputManager.isKeyPressed('KeyQ') || inputManager.isKeyPressed('KeyJ')) {
       rotation.z = turnSpeed * deltaTime;
     }
     
-    if (inputManager.isKeyPressed('KeyE')) {
+    if (inputManager.isKeyPressed('KeyE') || inputManager.isKeyPressed('KeyL')) {
       rotation.z = -turnSpeed * deltaTime;
     }
     
@@ -123,13 +124,17 @@ export class Player {
     this.spaceship.rotate(rotation);
     
     // Boost (temporary speed increase)
-    if (inputManager.isKeyPressed('ShiftLeft') && this.spaceship.energy > 0) {
+    if ((inputManager.isKeyPressed('ShiftLeft') || inputManager.isKeyPressed('ShiftRight')) && this.spaceship.energy > 0) {
       this.spaceship.boost(deltaTime);
+    } else {
+      this.spaceship.stopBoost();
     }
     
     // Brake (rapid deceleration)
     if (inputManager.isKeyPressed('Space')) {
       this.spaceship.brake(deltaTime);
+    } else {
+      this.spaceship.braking = false;
     }
   }
   

@@ -73,6 +73,8 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 .game-canvas {
@@ -81,6 +83,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 0;
 }
 
 /* UI Container */
@@ -92,6 +95,10 @@ body {
   height: 100%;
   pointer-events: none;
   z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .ui-container > * {
@@ -128,15 +135,16 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
-  background-color: var(--menu-bg);
-  backdrop-filter: blur(10px);
-  padding: 40px;
-  border-radius: 15px;
-  border: 2px solid var(--primary-color);
-  box-shadow: var(--border-glow);
+  width: 90%;
+  max-width: 600px;
   text-align: center;
-  min-width: 350px;
-  max-width: 90%;
+  padding: 2rem;
+  border-radius: 10px;
+  background-color: var(--menu-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--border-glow);
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.5s ease-out;
 }
 
 .game-title {
@@ -432,24 +440,30 @@ body {
   justify-content: space-between;
 }
 
-.hud-top-bar, .hud-bottom-bar {
+.hud-top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   display: flex;
   justify-content: space-between;
-  padding: 15px 20px;
-  background-color: rgba(5, 9, 21, 0.7);
-  backdrop-filter: blur(5px);
+  padding: 10px;
+  z-index: 101;
   pointer-events: auto;
-  z-index: 10;
-}
-
-.hud-top-bar {
-  border-bottom: 1px solid var(--primary-color);
-  box-shadow: 0 0 15px rgba(48, 207, 208, 0.2);
+  box-sizing: border-box;
 }
 
 .hud-bottom-bar {
-  border-top: 1px solid var(--primary-color);
-  box-shadow: 0 0 15px rgba(48, 207, 208, 0.2);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  z-index: 101;
+  pointer-events: auto;
+  box-sizing: border-box;
 }
 
 .location-info {

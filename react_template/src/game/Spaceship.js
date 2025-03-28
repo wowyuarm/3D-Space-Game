@@ -135,9 +135,10 @@ export class Spaceship {
     shipGeometry.rotateX(Math.PI / 2); // Rotate to point forward
     
     const shipMaterial = new THREE.MeshStandardMaterial({
-      color: 0x3388cc,
-      roughness: 0.4,
-      metalness: 0.6
+      color: 0x44aaff,
+      emissive: 0x112233,
+      roughness: 0.3,
+      metalness: 0.7
     });
     
     // Create ship mesh
@@ -148,9 +149,10 @@ export class Spaceship {
     // Create wings
     const wingGeometry = new THREE.BoxGeometry(2, 0.1, 0.8);
     const wingMaterial = new THREE.MeshStandardMaterial({
-      color: 0x2266aa,
-      roughness: 0.4,
-      metalness: 0.7
+      color: 0x3388ff,
+      emissive: 0x112244,
+      roughness: 0.3,
+      metalness: 0.8
     });
     
     const wings = new THREE.Mesh(wingGeometry, wingMaterial);
@@ -161,20 +163,33 @@ export class Spaceship {
     // Create engine glow
     const engineGlowGeometry = new THREE.CircleGeometry(0.3, 16);
     const engineGlowMaterial = new THREE.MeshBasicMaterial({
-      color: 0x66aaff,
+      color: 0x66ffff,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.9,
       side: THREE.DoubleSide
     });
     
     this.engineGlow = new THREE.Mesh(engineGlowGeometry, engineGlowMaterial);
     this.engineGlow.position.set(0, 0, -1.1);
     
+    // 添加发光效果
+    const glowGeometry = new THREE.SphereGeometry(0.6, 16, 16);
+    const glowMaterial = new THREE.MeshBasicMaterial({
+      color: 0x00aaff,
+      transparent: true,
+      opacity: 0.2,
+      side: THREE.BackSide
+    });
+    
+    const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+    glow.scale.multiplyScalar(1.2);
+    
     // Create ship group
     this.mesh = new THREE.Group();
     this.mesh.add(shipMesh);
     this.mesh.add(wings);
     this.mesh.add(this.engineGlow);
+    this.mesh.add(glow);
     
     // Set position
     this.mesh.position.copy(this.position);

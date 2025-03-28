@@ -1,0 +1,238 @@
+classDiagram
+    class GameEngine {
+        <<singleton>>
+        -gameState: GameState
+        -renderer: Renderer
+        -physicsEngine: PhysicsEngine
+        -audioManager: AudioManager
+        -inputManager: InputManager
+        +initialize()
+        +update(deltaTime: number)
+        +render()
+        +start()
+        +pause()
+        +resume()
+        +getGameState() GameState
+    }
+
+    class GameState {
+        -player: Player
+        -universe: Universe
+        -gameTime: number
+        -saveData: SaveData
+        -gameSettings: GameSettings
+        +getPlayer() Player
+        +getUniverse() Universe
+        +saveGame() boolean
+        +loadGame() boolean
+        +updateSettings(settings: GameSettings)
+    }
+
+    class Renderer {
+        -scene: THREE.Scene
+        -camera: THREE.PerspectiveCamera
+        -renderer: THREE.WebGLRenderer
+        -postProcessor: PostProcessor
+        +initialize(canvas: HTMLElement)
+        +render(scene: THREE.Scene, camera: THREE.Camera)
+        +applyPixelShader()
+        +setResolution(width: number, height: number)
+        +getPixelRatio() number
+    }
+
+    class PostProcessor {
+        -composer: EffectComposer
+        -pixelPass: ShaderPass
+        -bloomPass: UnrealBloomPass
+        +initialize(renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera)
+        +addPass(pass: Pass)
+        +render()
+        +setPixelationLevel(level: number)
+    }
+
+    class Universe {
+        -galaxies: Galaxy[]
+        -currentGalaxy: Galaxy
+        -wormholes: Wormhole[]
+        -anomalies: SpaceAnomaly[]
+        +initialize(seed: number)
+        +generateGalaxy(params: GalaxyParams) Galaxy
+        +getCurrentGalaxy() Galaxy
+        +navigateToGalaxy(galaxyId: string)
+        +getGalaxyById(id: string) Galaxy
+        +getWormholes() Wormhole[]
+    }
+
+    class Galaxy {
+        -id: string
+        -name: string
+        -starSystems: StarSystem[]
+        -position: Vector3
+        -size: number
+        -seed: number
+        -explored: boolean
+        +initialize(params: GalaxyParams)
+        +generateStarSystems(count: number)
+        +getStarSystems() StarSystem[]
+        +getStarSystemById(id: string) StarSystem
+        +isExplored() boolean
+        +markExplored()
+    }
+
+    class StarSystem {
+        -id: string
+        -name: string
+        -star: Star
+        -planets: Planet[]
+        -position: Vector3
+        -orbitalBodies: OrbitalBody[]
+        -explored: boolean
+        +initialize(params: StarSystemParams)
+        +generatePlanets(count: number)
+        +getPlanets() Planet[]
+        +getStar() Star
+        +isExplored() boolean
+        +markExplored()
+    }
+
+    class Planet {
+        -id: string
+        -name: string
+        -type: PlanetType
+        -size: number
+        -resources: Resource[]
+        -position: Vector3
+        -rotation: Vector3
+        -orbit: OrbitParameters
+        -mesh: THREE.Mesh
+        -atmosphere: Atmosphere
+        -explored: boolean
+        +initialize(params: PlanetParams)
+        +generateTerrain()
+        +update(deltaTime: number)
+        +getResources() Resource[]
+        +isExplored() boolean
+        +markExplored()
+    }
+
+    class Player {
+        -spaceship: Spaceship
+        -inventory: Inventory
+        -position: Vector3
+        -rotation: Quaternion
+        -stats: PlayerStats
+        -currentLocation: Location
+        +initialize()
+        +update(deltaTime: number)
+        +moveSpaceship(direction: Vector3, deltaTime: number)
+        +rotateSpaceship(rotation: Quaternion)
+        +collectResource(resource: Resource)
+        +upgradeSpaceship(upgradeType: UpgradeType)
+        +getInventory() Inventory
+        +getCurrentLocation() Location
+    }
+
+    class Spaceship {
+        -model: THREE.Group
+        -stats: SpaceshipStats
+        -upgrades: SpaceshipUpgrade[]
+        -engineParticles: ParticleSystem
+        -collider: Collider
+        +initialize(model: string)
+        +update(deltaTime: number)
+        +applyThrust(amount: number)
+        +rotate(rotation: Quaternion)
+        +upgrade(upgrade: SpaceshipUpgrade)
+        +getStats() SpaceshipStats
+        +getMaxSpeed() number
+        +getCurrentSpeed() number
+    }
+
+    class Inventory {
+        -resources: Map~ResourceType, number~
+        -capacity: number
+        +initialize(capacity: number)
+        +addResource(type: ResourceType, amount: number) boolean
+        +removeResource(type: ResourceType, amount: number) boolean
+        +getResourceAmount(type: ResourceType) number
+        +getRemainingCapacity() number
+        +upgradeCapacity(amount: number)
+    }
+
+    class InputManager {
+        -keyState: Map~string, boolean~
+        -mousePosition: Vector2
+        -touchControls: TouchControls
+        +initialize()
+        +update()
+        +isKeyDown(key: string) boolean
+        +getMousePosition() Vector2
+        +registerKeyboardEvents()
+        +registerMouseEvents()
+        +registerTouchEvents()
+    }
+
+    class AudioManager {
+        -sounds: Map~string, Sound~
+        -music: Map~string, Music~
+        -currentMusic: Music
+        -masterVolume: number
+        -musicVolume: number
+        -sfxVolume: number
+        +initialize()
+        +loadSound(id: string, url: string)
+        +loadMusic(id: string, url: string)
+        +playSound(id: string, volume?: number)
+        +playMusic(id: string, fade?: boolean, loop?: boolean)
+        +stopMusic(fade?: boolean)
+        +setMasterVolume(volume: number)
+        +setMusicVolume(volume: number)
+        +setSfxVolume(volume: number)
+    }
+
+    class UIManager {
+        -currentScreen: UIScreen
+        -hudElements: Map~string, HUDElement~
+        +initialize()
+        +showScreen(screen: UIScreen)
+        +hideScreen()
+        +updateHUD(gameState: GameState)
+        +toggleHUDElement(id: string)
+        +showNotification(message: string, duration: number)
+    }
+
+    class SaveSystem {
+        +saveGame(gameState: GameState) boolean
+        +loadGame() GameState
+        +hasSaveData() boolean
+        +deleteSaveData()
+        +exportSaveData() string
+        +importSaveData(data: string) boolean
+    }
+
+    class PhysicsEngine {
+        -colliders: Collider[]
+        -grid: SpatialGrid
+        +initialize()
+        +update(deltaTime: number)
+        +addCollider(collider: Collider)
+        +removeCollider(collider: Collider)
+        +checkCollision(collider: Collider) Collider[]
+        +raycast(origin: Vector3, direction: Vector3) RaycastResult
+    }
+
+    GameEngine "1" -- "1" GameState
+    GameEngine "1" -- "1" Renderer
+    GameEngine "1" -- "1" PhysicsEngine
+    GameEngine "1" -- "1" AudioManager
+    GameEngine "1" -- "1" InputManager
+    GameEngine "1" -- "1" UIManager
+    GameState "1" -- "1" Player
+    GameState "1" -- "1" Universe
+    Universe "1" -- "*" Galaxy
+    Galaxy "1" -- "*" StarSystem
+    StarSystem "1" -- "1" Star
+    StarSystem "1" -- "*" Planet
+    Player "1" -- "1" Spaceship
+    Player "1" -- "1" Inventory
+    Renderer "1" -- "1" PostProcessor

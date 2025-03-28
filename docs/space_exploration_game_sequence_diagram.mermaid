@@ -1,0 +1,109 @@
+sequenceDiagram
+    participant App as App Component
+    participant GE as GameEngine
+    participant R as Renderer
+    participant PP as PostProcessor
+    participant U as Universe
+    participant P as Player
+    participant AM as AudioManager
+    participant IM as InputManager
+    participant UI as UIManager
+    participant RAF as RequestAnimationFrame
+    participant GS as GameState
+    participant SS as StarSystem
+    participant G as Galaxy
+    participant PL as Planet
+    participant I as Inventory
+    participant S as Spaceship
+    participant PE as PhysicsEngine
+
+    %% 游戏初始化流程
+    App->>GE: initialize()
+    GE->>R: initialize(canvasElement)
+    R->>PP: initialize(renderer, scene, camera)
+    PP->>R: applyPixelShader()
+    GE->>U: initialize(randomSeed)
+    U->>U: generateGalaxy(homeGalaxyParams)
+    GE->>P: initialize()
+    P->>P: initializeSpaceship()
+    GE->>AM: initialize()
+    AM->>AM: loadSounds()
+    AM->>AM: playMusic("main_theme")
+    GE->>IM: initialize()
+    IM->>IM: registerKeyboardEvents()
+    IM->>IM: registerMouseEvents()
+    IM->>IM: registerTouchEvents()
+    GE->>UI: initialize()
+    UI->>UI: showScreen("main_menu")
+    GE->>GE: start()
+    
+    %% 游戏主循环流程
+    loop Game Loop
+        RAF->>GE: gameLoop(timestamp)
+        GE->>GE: calculateDeltaTime()
+        GE->>IM: update()
+        GE->>GS: update(deltaTime)
+        GS->>P: update(deltaTime)
+        P->>P: handleInput(inputManager)
+        P->>P: moveSpaceship(direction, deltaTime)
+        P->>P: updateSpaceshipEffects()
+        GS->>U: update(deltaTime)
+        U->>U: updateGalaxies(deltaTime)
+        U->>U: updateAnomalies(deltaTime)
+        GE->>PE: update(deltaTime)
+        PE->>PE: checkCollisions()
+        GE->>R: render()
+        R->>R: updateScene(gameState)
+        R->>PP: render()
+        GE->>UI: updateHUD(gameState)
+        RAF->>GE: requestNextFrame()
+    end
+    
+    %% 星系探索流程
+    P->>SS: enterStarSystem(starSystemId)
+    SS->>SS: checkIfExplored()
+    alt Not explored
+        SS->>SS: markExplored()
+        SS->>P: addExplorationReward()
+        UI->>UI: showNotification("New star system discovered!")
+        AM->>AM: playSound("discovery")
+    end
+    SS->>SS: activateStarSystem()
+    U->>U: setCurrentStarSystem(starSystem)
+    SS->>UI: updateStarMap()
+    UI->>UI: updateHUD()
+    P->>P: updateLocation(starSystemId)
+    
+    %% 行星资源收集流程
+    P->>PL: approachPlanet(planetId)
+    PL->>PL: scanForResources()
+    PL->>P: showAvailableResources(resources)
+    P->>PL: collectResource(resourceId)
+    PL->>PL: extractResource(resourceId)
+    PL->>I: addResource(resourceType, amount)
+    alt Inventory Full
+        I-->>P: returnFailure("Inventory full")
+        P-->>UI: showNotification("Inventory full!")
+    else Resource Added
+        I-->>P: returnSuccess()
+        AM->>AM: playSound("resource_collected")
+        UI->>UI: updateResourceDisplay()
+        UI->>UI: showResourceAnimation()
+    end
+    
+    %% 飞船升级流程
+    P->>UI: openUpgradeMenu()
+    UI->>UI: displayAvailableUpgrades(player)
+    P->>UI: selectUpgrade(upgradeType)
+    UI->>I: checkResourceRequirements(upgradeType)
+    alt Insufficient Resources
+        I-->>UI: returnFailure("Insufficient resources")
+        UI-->>P: showNotification("Cannot afford upgrade")
+    else Resources Available
+        UI->>I: consumeResources(requiredResources)
+        UI->>S: applyUpgrade(upgradeType)
+        S->>S: updateStats()
+        AM->>AM: playSound("upgrade_complete")
+        UI->>UI: showUpgradeAnimation()
+        UI->>UI: updateShipDisplay()
+    end

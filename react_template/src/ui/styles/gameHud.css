@@ -1,0 +1,505 @@
+/* 游戏HUD样式 */
+.game-hud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 100;
+  font-family: 'Roboto', 'Arial', sans-serif;
+}
+
+/* 顶部状态栏 */
+.hud-top-bar {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.player-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 300px;
+}
+
+.health-bar, .energy-bar {
+  position: relative;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.health-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f44336, #ff7043);
+  transition: width 0.3s ease;
+}
+
+.energy-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2196f3, #03a9f4);
+  transition: width 0.3s ease;
+}
+
+.health-text, .energy-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 0 2px black;
+}
+
+.speed-indicator {
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  padding: 10px 20px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.speed-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.speed-unit {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+/* 资源面板 */
+.resources-panel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  padding: 15px;
+  color: white;
+  min-width: 180px;
+  pointer-events: auto;
+}
+
+.resources-panel h4 {
+  margin: 0 0 10px 0;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 5px;
+}
+
+.resources-panel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resource-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  padding: 3px 0;
+}
+
+.resource-icon {
+  margin-right: 8px;
+  font-size: 1.2rem;
+}
+
+.resource-name {
+  flex: 1;
+}
+
+.resource-amount {
+  font-weight: bold;
+}
+
+/* 行星信息 */
+.planet-info {
+  position: absolute;
+  bottom: 30px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  padding: 15px;
+  color: white;
+  min-width: 200px;
+  pointer-events: auto;
+}
+
+.planet-info h4 {
+  margin: 0 0 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 5px;
+}
+
+.planet-info p {
+  margin: 5px 0;
+}
+
+.interaction-prompt {
+  margin-top: 10px;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  text-align: center;
+}
+
+.interaction-prompt .key {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.9);
+  color: #000;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-weight: bold;
+  margin: 0 4px;
+}
+
+/* 通知区域 */
+.notifications-container {
+  position: absolute;
+  top: 100px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 300px;
+  max-height: 70vh;
+  overflow-y: auto;
+  pointer-events: auto;
+}
+
+.notification {
+  background: rgba(0, 0, 0, 0.7);
+  border-left: 4px solid #2196f3;
+  color: white;
+  border-radius: 5px;
+  padding: 12px;
+  display: flex;
+  animation: slide-in 0.3s ease;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.notification.new {
+  transform: translateX(-10px);
+  animation: notification-pulse 2s infinite;
+}
+
+.notification.info {
+  border-left-color: #2196f3;
+}
+
+.notification.success {
+  border-left-color: #4caf50;
+}
+
+.notification.warning {
+  border-left-color: #ff9800;
+}
+
+.notification.error {
+  border-left-color: #f44336;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-content strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.notification-content p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.notification-dismiss {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 0 0 0 10px;
+  transition: color 0.2s;
+}
+
+.notification-dismiss:hover {
+  color: white;
+}
+
+/* 资源收集覆盖层 */
+.resource-collection-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: auto;
+  z-index: 200;
+  animation: fade-in 0.5s ease;
+}
+
+.collection-container {
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  padding: 20px;
+  color: white;
+  width: 400px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.collection-container h3 {
+  margin-top: 0;
+  color: #4caf50;
+}
+
+.planet-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.progress-bar {
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4caf50, #8bc34a);
+  transition: width 0.3s ease;
+}
+
+.cancel-hint {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin-top: 10px;
+}
+
+.collected-resources {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.collected-resources h4 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.collected-resources ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.collection-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* 教程覆盖层 */
+.tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: auto;
+  z-index: 300;
+}
+
+.tutorial-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.tutorial-highlight {
+  position: absolute;
+  border: 2px solid #ffeb3b;
+  border-radius: 5px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.tutorial-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 450px;
+  background: rgba(33, 33, 33, 0.95);
+  border-radius: 10px;
+  color: white;
+  padding: 20px;
+  z-index: 2;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tutorial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+}
+
+.tutorial-header h3 {
+  margin: 0;
+  color: #ffeb3b;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.tutorial-body {
+  margin-bottom: 20px;
+}
+
+.tutorial-image {
+  max-width: 100%;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.tutorial-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tutorial-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tutorial-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.next-button, .complete-button {
+  background: #2196f3;
+}
+
+.next-button:hover, .complete-button:hover {
+  background: #1976d2;
+}
+
+.previous-button {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.skip-button {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* 动画 */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slide-in {
+  from { 
+    transform: translateX(30px);
+    opacity: 0;
+  }
+  to { 
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes notification-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+  70% { box-shadow: 0 0 0 5px rgba(255, 255, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .player-stats {
+    width: 200px;
+  }
+  
+  .resources-panel,
+  .planet-info {
+    min-width: 150px;
+  }
+  
+  .notifications-container {
+    width: 250px;
+  }
+  
+  .collection-container,
+  .tutorial-content {
+    width: 90%;
+    max-width: 400px;
+  }
+} 

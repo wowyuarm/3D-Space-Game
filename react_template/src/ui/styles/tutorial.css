@@ -1,0 +1,143 @@
+/* 教程系统样式 */
+.tutorial-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  pointer-events: all;
+}
+
+.tutorial-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 101;
+}
+
+.tutorial-highlight {
+  position: absolute;
+  border: 3px solid var(--primary-color);
+  background-color: rgba(51, 102, 204, 0.1);
+  box-shadow: 0 0 20px rgba(51, 102, 204, 0.8);
+  border-radius: 4px;
+  z-index: 102;
+  pointer-events: none;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(51, 102, 204, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(51, 102, 204, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(51, 102, 204, 0);
+  }
+}
+
+.tutorial-content {
+  position: absolute;
+  width: 400px;
+  max-width: 90%;
+  background-color: rgba(10, 15, 30, 0.95);
+  border: 1px solid var(--primary-color);
+  border-radius: 8px;
+  padding: 20px;
+  color: var(--text-light);
+  z-index: 103;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.tutorial-content h3 {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.tutorial-content p {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.tutorial-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tutorial-progress {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+.tutorial-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.tutorial-button {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tutorial-button:hover {
+  background-color: #4477dd;
+  transform: translateY(-2px);
+}
+
+.tutorial-skip {
+  background-color: transparent;
+  border: 1px solid var(--text-dim);
+  color: var(--text-dim);
+}
+
+.tutorial-skip:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  transform: none;
+}
+
+/* 教程位置类 */
+.position-center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.position-top {
+  bottom: calc(100% - 150px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.position-bottom {
+  top: calc(100% - 150px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.position-left {
+  top: 50%;
+  right: calc(100% - 100px);
+  transform: translateY(-50%);
+}
+
+.position-right {
+  top: 50%;
+  left: calc(100% - 100px);
+  transform: translateY(-50%);
+}

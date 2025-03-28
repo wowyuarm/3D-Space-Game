@@ -1,0 +1,159 @@
+/* 资源收集系统的样式 */
+.resource-collection-overlay {
+  position: absolute;
+  bottom: 100px;
+  right: 30px;
+  width: 350px;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.collection-container {
+  background-color: rgba(10, 15, 30, 0.85);
+  border: 1px solid var(--primary-color);
+  border-radius: 10px;
+  padding: 15px;
+  color: var(--text-light);
+  box-shadow: 0 0 20px rgba(51, 102, 204, 0.5);
+  animation: collection-fade-in 0.3s ease-out;
+}
+
+@keyframes collection-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.collection-container h3 {
+  color: var(--primary-color);
+  font-size: 1.3rem;
+  margin: 0 0 10px 0;
+  text-align: center;
+}
+
+.planet-name {
+  font-size: 1.1rem;
+  color: #e0e0ff;
+  text-align: center;
+  margin: 0 0 12px 0;
+}
+
+.progress-bar {
+  height: 10px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #3366cc, #60a5fa);
+  border-radius: 5px;
+  transition: width 0.2s ease;
+  box-shadow: 0 0 8px rgba(51, 102, 204, 0.8);
+  animation: pulse-glow 1.5s infinite;
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 5px rgba(51, 102, 204, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(51, 102, 204, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(51, 102, 204, 0.5);
+  }
+}
+
+.cancel-hint {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  text-align: center;
+  margin: 0 0 15px 0;
+}
+
+.collected-resources {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 12px;
+}
+
+.collected-resources h4 {
+  font-size: 1rem;
+  color: #e0e0ff;
+  margin: 0 0 10px 0;
+}
+
+.collected-resources ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.resource-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.resource-type {
+  color: #e0e0ff;
+  font-weight: 500;
+}
+
+.resource-amount {
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+/* 资源类型颜色 */
+.resource-type[data-type="iron"],
+.resource-type[data-type="titanium"],
+.resource-type[data-type="silicon"] {
+  color: #a5b4fc; /* 金属类 - 淡紫色 */
+}
+
+.resource-type[data-type="water"],
+.resource-type[data-type="oxygen"],
+.resource-type[data-type="hydrogen"] {
+  color: #7dd3fc; /* 气体类 - 淡蓝色 */
+}
+
+.resource-type[data-type="carbon"],
+.resource-type[data-type="organics"] {
+  color: #86efac; /* 有机物 - 淡绿色 */
+}
+
+.resource-type[data-type="platinum"],
+.resource-type[data-type="gold"] {
+  color: #fcd34d; /* 贵金属 - 金色 */
+}
+
+/* 粒子效果背景 */
+.collection-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.5;
+  pointer-events: none;
+  animation: particle-float 10s infinite linear;
+}
+
+@keyframes particle-float {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100px 100px;
+  }
+} 

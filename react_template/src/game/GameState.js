@@ -425,6 +425,18 @@ export class GameState {
     this.player.nearestPlanet = closestPlanet;
   }
   
+  /**
+   * 检测玩家与星系的接近和交互
+   * 备注：同checkProximityToSystems功能一致，用于兼容性
+   */
+  checkStarSystemInteractions() {
+    // 调用现有的检测方法
+    return this.checkProximityToSystems();
+  }
+  
+  /**
+   * 检测玩家与周围星系的距离，发现新星系
+   */
   checkProximityToSystems() {
     if (!this.player || !this.player.spaceship || !this.universe) return;
     

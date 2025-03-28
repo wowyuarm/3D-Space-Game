@@ -209,8 +209,9 @@ export class GameEngine {
           try {
             // 首先检查音频是否可用
             const musicId = 'space_ambient';
-            if (this.audioManager.isInitialized &&
+            if (this.audioManager && typeof this.audioManager.playMusic === 'function' &&
                 (!this.audioManager.knownBrokenAudio || !this.audioManager.knownBrokenAudio.has(musicId))) {
+              console.log('尝试播放背景音乐：', musicId);
               this.audioManager.playMusic(musicId, 2000);
             } else {
               console.log(`Not playing ${musicId} music as it appears to be unavailable`);

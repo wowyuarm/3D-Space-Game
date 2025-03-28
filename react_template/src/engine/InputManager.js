@@ -39,6 +39,11 @@ export class InputManager {
     
     this.canvas = canvas;
     
+    // 确保mouse.worldPosition存在
+    if (!this.mouse.worldPosition) {
+      this.mouse.worldPosition = new THREE.Vector3();
+    }
+    
     // Add event listeners
     window.addEventListener('keydown', this.handleKeyDown.bind(this));
     window.addEventListener('keyup', this.handleKeyUp.bind(this));
@@ -89,11 +94,16 @@ export class InputManager {
     
     this.updateMousePosition(event);
     
+    // 确保worldPosition存在
+    if (!this.mouse.worldPosition) {
+      this.mouse.worldPosition = new THREE.Vector3();
+    }
+    
     // Notify listeners
     this.notifyListeners('mousedown', { 
       button: event.button,
       position: { x: this.mouse.x, y: this.mouse.y },
-      worldPosition: this.mouse.worldPosition.clone()
+      worldPosition: this.mouse.worldPosition ? this.mouse.worldPosition.clone() : new THREE.Vector3()
     });
   }
   
@@ -106,21 +116,31 @@ export class InputManager {
     
     this.updateMousePosition(event);
     
+    // 确保worldPosition存在
+    if (!this.mouse.worldPosition) {
+      this.mouse.worldPosition = new THREE.Vector3();
+    }
+    
     // Notify listeners
     this.notifyListeners('mouseup', { 
       button: event.button,
       position: { x: this.mouse.x, y: this.mouse.y },
-      worldPosition: this.mouse.worldPosition.clone()
+      worldPosition: this.mouse.worldPosition ? this.mouse.worldPosition.clone() : new THREE.Vector3()
     });
   }
   
   handleMouseMove(event) {
     this.updateMousePosition(event);
     
+    // 确保worldPosition存在
+    if (!this.mouse.worldPosition) {
+      this.mouse.worldPosition = new THREE.Vector3();
+    }
+    
     // Notify listeners
     this.notifyListeners('mousemove', { 
       position: { x: this.mouse.x, y: this.mouse.y },
-      worldPosition: this.mouse.worldPosition.clone()
+      worldPosition: this.mouse.worldPosition ? this.mouse.worldPosition.clone() : new THREE.Vector3()
     });
   }
   
@@ -138,6 +158,11 @@ export class InputManager {
   
   updateMouseWorldPosition(camera) {
     if (!camera) return;
+    
+    // 确保worldPosition存在
+    if (!this.mouse.worldPosition) {
+      this.mouse.worldPosition = new THREE.Vector3();
+    }
     
     this.raycaster.setFromCamera(this.mouse, camera);
     

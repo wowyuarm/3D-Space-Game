@@ -134,9 +134,17 @@ export class GameEngine {
         // Start background music with fade in
         setTimeout(() => {
           try {
-            this.audioManager.playMusic('space_ambient', 2000);
+            // 首先检查音频是否可用
+            const musicId = 'space_ambient';
+            if (this.audioManager.isInitialized &&
+                (!this.audioManager.knownBrokenAudio || !this.audioManager.knownBrokenAudio.has(musicId))) {
+              this.audioManager.playMusic(musicId, 2000);
+            } else {
+              console.log(`Not playing ${musicId} music as it appears to be unavailable`);
+            }
           } catch (error) {
-            console.warn('Error starting background music', error);
+            // 更全面的错误处理，不让音频问题影响游戏启动
+            console.warn('Error starting background music, continuing without audio:', error);
           }
         }, 1000);
       }

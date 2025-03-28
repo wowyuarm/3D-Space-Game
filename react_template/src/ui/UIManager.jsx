@@ -315,7 +315,21 @@ export function UIManagerComponent({ gameEngine }) {
     
     // Play game start sound
     if (gameEngine && gameEngine.audioManager) {
-      gameEngine.audioManager.playMusic('main_theme', true, true);
+      try {
+        const audioManager = gameEngine.audioManager;
+        // 增加错误处理，确保即使音频文件加载失败也不会阻塞游戏流程
+        const musicId = 'main_theme';
+        
+        // 检查音频是否可用，不可用时不尝试播放
+        if (audioManager.isInitialized && 
+            (!audioManager.knownBrokenAudio || !audioManager.knownBrokenAudio.has(musicId))) {
+          gameEngine.audioManager.playMusic(musicId, true, true);
+        } else {
+          console.log(`Skipping music ${musicId} as it appears to be unavailable`);
+        }
+      } catch (error) {
+        console.warn('Failed to play main theme music, continuing without audio:', error);
+      }
     }
     
     // Switch to game screen
@@ -381,7 +395,21 @@ export function UIManagerComponent({ gameEngine }) {
     
     // Change music
     if (gameEngine && gameEngine.audioManager) {
-      gameEngine.audioManager.playMusic('main_theme', true, true);
+      try {
+        const audioManager = gameEngine.audioManager;
+        // 增加错误处理，确保即使音频文件加载失败也不会阻塞游戏流程
+        const musicId = 'main_theme';
+        
+        // 检查音频是否可用，不可用时不尝试播放
+        if (audioManager.isInitialized && 
+            (!audioManager.knownBrokenAudio || !audioManager.knownBrokenAudio.has(musicId))) {
+          gameEngine.audioManager.playMusic(musicId, true, true);
+        } else {
+          console.log(`Skipping music ${musicId} as it appears to be unavailable`);
+        }
+      } catch (error) {
+        console.warn('Failed to play main theme music, continuing without audio:', error);
+      }
     }
   };
   
@@ -414,7 +442,21 @@ export function UIManagerComponent({ gameEngine }) {
         addNotification("游戏已加载", "success", 3000);
         
         if (gameEngine.audioManager) {
-          gameEngine.audioManager.playMusic('space_ambient', true, true);
+          try {
+            const audioManager = gameEngine.audioManager;
+            // 增加错误处理，确保即使音频文件加载失败也不会阻塞游戏流程
+            const musicId = 'space_ambient';
+            
+            // 检查音频是否可用，不可用时不尝试播放
+            if (audioManager.isInitialized && 
+                (!audioManager.knownBrokenAudio || !audioManager.knownBrokenAudio.has(musicId))) {
+              audioManager.playMusic(musicId, true, true);
+            } else {
+              console.log(`Skipping music ${musicId} as it appears to be unavailable`);
+            }
+          } catch (error) {
+            console.warn('Failed to play space ambient music, continuing without audio:', error);
+          }
         }
       } else {
         addNotification("没有找到存档", "warning", 3000);

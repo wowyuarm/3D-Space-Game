@@ -73,6 +73,7 @@ export class ResourceManager {
    * @returns {boolean} Success status
    */
   addResource(type, amount) {
+    // 有效性检查
     if (!this.resourceTypes.includes(type) || amount <= 0) {
       console.warn(`Invalid resource type or amount: ${type}, ${amount}`);
       return false;
@@ -88,18 +89,49 @@ export class ResourceManager {
       resource.amount += amount;
       resource.totalCollected += amount;
       
-      // 播放收集音效
+      // 播放收集音效（增加错误处理和音频可用性检查）
       if (this.gameEngine && this.gameEngine.audioManager) {
-        this.gameEngine.audioManager.playSound('resource_collected');
+        try {
+          // 检查音频管理器是否标记了资源收集音效为已知问题
+          const audioManager = this.gameEngine.audioManager;
+          const soundId = 'resource_collected';
+          
+          // 如果音效没有被标记为问题，尝试播放
+          // 否则使用替代音效或不播放
+          if (audioManager.isInitialized) {
+            if (!audioManager.knownBrokenAudio || !audioManager.knownBrokenAudio.has(soundId)) {
+              audioManager.playSound(soundId);
+            } else {
+              // 使用备用音效 - 如alert或button_click
+              if (!audioManager.knownBrokenAudio.has('button_click')) {
+                audioManager.playSound('button_click');
+                console.log('Using button_click as fallback for resource_collected sound');
+              } else if (!audioManager.knownBrokenAudio.has('alert')) {
+                audioManager.playSound('alert');
+                console.log('Using alert as fallback for resource_collected sound');
+              } else {
+                console.log('No suitable fallback sound available for resource_collected');
+              }
+            }
+          }
+        } catch (audioError) {
+          // 捕获并记录错误，但不中断游戏流程
+          console.warn('Error playing resource collection sound:', audioError);
+        }
       }
       
       // 显示收集通知
       if (this.gameEngine && this.gameEngine.uiManager) {
-        this.gameEngine.uiManager.addNotification(
-          `Collected ${amount} ${this.formatResourceName(type)}`,
-          'success',
-          3000
-        );
+        try {
+          this.gameEngine.uiManager.addNotification(
+            `Collected ${amount} ${this.formatResourceName(type)}`,
+            'success',
+            3000
+          );
+        } catch (uiError) {
+          // 捕获UI错误，避免中断游戏流程
+          console.warn('Error displaying resource notification:', uiError);
+        }
       }
       
       console.log(`Added ${amount} ${type}, new total: ${resource.amount}`);

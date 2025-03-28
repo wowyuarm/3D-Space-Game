@@ -18,6 +18,17 @@ export class InputManager {
     this.isInitialized = false;
   }
   
+  /**
+   * Initialize the input manager
+   * @param {HTMLCanvasElement} canvas - The canvas element for mouse/touch events
+   * @returns {boolean} Success status
+   */
+  init(canvas) {
+    // Call the existing initialize method for backward compatibility
+    this.initialize(canvas);
+    return true;
+  }
+  
   initialize(canvas) {
     if (this.isInitialized) {
       console.warn('InputManager already initialized');

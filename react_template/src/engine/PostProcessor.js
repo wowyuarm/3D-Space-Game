@@ -14,6 +14,18 @@ export class PostProcessor {
     this.pixelationLevel = 4;
   }
   
+  /**
+   * Initialize the post processor - wrapper for backward compatibility
+   * @param {Renderer} renderer - The renderer instance
+   * @param {number} pixelationLevel - The pixelation level
+   * @returns {boolean} Success status
+   */
+  init(renderer, pixelationLevel = 4) {
+    // Call the existing initialize method for backward compatibility
+    this.initialize(renderer, pixelationLevel);
+    return true;
+  }
+  
   initialize(renderer, pixelationLevel = 4) {
     if (this.isInitialized) {
       console.warn('PostProcessor already initialized');

@@ -50,7 +50,7 @@ export class GameEngine {
       // Initialize renderer with canvas if provided
       if (canvas) {
         this.renderer = new Renderer();
-        this.renderer.initialize(canvas, window.innerWidth, window.innerHeight);
+        this.renderer.init(canvas, window.innerWidth, window.innerHeight);
       } else {
         // Otherwise create our own renderer
         const success = await this.initRenderer();
@@ -65,8 +65,8 @@ export class GameEngine {
       this.physicsSystem.init();
       
       // Initialize input system
-      this.inputManager = new InputManager(this.onKeyPressed.bind(this));
-      this.inputManager.init();
+      this.inputManager = new InputManager();
+      this.inputManager.init(canvas);
       
       // Initialize audio system
       const audioSuccess = this.initAudio();
@@ -76,11 +76,16 @@ export class GameEngine {
       
       // Initialize game state
       this.gameState = new GameState();
-      this.gameState.initialize({ gameEngine: this });
+      // Check if GameState has an init method, otherwise use initialize
+      if (typeof this.gameState.init === 'function') {
+        this.gameState.init({ gameEngine: this });
+      } else if (typeof this.gameState.initialize === 'function') {
+        this.gameState.initialize({ gameEngine: this });
+      }
       
       // Create UI manager
       this.uiManager = new UIManager();
-      this.uiManager.initialize();
+      this.uiManager.init();
       
       // Connect components
       this.uiManager.setGameState(this.gameState);
@@ -111,7 +116,7 @@ export class GameEngine {
       // Set up post-processing if renderer was provided
       if (this.renderer) {
         this.postProcessor = new PostProcessor();
-        this.postProcessor.initialize(this.renderer, this.gameState.gameSettings.pixelationLevel || 4);
+        this.postProcessor.init(this.renderer, this.gameState.gameSettings.pixelationLevel || 4);
       } else {
         // Initialize post-processing effects
         this.initPostProcessing();

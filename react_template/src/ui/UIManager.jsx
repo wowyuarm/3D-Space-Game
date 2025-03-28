@@ -73,6 +73,16 @@ export class UIManager {
     this.isInitialized = false;
   }
   
+  /**
+   * Initialize the UI manager - wrapper for backward compatibility
+   * @returns {boolean} Success status
+   */
+  init() {
+    // Call the existing initialize method for backward compatibility
+    this.initialize();
+    return true;
+  }
+  
   initialize() {
     if (this.isInitialized) {
       console.warn('UIManager already initialized');

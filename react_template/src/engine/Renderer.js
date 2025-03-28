@@ -11,6 +11,19 @@ export class Renderer {
     this.isInitialized = false;
   }
   
+  /**
+   * Initialize the renderer - wrapper for backward compatibility
+   * @param {HTMLCanvasElement} canvas - The canvas element to render to
+   * @param {number} width - The width of the renderer
+   * @param {number} height - The height of the renderer
+   * @returns {boolean} Success status
+   */
+  init(canvas, width = 800, height = 600) {
+    // Call the existing initialize method for backward compatibility
+    this.initialize(canvas, width, height);
+    return true;
+  }
+  
   initialize(canvas, width = 800, height = 600) {
     if (this.isInitialized) {
       console.warn('Renderer already initialized');
